@@ -1,18 +1,17 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+# --- Proyecto Android (hermes_travelapp) ---
+hermes_travelapp/.gradle/
+hermes_travelapp/.idea/
+hermes_travelapp/.kotlin/
+hermes_travelapp/build/
+hermes_travelapp/app/build/
+hermes_travelapp/local.properties
+hermes_travelapp/*.iml
+
+# --- Archivos del Sistema / IDE ---
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-/hermes_travelapp/.idea
-/hermes_travelapp/.gradle
-/hermes_travelapp/.kotlin
+Thumbs.db
+.vscode/
+
+# --- Logs y Temporales ---
+*.log
+*.temp
