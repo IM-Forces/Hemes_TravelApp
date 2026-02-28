@@ -4,30 +4,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 import kotlinx.coroutines.delay
-
-// Paleta Grecia Clásica
-private val NegroCeramica = Color(0xFF1A1A1A)
-private val DoradoAtenea = Color(0xFFC8A45A)
-private val BlancoMarmol = Color(0xFFF5F5F2)
-private val AzulEgeo = Color(0xFF2F5D8C)
-private val AzulOscuro = Color(0xFF1A1A2E)
-
 
 @Composable
 fun SplashScreen(onNavigateToLogin: () -> Unit) {
@@ -50,7 +42,7 @@ fun SplashScreenContent(progress: Float = 0f) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AzulOscuro)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
@@ -66,19 +58,18 @@ fun SplashScreenContent(progress: Float = 0f) {
                 contentScale = ContentScale.Fit
             )
 
-            // Título HERMES
+            // Título HERMES usando el estilo del Tema (Dorado Atenea)
             Text(
                 text = "HERMES",
-                color = DoradoAtenea,
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = 48.sp, // Sobreescribimos solo el tamaño para el Splash
                 letterSpacing = 12.sp,
                 textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Línea decorativa con diamante central
+            // Línea decorativa
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.width(220.dp)
@@ -87,66 +78,60 @@ fun SplashScreenContent(progress: Float = 0f) {
                     modifier = Modifier
                         .weight(1f)
                         .height(1.dp)
-                        .background(DoradoAtenea.copy(alpha = 0.5f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                 )
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .size(5.dp)
                         .graphicsLayer { rotationZ = 45f }
-                        .background(DoradoAtenea)
+                        .background(MaterialTheme.colorScheme.primary)
                 )
                 Box(
                     modifier = Modifier
                         .weight(1f)
                         .height(1.dp)
-                        .background(DoradoAtenea.copy(alpha = 0.5f))
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
                 )
             }
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Subtítulo TRAVEL APP
+            // Subtítulo TRAVEL APP usando el estilo del Tema (Blanco Mármol)
             Text(
                 text = "TRAVEL APP",
-                color = BlancoMarmol,
+                style = MaterialTheme.typography.bodyLarge,
                 fontSize = 13.sp,
-                fontWeight = FontWeight.Normal,
                 letterSpacing = 6.sp,
                 textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(56.dp))
 
-            // Texto "Starting your Journey..."
             Text(
                 text = "Starting your Journey...",
-                color = BlancoMarmol.copy(alpha = 0.8f),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Light,
+                style = MaterialTheme.typography.bodyMedium,
                 letterSpacing = 1.sp
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Barra de carga dorada
+            // Barra de carga usando los colores del Tema
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
                     .width(250.dp)
                     .height(6.dp),
-                color = DoradoAtenea,
-                trackColor = BlancoMarmol.copy(alpha = 0.2f),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
                 drawStopIndicator = {}
             )
-
         }
 
         Text(
             text = "v1.0.0 - Sprint 01",
-            color = BlancoMarmol.copy(alpha = 0.5f),
+            style = MaterialTheme.typography.bodyMedium,
             fontSize = 12.sp,
-            fontWeight = FontWeight.Light,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 32.dp)
