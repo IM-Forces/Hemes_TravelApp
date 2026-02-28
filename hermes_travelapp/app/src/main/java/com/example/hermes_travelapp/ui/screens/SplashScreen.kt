@@ -1,4 +1,4 @@
-package com.example.hermes_travelapp.screens
+package com.example.hermes_travelapp.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,18 +11,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(onNavigateToLogin: () -> Unit) {
     LaunchedEffect(Unit) {
         delay(3000L) // 3 segundos
-        navController.navigate("home") {
-            popUpTo("splash") { inclusive = true }
-        }
+        onNavigateToLogin()
     }
 
     SplashScreenContent()
