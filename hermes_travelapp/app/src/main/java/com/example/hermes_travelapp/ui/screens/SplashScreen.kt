@@ -53,7 +53,7 @@ fun SplashScreenContent(progress: Float = 0f) {
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.hermes_no_bg),
+                painter = painterResource(id = R.drawable.logofinal),
                 contentDescription = "Logo Hermes Travel App",
                 modifier = Modifier.size(400.dp),
                 contentScale = ContentScale.Fit

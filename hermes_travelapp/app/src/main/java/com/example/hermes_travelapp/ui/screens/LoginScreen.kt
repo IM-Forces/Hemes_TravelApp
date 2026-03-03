@@ -31,7 +31,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.hermes_no_bg),
+                painter = painterResource(id = R.drawable.logofinal),
                 contentDescription = "Logo Hermes Travel App",
                 modifier = Modifier.size(250.dp).padding(bottom = 32.dp),
                 contentScale = ContentScale.Fit
