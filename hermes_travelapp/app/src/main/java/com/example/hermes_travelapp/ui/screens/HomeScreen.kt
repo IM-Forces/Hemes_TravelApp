@@ -194,7 +194,7 @@ fun HomeTopBar() {
         title = {
             Text(
                 text = "Welcome, Alex 👋",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 8.dp)
@@ -202,17 +202,27 @@ fun HomeTopBar() {
         },
         actions = {
             IconButton(onClick = { }) {
-                Icon(Icons.Default.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.onTertiary)
+                Icon(
+                    Icons.Default.Notifications,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onTertiary,
+                    modifier = Modifier.size(28.dp)
+                )
             }
             Box(
                 modifier = Modifier
                     .padding(end = 16.dp)
-                    .size(42.dp)
+                    .size(48.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Text("AJ", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(
+                    "AJ",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
             }
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
