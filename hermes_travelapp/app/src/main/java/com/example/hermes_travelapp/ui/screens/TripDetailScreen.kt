@@ -64,7 +64,7 @@ fun TripDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AzulEgeo,
+                    containerColor = MaterialTheme.colorScheme.secondary,
                     titleContentColor = BlancoMarmol
                 )
             )
