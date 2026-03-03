@@ -49,8 +49,8 @@ fun HomeScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Acción para añadir viaje */ },
-                containerColor = DoradoAtenea,
-                contentColor = NegroCeramica,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape,
                 modifier = Modifier.padding(bottom = 16.dp, end = 8.dp)
             ) {
@@ -81,7 +81,7 @@ fun HomeScreen() {
                         fontWeight = FontWeight.SemiBold
                     )
                     TextButton(onClick = { /* Ver todos */ }) {
-                        Text(text = "See all →", color = DoradoAtenea, fontSize = 14.sp)
+                        Text(text = "See all →", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
                     }
                 }
             }
@@ -103,9 +103,7 @@ fun TripCard(trip: Trip) {
             .height(150.dp),
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) NegroCeramica.copy(alpha = 0.8f) else Color.White
-        ),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
@@ -121,7 +119,7 @@ fun TripCard(trip: Trip) {
                 Box(
                     modifier = Modifier
                         .size(50.dp)
-                        .background(AzulEgeo.copy(alpha = 0.2f), CircleShape),
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = trip.emoji, fontSize = 28.sp)
@@ -131,13 +129,13 @@ fun TripCard(trip: Trip) {
                     Text(
                         text = trip.name,
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "📅 ${trip.startDate} – ${trip.endDate}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -152,7 +150,7 @@ fun TripCard(trip: Trip) {
                     Text(
                         text = "€${trip.budget}",
                         style = MaterialTheme.typography.titleMedium,
-                        color = DoradoAtenea,
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.ExtraBold
                     )
                 }
@@ -195,9 +193,9 @@ fun HomeTopBar() {
     MediumTopAppBar(
         title = {
             Text(
-                text = "Bon dia, Alex 👋",
+                text = "Welcome, Alex 👋",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -211,13 +209,13 @@ fun HomeTopBar() {
                     .padding(end = 16.dp)
                     .size(42.dp)
                     .clip(CircleShape)
-                    .background(DoradoAtenea),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Text("AJ", color = NegroCeramica, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text("AJ", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             }
         },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = AzulEgeo)
+        colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
     )
 }
 

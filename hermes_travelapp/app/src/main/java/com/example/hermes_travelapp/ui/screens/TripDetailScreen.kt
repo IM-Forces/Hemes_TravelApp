@@ -127,7 +127,7 @@ fun TripSummaryHeader() {
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .background(DoradoAtenea.copy(alpha = 0.2f), CircleShape),
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("🏛️", fontSize = 20.sp)

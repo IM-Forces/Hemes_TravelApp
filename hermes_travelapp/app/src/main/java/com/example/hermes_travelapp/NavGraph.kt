@@ -100,7 +100,7 @@ fun MainScreen(rootNavController: NavHostController) {
     Scaffold(
         bottomBar = {
             NavigationBar(
-                containerColor = AzulEgeo,
+                containerColor = MaterialTheme.colorScheme.secondary,
                 tonalElevation = 0.dp
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -132,7 +132,7 @@ fun MainScreen(rootNavController: NavHostController) {
                             selectedTextColor = MaterialTheme.colorScheme.primary,
                             unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                             unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                            indicatorColor = MaterialTheme.colorScheme.background.copy(alpha = 0.3f)
+                            indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                         )
                     )
                 }
