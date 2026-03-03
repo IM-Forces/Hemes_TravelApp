@@ -44,7 +44,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AzulEgeo,
+                    containerColor = MaterialTheme.colorScheme.secondary,
                     titleContentColor = BlancoMarmol
                 )
             )
@@ -61,7 +61,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
         ) {
             // App Logo / Icon
             Image(
-                painter = painterResource(id = R.drawable.hermes_no_bg),
+                painter = painterResource(id = R.drawable.logofinal),
                 contentDescription = "Hermes Logo",
                 modifier = Modifier
                     .size(120.dp)
@@ -100,7 +100,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+                        containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -201,7 +201,7 @@ fun TeamMemberItem(name: String, role: String) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(AzulEgeo),
+                .background(MaterialTheme.colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
             Text(
