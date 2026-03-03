@@ -31,10 +31,18 @@ fun ExploreScreen() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Explore Mode Light")
 @Composable
-fun ExploreScreenPreview() {
-    Hermes_travelappTheme {
+fun ExploreScreenPreviewLight() {
+    Hermes_travelappTheme(darkTheme = false) {
+        ExploreScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "Explore Mode Dark")
+@Composable
+fun ExploreScreenPreviewDark() {
+    Hermes_travelappTheme(darkTheme = true) {
         ExploreScreen()
     }
 }

@@ -87,10 +87,18 @@ fun LoginScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Login Mode Light")
 @Composable
-fun LoginScreenPreview() {
-    Hermes_travelappTheme {
+fun LoginScreenPreviewLight() {
+    Hermes_travelappTheme(darkTheme = false) {
+        LoginScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "Login Mode Dark")
+@Composable
+fun LoginScreenPreviewDark() {
+    Hermes_travelappTheme(darkTheme = true) {
         LoginScreen()
     }
 }

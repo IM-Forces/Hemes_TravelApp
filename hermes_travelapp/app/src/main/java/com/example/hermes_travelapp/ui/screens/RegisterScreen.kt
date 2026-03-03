@@ -83,10 +83,18 @@ fun RegisterScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Register Mode Light")
 @Composable
-fun RegisterScreenPreview() {
-    Hermes_travelappTheme {
+fun RegisterScreenPreviewLight() {
+    Hermes_travelappTheme(darkTheme = false) {
+        RegisterScreen()
+    }
+}
+
+@Preview(showBackground = true, name = "Register Mode Dark")
+@Composable
+fun RegisterScreenPreviewDark() {
+    Hermes_travelappTheme(darkTheme = true) {
         RegisterScreen()
     }
 }
