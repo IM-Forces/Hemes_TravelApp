@@ -162,7 +162,15 @@ fun MainScreen(rootNavController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    Hermes_travelappTheme {
+    Hermes_travelappTheme(darkTheme = false) {
+        MainScreen(rememberNavController())
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainScreenPreviewDark() {
+    Hermes_travelappTheme(darkTheme = true) {
         MainScreen(rememberNavController())
     }
 }

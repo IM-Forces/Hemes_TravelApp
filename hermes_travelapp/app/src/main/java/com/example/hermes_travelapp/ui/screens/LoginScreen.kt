@@ -40,7 +40,8 @@ fun LoginScreen(
             Text(
                 text = "Welcome to Hermes",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 32.dp)
+                modifier = Modifier.padding(bottom = 32.dp),
+                color = MaterialTheme.colorScheme.primary
             )
 
             OutlinedTextField(
@@ -87,15 +88,25 @@ fun LoginScreen(
     }
 }
 
+<<<<<<< HEAD
 @Preview(showBackground = true, name = "Login Mode Light")
 @Composable
 fun LoginScreenPreviewLight() {
+=======
+@Preview(showBackground = true, name = "Modo Claro")
+@Composable
+fun LoginScreenPreview() {
+>>>>>>> d4d7b908b540bd699abcb6ec0854a91889dd02af
     Hermes_travelappTheme(darkTheme = false) {
         LoginScreen()
     }
 }
 
+<<<<<<< HEAD
 @Preview(showBackground = true, name = "Login Mode Dark")
+=======
+@Preview(showBackground = true, name = "Modo Oscuro")
+>>>>>>> d4d7b908b540bd699abcb6ec0854a91889dd02af
 @Composable
 fun LoginScreenPreviewDark() {
     Hermes_travelappTheme(darkTheme = true) {

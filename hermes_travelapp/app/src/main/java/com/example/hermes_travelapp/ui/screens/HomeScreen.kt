@@ -176,7 +176,7 @@ fun TripCard(trip: Trip) {
                                 .fillMaxWidth(trip.progress)
                                 .background(
                                     brush = Brush.horizontalGradient(
-                                        colors = listOf(DoradoAtenea, AzulEgeo)
+                                        colors = listOf(DoradoAtenea, TerracotaSuave)
                                     )
                                 )
                         )
@@ -202,7 +202,7 @@ fun HomeTopBar() {
         },
         actions = {
             IconButton(onClick = { }) {
-                Icon(Icons.Default.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface)
+                Icon(Icons.Default.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.onTertiary)
             }
             Box(
                 modifier = Modifier
