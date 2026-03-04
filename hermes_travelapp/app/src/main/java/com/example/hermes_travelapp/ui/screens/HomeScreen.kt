@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
@@ -15,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,7 +39,7 @@ fun HomeScreen() {
             // Acceso rápido al último viaje
             item {
                 Text(
-                    text = "Quick Access",
+                    text = "Acceso rápido",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.SemiBold
@@ -53,7 +51,7 @@ fun HomeScreen() {
             // Resumen del próximo viaje
             item {
                 Text(
-                    text = "Next Adventure",
+                    text = "Próxima aventura",
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.SemiBold
@@ -98,7 +96,7 @@ fun QuickAccessCard() {
                 Icon(Icons.Default.Place, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             }
             Text(
-                text = "Resume your last trip",
+                text = "Continuar con tu último viaje",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontWeight = FontWeight.Medium
@@ -147,7 +145,7 @@ fun NextTripSummaryCard(destination: String, dates: String, daysRemaining: Int) 
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     Text(
-                        text = "$daysRemaining days left",
+                        text = "$daysRemaining días restantes",
                         style = MaterialTheme.typography.labelLarge,
                         color = DoradoAtenea,
                         fontWeight = FontWeight.Bold
@@ -176,7 +174,7 @@ fun HomeTopBar() {
     MediumTopAppBar(
         title = {
             Text(
-                text = "Welcome, Alex 👋",
+                text = "Hola, Juan 👋",
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -201,7 +199,7 @@ fun HomeTopBar() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "AJ",
+                    "JS",
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
