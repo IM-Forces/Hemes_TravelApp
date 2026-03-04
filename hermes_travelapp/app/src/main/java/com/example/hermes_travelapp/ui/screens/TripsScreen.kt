@@ -42,7 +42,7 @@ val mockTripsInTrips = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TripsScreen() {
+fun TripsScreen(onTripClick: () -> Unit = {}) {
     Scaffold(
         topBar = { TripsTopBar() },
         floatingActionButton = {
@@ -79,14 +79,11 @@ fun TripsScreen() {
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.SemiBold
                     )
-                    TextButton(onClick = { /* Ver todos */ }) {
-                        Text(text = "See all →", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
-                    }
                 }
             }
             
             items(mockTripsInTrips) { trip ->
-                TripCardInTrips(trip = trip)
+                TripCardInTrips(trip = trip, onClick = onTripClick)
             }
             
             item { Spacer(modifier = Modifier.height(16.dp)) }
@@ -95,11 +92,12 @@ fun TripsScreen() {
 }
 
 @Composable
-fun TripCardInTrips(trip: TripInTrips) {
+fun TripCardInTrips(trip: TripInTrips, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp),
+        onClick = onClick,
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
@@ -189,7 +187,7 @@ fun TripCardInTrips(trip: TripInTrips) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripsTopBar() {
-    MediumTopAppBar(
+    TopAppBar(
         title = {
             Text(
                 text = "My Travels",

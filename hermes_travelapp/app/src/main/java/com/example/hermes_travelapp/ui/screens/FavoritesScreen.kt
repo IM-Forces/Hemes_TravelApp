@@ -48,7 +48,7 @@ val mockFavorites = listOf(
 fun FavoritesScreen() {
     Scaffold(
         topBar = {
-            MediumTopAppBar(
+            TopAppBar(
                 title = {
                     Text(
                         text = "My Favorites",

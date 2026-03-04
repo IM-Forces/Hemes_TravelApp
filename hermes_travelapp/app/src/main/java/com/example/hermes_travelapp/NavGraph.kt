@@ -68,7 +68,12 @@ fun NavGraph(modifier: Modifier = Modifier) {
             MainScreen(rootNavController = navController) 
         }
 
-        // Pantallas adicionales (Fuera del menú inferior para pantalla completa)
+        // Pantalla de detalles del viaje (Fuera del menú inferior para pantalla completa)
+        composable("tripDetail") {
+            TripDetailScreen(onBack = { navController.popBackStack() })
+        }
+
+        // Pantallas adicionales
         composable("about") { 
             AboutScreen(onBack = { navController.popBackStack() }) 
         }
@@ -146,7 +151,9 @@ fun MainScreen(rootNavController: NavHostController) {
         ) {
             composable(BottomNavItem.Home.route) { HomeScreen() }
             composable(BottomNavItem.Explore.route) { ExploreScreen() }
-            composable(BottomNavItem.Trips.route) { TripsScreen() }
+            composable(BottomNavItem.Trips.route) { 
+                TripsScreen(onTripClick = { rootNavController.navigate("tripDetail") }) 
+            }
             composable(BottomNavItem.Favorites.route) { FavoritesScreen() }
             composable(BottomNavItem.Profile.route) { 
                 ProfileScreen(
