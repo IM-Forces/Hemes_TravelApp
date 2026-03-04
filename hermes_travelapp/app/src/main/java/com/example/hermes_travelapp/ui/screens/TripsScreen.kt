@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hermes_travelapp.ui.theme.*
+
+// Modelo de datos para los viajes (si no está ya definido globalmente)
+data class TripInTrips(
+    val name: String,
+    val emoji: String,
+    val startDate: String,
+    val endDate: String,
+    val budget: Int,
+    val progress: Float
+)
+
+// Datos de ejemplo para TripsScreen
+val mockTripsInTrips = listOf(
+    TripInTrips("Grecia Clásica", "🏛️", "15 Jun", "22 Jun", 1200, 0.75f),
+    TripInTrips("Safari en Kenia", "🦁", "10 Ago", "20 Ago", 2500, 0.40f),
+    TripInTrips("Tokio Moderno", "⛩️", "05 Oct", "15 Oct", 3000, 0.15f)
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,17 +74,114 @@ fun TripsScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Trips",
+                        text = "My Trips",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.SemiBold
                     )
+                    TextButton(onClick = { /* Ver todos */ }) {
+                        Text(text = "See all →", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
+                    }
                 }
             }
             
-
+            items(mockTripsInTrips) { trip ->
+                TripCardInTrips(trip = trip)
+            }
             
             item { Spacer(modifier = Modifier.height(16.dp)) }
+        }
+    }
+}
+
+@Composable
+fun TripCardInTrips(trip: TripInTrips) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp),
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.2f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = trip.emoji, fontSize = 28.sp)
+                }
+                
+                Column {
+                    Text(
+                        text = trip.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "📅 ${trip.startDate} – ${trip.endDate}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.6f)
+                    )
+                }
+            }
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(text = "Budget", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), fontSize = 10.sp)
+                    Text(
+                        text = "€${trip.budget}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+                
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "Saving progress: ${(trip.progress * 100).toInt()}%",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (trip.progress > 0.6f) DoradoAtenea else TerracotaSuave,
+                        fontSize = 11.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .width(120.dp)
+                            .height(8.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .fillMaxWidth(trip.progress)
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(DoradoAtenea, TerracotaSuave)
+                                    )
+                                )
+                        )
+                    }
+                }
+            }
         }
     }
 }
