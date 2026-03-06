@@ -25,8 +25,8 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = DoradoAtenea,
-    secondary = TerracotaSuave,
+    primary = TerracotaSuave,
+    secondary = DoradoAtenea,
     tertiary = NegroCeramica,
     background = BlancoMarmol,
     surface = BlancoMarmol,
