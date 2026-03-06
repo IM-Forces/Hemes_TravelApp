@@ -42,12 +42,15 @@ val mockTripsInTrips = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TripsScreen(onTripClick: () -> Unit = {}) {
+fun TripsScreen(
+    onTripClick: () -> Unit = {},
+    onCreateTripClick: () -> Unit = {} // Parámetro añadido para corregir el error
+) {
     Scaffold(
         topBar = { TripsTopBar() },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Acción para añadir viaje */ },
+                onClick = onCreateTripClick,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape,

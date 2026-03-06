@@ -73,6 +73,14 @@ fun NavGraph(modifier: Modifier = Modifier) {
             TripDetailScreen(onBack = { navController.popBackStack() })
         }
 
+        // Pantalla de creación de viaje
+        composable("createTrip") {
+            CreateTripScreen(
+                onBack = { navController.popBackStack() },
+                onCreateTrip = { navController.popBackStack() } // Aquí luego se guardaría el viaje
+            )
+        }
+
         // Pantallas adicionales
         composable("about") { 
             AboutScreen(onBack = { navController.popBackStack() }) 
@@ -152,7 +160,10 @@ fun MainScreen(rootNavController: NavHostController) {
             composable(BottomNavItem.Home.route) { HomeScreen() }
             composable(BottomNavItem.Explore.route) { ExploreScreen() }
             composable(BottomNavItem.Trips.route) { 
-                TripsScreen(onTripClick = { rootNavController.navigate("tripDetail") }) 
+                TripsScreen(
+                    onTripClick = { rootNavController.navigate("tripDetail") },
+                    onCreateTripClick = { rootNavController.navigate("createTrip") }
+                )
             }
             composable(BottomNavItem.Favorites.route) { FavoritesScreen() }
             composable(BottomNavItem.Profile.route) { 

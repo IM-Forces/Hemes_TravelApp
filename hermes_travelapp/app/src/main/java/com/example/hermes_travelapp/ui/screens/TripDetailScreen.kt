@@ -92,7 +92,7 @@ fun TripDetailScreen(
                         color = BlancoMarmol,
                         fontWeight = FontWeight.Bold
                     )
-                    // 3. Fechas
+                    // Fechas
                     Text(
                         text = "📅 $dates",
                         style = MaterialTheme.typography.bodyLarge,
@@ -107,7 +107,7 @@ fun TripDetailScreen(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                // 4. Días restantes
+                // Dias restantes
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = DoradoAtenea.copy(alpha = 0.1f)),
@@ -129,7 +129,7 @@ fun TripDetailScreen(
                     }
                 }
 
-                // 5. Presupuesto total y gastado
+                // Presupuesto total y gastado
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
@@ -169,26 +169,37 @@ fun TripDetailScreen(
                     }
                 }
 
-                // 6. Accesos rápidos (botones)
-                Text(
-                    text = "Gestión del viaje",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-
+                // Sección de Itinerario
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    QuickAccessButton("Itinerario", Icons.Default.EventNote, Modifier.weight(1f))
-                    QuickAccessButton("Mapa", Icons.Default.Map, Modifier.weight(1f))
+                    Text(
+                        text = "Itinerario del día",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Button(
+                        onClick = { /* Acción para añadir actividad */ },
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Añadir", fontSize = 14.sp)
+                    }
                 }
-                Row(
+
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    QuickAccessButton("Presupuesto", Icons.Default.Payments, Modifier.weight(1f))
-                    QuickAccessButton("Documentos", Icons.Default.Description, Modifier.weight(1f))
+                    ItineraryItemRow("09:00", "Desayuno frente al Partenón", "Restaurante Acrópolis")
+                    ItineraryItemRow("11:00", "Visita guiada al museo", "Museo de la Acrópolis")
+                    ItineraryItemRow("14:00", "Almuerzo tradicional", "Barrio de Plaka")
+                    ItineraryItemRow("17:00", "Paseo por el Ágora Antigua", "Atenas Centro")
                 }
             }
         }
@@ -196,31 +207,39 @@ fun TripDetailScreen(
 }
 
 @Composable
-fun QuickAccessButton(text: String, icon: ImageVector, modifier: Modifier = Modifier) {
-    Surface(
-        onClick = { /* Navegación */ },
-        modifier = modifier.height(80.dp),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.secondary,
-        tonalElevation = 2.dp
+fun ItineraryItemRow(time: String, title: String, location: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(28.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = text,
+                text = time,
                 style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
+            Box(
+                modifier = Modifier
+                    .width(2.dp)
+                    .height(40.dp)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f))
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Card(
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(text = title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.LocationOn, contentDescription = null, modifier = Modifier.size(14.dp), tint = Color.Gray)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = location, style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                }
+            }
         }
     }
 }
