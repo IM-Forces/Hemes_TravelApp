@@ -1,0 +1,59 @@
+erDiagram
+    User ||--o{ Trip : "owns"
+    User ||--|| Preferences : "has"
+    Trip ||--o{ ItineraryItem : "contains"
+    Trip ||--o{ FavoritePlace : "saves"
+
+    User {
+        string id
+        string name
+        string email
+        string profileInitials
+        int activeTripCount
+        int countriesVisited
+    }
+
+    Trip {
+        string id
+        string name
+        string emoji
+        string destination
+        string startDate
+        string endDate
+        int budget
+        float progress
+        int daysRemaining
+        int spent
+    }
+
+    ItineraryItem {
+        string id
+        string time
+        string title
+        string location
+    }
+
+    FavoritePlace {
+        int id
+        string name
+        string location
+    }
+
+    RecommendedPlace {
+        int id
+        string name
+        string location
+        string description
+    }
+
+    Preferences {
+        string language
+        string currency
+        string dateFormat
+        string theme
+        boolean notifications
+        boolean emailUpdates
+        string textSize
+    }
+
+
