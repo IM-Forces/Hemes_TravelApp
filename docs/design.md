@@ -1,202 +1,223 @@
-# Hemes: Travel App – System Design Document
+# Design Document - Hermes Travel App
 
-This document explains the architectural decisions and high-level design of the Hermes travel planning application.
+## Sprint Schedule
 
----
-
-## 1. Architecture Overview
-
-Hermes follows a **client–server architecture** with clear separation between frontend, backend, and data storage layers.
-
-The system is composed of:
-
-- Mobile/Web Client (Frontend)
-- Backend API (Server)
-- Database Layer
-- Cloud Infrastructure
-
-This layered architecture ensures scalability, maintainability, and flexibility for future growth.
+| Sprint | Deliverable | Deadline | Weight |
+|--------|-------------|----------|--------|
+| **Sprint 1** | Splash Screen, Navigation, Screens, Scaffolding, Domain Model | 01/03/2026 | 0.8 pts |
+| **Sprint 2** | Travel List (CRUD), Trip Itinerary (CRUD) | 15/03/2026 | 1.0 pts |
+| **Sprint 3** | Data Persistence, External APIs, User Preferences | 12/04/2026 | 0.8 pts |
+| **Sprint 4** | Login Screen, Authentication | 26/04/2026 | 1.0 pts |
+| **Sprint 5** | Images, Documents, Hotel Reservations, Maps | 16/05/2026 | 1.4 pts |
 
 ---
 
-## 2. Frontend Architecture
+## Architecture
 
-### Technology Choice
+### Pattern: MVVM (Model-View-ViewModel)
 
-The frontend is built using a cross-platform framework (React Native or Flutter) to allow:
+We chose MVVM because it's the recommended architecture for modern Android apps and works well with Jetpack Compose.
 
-- A single codebase for iOS and Android
-- Faster development cycles
-- Consistent UI across platforms
-
-### Architectural Pattern
-
-The frontend follows a modular component-based structure:
-
-- UI Components
-- Screens/Views
-- State Management Layer
-- API Service Layer
-
-Separation of concerns ensures:
-
-- Reusable components
-- Easier testing
-- Clear organization of business logic
-
-### State Management
-
-State is managed using a predictable state container (e.g., Redux, Context API, or Provider pattern). This ensures:
-
-- Centralized state control
-- Easier debugging
-- Consistent UI updates
+**Current Status (Sprint 01):**
+- ✅ **View** - All screens implemented with Jetpack Compose
+- ✅ **Navigation** - Two-level navigation (root + bottom tabs)
+- ✅ **Domain Model** - Data classes defined
+- ⏳ **ViewModel** - Planned for Sprint 02
+- ⏳ **Repository** - Planned for Sprint 02
 
 ---
 
-## 3. Backend Architecture
+## Technology Stack
 
-### Technology Choice
+### Current (Sprint 01)
+- **Kotlin** - Main programming language
+- **Jetpack Compose** - Modern UI framework
+- **Navigation Component** - Screen navigation
+- **Material Design 3** - UI components and theming
+- **Minimum SDK: API 26 (Android 8.0)** - Covers 94%+ of devices
 
-The backend is built with Node.js due to:
-
-- Non-blocking I/O model
-- High scalability for API-based systems
-- Strong ecosystem support
-
-### Architectural Pattern
-
-The backend follows a layered architecture:
-
-- Controllers (handle HTTP requests)
-- Services (business logic)
-- Repositories (data access layer)
-- Models (data definitions)
-
-This structure provides:
-
-- Clear separation of responsibilities
-- Easier testing and maintenance
-- Improved scalability
-
-### API Design
-
-Hermes uses a RESTful API design:
-
-- Resource-based endpoints
-- Standard HTTP methods (GET, POST, PUT, DELETE)
-- JSON as the data exchange format
-
-This ensures compatibility and simplicity.
+### Future Sprints
+- Local database (Sprint 3)
+- Authentication system (Sprint 4)
+- External APIs (Sprint 3)
+- Image handling (Sprint 5)
+- Interactive maps (Sprint 5)
 
 ---
 
-## 4. Database Design
+## Project Structure
 
-### Database Choice
+```
+hermes_travelapp/
+├── ui/
+│   ├── screens/          # All app screens
+│   ├── theme/            # Colors, typography, theme
+│   └── navigation/       # Navigation graph
+├── domain/
+│   └── models/           # Data classes (Trip, User, etc.)
+└── data/
+    ├── repository/       # Data access (future)
+    └── local/            # Local storage (future)
+```
 
-A flexible database solution such as MongoDB or PostgreSQL is used depending on the project needs:
-
-- MongoDB for flexible, document-based data (itineraries, user preferences)
-- PostgreSQL for structured, relational data
-
-### Data Modeling Principles
-
-- Users have multiple trips
-- Trips contain multiple itinerary items
-- Each itinerary item may include location, date, time, and notes
-- Budget entries are linked to trips
-
-Indexes are applied to frequently queried fields such as:
-
-- User ID
-- Trip ID
-- Dates
-
-This improves performance and scalability.
+**Why this structure?**
+- Clear separation between UI, business logic, and data
+- Easy to find files
+- Scales well as project grows
 
 ---
 
-## 5. Cloud Infrastructure
+## Navigation
 
-Hermes is designed to be deployed in a cloud environment such as AWS or Firebase.
+### Two-Level Navigation System
 
-### Reasons for Cloud Deployment
+1. **Root Navigation** - Authentication and full-screen flows
+   - Splash → Login → Register → Main
+   - Main → Full-screen pages (TripDetail, CreateTrip, About, etc.)
 
-- Horizontal scalability
-- Managed services (authentication, storage, notifications)
-- High availability
-- Automatic backups
+2. **Bottom Navigation** - Main app tabs (inside MainScreen)
+   - Home, Explore, Trips, Favorites, Profile
 
-Infrastructure includes:
+```
+Splash → Login → Register → Main (with bottom nav)
+                              ├─ Home
+                              ├─ Explore
+                              ├─ Trips
+                              ├─ Favorites
+                              └─ Profile
+```
 
-- Application server
-- Database instance
-- Object storage (for images/documents)
-- CI/CD pipeline
-
----
-
-## 6. Security Considerations
-
-Security is a priority in Hermes.
-
-### Authentication & Authorization
-
-- JWT-based authentication
-- Secure password hashing
-- Role-based access control (if needed)
-
-### Data Protection
-
-- HTTPS enforced
-- Input validation
-- Protection against common attacks (XSS, SQL injection)
-- Secure environment variable management
+**Why bottom navigation with 5 tabs?**
+- Easy to reach with thumb
+- Standard pattern users know
+- All main features always accessible
 
 ---
 
-## 7. Scalability Strategy
+## Implemented Screens
 
-Hermes is designed with scalability in mind:
+### Authentication Flow
+- **SplashScreen** - App logo and loading
+- **LoginScreen** - User login (UI only, logic in Sprint 4)
+- **RegisterScreen** - New account (UI only, logic in Sprint 4)
 
-- Stateless backend services
-- Horizontal scaling capability
-- Database indexing and query optimization
-- Modular codebase for future microservices migration (if needed)
+### Main Tabs
+- **HomeScreen** - Dashboard
+- **ExploreScreen** - Discover destinations
+- **TripsScreen** - List of trips
+- **FavoritesScreen** - Saved items
+- **ProfileScreen** - User settings
 
----
-
-## 8. Maintainability & Extensibility
-
-To ensure long-term maintainability:
-
-- Clean code principles are followed
-- Clear folder structure
-- Documentation for APIs
-- Consistent commit conventions
-- Isolated modules for easy feature expansion
-
-Future extensions may include:
-
-- Third-party integrations (flight APIs, hotel APIs)
-- Real-time collaboration
-- AI-based travel recommendations
+### Other Screens
+- **TripDetailScreen** - Trip itinerary details
+- **CreateTripScreen** - Form to create new trip
+- **AboutScreen** - App info and team
+- **PreferencesScreen** - App settings
+- **TermsScreen** - Terms and conditions
 
 ---
 
-## 9. Design Principles
+## Data Model (Planned)
 
-The system design is guided by:
+The app will manage the following main entities:
 
-- Separation of concerns
-- Modularity
-- Simplicity
-- Scalability
-- Security-first mindset
+### **User**
+- Basic user information (id, email, name)
+- Profile photo
+- Account creation date
+
+### **Trip**
+- Trip details (title, destination, dates)
+- Budget and currency
+- Status (planned, ongoing, completed)
+- Cover image
+
+### **ItineraryItem**
+- Activity details (title, description)
+- Date and time information
+- Location data
+- Category (transport, accommodation, activity, etc.)
+- Cost
+- Completion status
+
+### **Location**
+- Geographic coordinates (latitude, longitude)
+- Address and place name
+
+### **Expense**
+- Amount and currency
+- Category (transport, food, activities, etc.)
+- Date and description
+
+### **Preferences**
+- Language selection
+- Currency preference
+- Theme (light, dark, system)
+- Notification settings
+
+### Relationships
+- One User can have many Trips
+- One Trip can have many ItineraryItems
+- One Trip can have many Expenses
+- Each ItineraryItem has one Location
+- Each User has one Preferences profile
+
+**Note:** Detailed implementation with Kotlin data classes will be done in Sprint 02. For now, this is the conceptual model to guide our UI design.
 
 ---
 
-## Conclusion
+## Design Decisions
 
-Hermes uses a modular, scalable, and maintainable architecture that supports current requirements while allowing future growth. The separation between frontend, backend, and infrastructure ensures flexibility and long-term sustainability.
+### Why Jetpack Compose?
+- Modern and less code than XML
+- Easier to update UI
+- Google's recommended approach
+
+### Why MVVM?
+- Separates UI from logic
+- Easier to test
+- Works well with Compose
+
+### Why Long for dates?
+- Easy to work with in Kotlin
+- Can convert to any format needed
+- Simple to compare
+
+### Why separate Location class?
+- Can reuse for different items
+- Ready for maps integration
+- Keeps data organized
+
+---
+
+## Next Steps
+
+### Sprint 02 (15/03/2026)
+- Create ViewModels for screens
+- Implement CRUD for Trips (Create, Read, Update, Delete)
+- Implement CRUD for Itinerary Items
+- Use in-memory storage for now
+
+### Sprint 03 (12/04/2026)
+- Add local database
+- Save data permanently
+- Connect to external APIs (weather, currency, etc.)
+- Complete Preferences screen functionality
+
+### Sprint 04 (26/04/2026)
+- Implement authentication
+- User registration and login
+- Secure session management
+
+### Sprint 05 (16/05/2026)
+- Add camera for photos
+- Upload documents (PDFs)
+- Hotel reservation features
+- Interactive maps
+
+---
+
+**Version:** 1.0  
+**Authors:** Ivan Gil Cañizares, Marco Beruet Morelli  
+**Course:** Aplicaciones para Dispositivos Móviles (105025-2526)  
+**Institution:** Universitat de Lleida - Campus Igualada
