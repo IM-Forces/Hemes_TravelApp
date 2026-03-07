@@ -218,7 +218,7 @@ fun TripsTopBar() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "AJ",
+                    "VS",
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
