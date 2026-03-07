@@ -174,7 +174,7 @@ fun HomeTopBar() {
     MediumTopAppBar(
         title = {
             Text(
-                text = "Hola, Juan 👋",
+                text = "Hola, Vítor 👋",
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -199,7 +199,7 @@ fun HomeTopBar() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "JS",
+                    "VS",
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
