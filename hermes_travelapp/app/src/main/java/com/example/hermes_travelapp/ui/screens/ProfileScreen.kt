@@ -74,7 +74,7 @@ fun ProfileScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "AJ",
+                            text = "VS",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 40.sp,
                             fontWeight = FontWeight.Bold
@@ -84,14 +84,14 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     Text(
-                        text = "Alex Johnson",
+                        text = "Vítor Da Silva",
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold
                     )
                     
                     Text(
-                        text = "alex.johnson@example.com",
+                        text = "vitor.dasilva@example.com",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
                     )
