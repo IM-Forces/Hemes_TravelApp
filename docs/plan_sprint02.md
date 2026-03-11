@@ -289,45 +289,6 @@ Implement the core business logic for Hermes Travel App, including:
 - Bug fixing
 - Video recording
 
----
-
-## Architecture Diagram
-
-```
-┌─────────────────────────────────────────┐
-│              UI Layer                   │
-│  (TripsScreen, TripDetailScreen, etc.)  │
-└──────────────┬──────────────────────────┘
-               │ Observes State
-               ▼
-┌─────────────────────────────────────────┐
-│          ViewModel Layer                │
-│   (TripViewModel, ActivityViewModel)    │
-│         (Business Logic)                │
-└──────────────┬──────────────────────────┘
-               │ Calls Methods
-               ▼
-┌─────────────────────────────────────────┐
-│        Repository Interface             │
-│   (TripRepository, ActivityRepository)  │
-└──────────────┬──────────────────────────┘
-               │ Implements
-               ▼
-┌─────────────────────────────────────────┐
-│      Repository Implementation          │
-│  (TripRepositoryImpl, ActivityRepoImpl) │
-└──────────────┬──────────────────────────┘
-               │ Uses
-               ▼
-┌─────────────────────────────────────────┐
-│          Data Source (InMemory)         │
-│      (FakeTripDataSource, etc.)         │
-│       mutableListOf<Trip>()             │
-└─────────────────────────────────────────┘
-```
-
----
-
 ## Definition of Done
 
 A task is considered complete when:
