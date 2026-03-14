@@ -23,7 +23,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hermes_travelapp.ui.screens.*
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
-import com.example.hermes_travelapp.ui.theme.AzulEgeo
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
     object Home : BottomNavItem("home", Icons.Default.Home, "Home")
@@ -68,16 +67,36 @@ fun NavGraph(modifier: Modifier = Modifier) {
             MainScreen(rootNavController = navController) 
         }
 
-        // Pantalla de detalles del viaje (Fuera del menú inferior para pantalla completa)
-        composable("tripDetail") {
-            TripDetailScreen(onBack = { navController.popBackStack() })
+        // Nueva Pantalla de Resumen del Viaje (Timeline Vertical)
+        composable("tripOverview/{tripId}") { backStackEntry ->
+            val tripId = backStackEntry.arguments?.getString("tripId") ?: "1"
+            TripOverviewScreen(
+                tripId = tripId,
+                onDayClick = { dayId -> 
+                    navController.navigate("dayItinerary/$tripId/$dayId") 
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        // Nueva Pantalla de Itinerario por Día
+        composable("dayItinerary/{tripId}/{dayId}") { backStackEntry ->
+            val tripId = backStackEntry.arguments?.getString("tripId") ?: "1"
+            val dayId = backStackEntry.arguments?.getString("dayId") ?: "1"
+            DayItineraryScreen(
+                tripId = tripId,
+                dayId = dayId,
+                onBack = { navController.popBackStack() },
+                onNavigateToAddActivity = { /* TODO: Navigate to Add Activity */ },
+                onNavigateToEditActivity = { activityId -> /* TODO: Navigate to Edit Activity */ }
+            )
         }
 
         // Pantalla de creación de viaje
         composable("createTrip") {
             CreateTripScreen(
                 onBack = { navController.popBackStack() },
-                onCreateTrip = { navController.popBackStack() } // Aquí luego se guardaría el viaje
+                onCreateTrip = { navController.popBackStack() }
             )
         }
 
@@ -161,7 +180,10 @@ fun MainScreen(rootNavController: NavHostController) {
             composable(BottomNavItem.Explore.route) { ExploreScreen() }
             composable(BottomNavItem.Trips.route) { 
                 TripsScreen(
-                    onTripClick = { rootNavController.navigate("tripDetail") },
+                    onTripClick = { 
+                        // Ahora navega al Overview en vez de al detalle antiguo
+                        rootNavController.navigate("tripOverview/1") 
+                    },
                     onCreateTripClick = { rootNavController.navigate("createTrip") }
                 )
             }
