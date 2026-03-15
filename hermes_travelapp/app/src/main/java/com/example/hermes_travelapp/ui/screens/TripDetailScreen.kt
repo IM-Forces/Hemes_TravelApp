@@ -23,16 +23,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hermes_travelapp.domain.Trip
 import com.example.hermes_travelapp.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripDetailScreen(
-    tripName: String = "Grecia Clásica",
-    dates: String = "15 Jun - 22 Jun 2024",
-    daysRemaining: Int = 12,
+    trip: Trip?,
     onBack: () -> Unit = {}
 ) {
+    if (trip == null) {
+        // Fallback en caso de que no haya viaje seleccionado
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No se encontró información del viaje.")
+        }
+        return
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -86,15 +93,19 @@ fun TripDetailScreen(
                         .padding(16.dp)
                 ) {
                     // Nombre del viaje
-                    Text(
-                        text = tripName,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = BlancoMarmol,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = trip.emoji, fontSize = 24.sp)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = trip.title,
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = BlancoMarmol,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     // Fechas
                     Text(
-                        text = "📅 $dates",
+                        text = "📅 ${trip.startDate} - ${trip.endDate}",
                         style = MaterialTheme.typography.bodyLarge,
                         color = BlancoMarmol.copy(alpha = 0.8f)
                     )
@@ -121,7 +132,7 @@ fun TripDetailScreen(
                         Icon(Icons.Default.Timer, contentDescription = null, tint = DoradoAtenea)
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Faltan $daysRemaining días para tu aventura",
+                            text = "Faltan ${trip.daysRemaining} días para tu aventura",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             color = DoradoAtenea
@@ -149,16 +160,16 @@ fun TripDetailScreen(
                         ) {
                             Column {
                                 Text("Gastado", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
-                                Text("€450", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
+                                Text("€${trip.spent}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
                             }
                             Column(horizontalAlignment = Alignment.End) {
                                 Text("Total", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
-                                Text("€1,200", style = MaterialTheme.typography.titleMedium)
+                                Text("€${trip.budget}", style = MaterialTheme.typography.titleMedium)
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         LinearProgressIndicator(
-                            progress = { 0.375f }, // 450/1200
+                            progress = { trip.progress },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(8.dp)
@@ -166,6 +177,25 @@ fun TripDetailScreen(
                             color = MaterialTheme.colorScheme.primary,
                             trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                         )
+                    }
+                }
+
+                // Descripción
+                if (trip.description.isNotBlank()) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = "Descripción",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(text = trip.description, style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
                 }
 
@@ -253,6 +283,17 @@ fun ItineraryItemRow(time: String, title: String, location: String) {
 @Composable
 fun TripDetailScreenPreview() {
     Hermes_travelappTheme {
-        TripDetailScreen()
+        TripDetailScreen(
+            trip = Trip(
+                title = "Grecia Clásica",
+                startDate = "15/06/2024",
+                endDate = "22/06/2024",
+                description = "Un viaje increíble por la cuna de la civilización occidental.",
+                budget = 1200,
+                spent = 450,
+                progress = 0.375f,
+                daysRemaining = 12
+            )
+        )
     }
 }

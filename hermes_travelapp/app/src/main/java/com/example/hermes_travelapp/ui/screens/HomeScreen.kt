@@ -1,28 +1,82 @@
 package com.example.hermes_travelapp.ui.screens
 
+import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hermes_travelapp.ui.theme.*
+import org.json.JSONArray
+import java.io.InputStream
+
+data class RecommendationItem(
+    val lugar: String,
+    val tipo: String,
+    val pais: String,
+    val ciudadRegion: String,
+    val precio: Int,
+    val descripcion: String
+)
+
+fun loadRecommendationsFromAssets(context: Context): List<RecommendationItem> {
+    val items = mutableListOf<RecommendationItem>()
+    try {
+        val inputStream: InputStream = context.assets.open("exemplos.json")
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        val jsonString = String(buffer, Charsets.UTF_8)
+        val jsonArray = JSONArray(jsonString)
+        for (i in 0 until jsonArray.length()) {
+            val obj = jsonArray.getJSONObject(i)
+            items.add(
+                RecommendationItem(
+                    lugar = obj.getString("lugar"),
+                    tipo = obj.getString("tipo"),
+                    pais = obj.getString("pais"),
+                    ciudadRegion = obj.getString("ciudad_region"),
+                    precio = obj.optInt("precio_estimado_usd", 0),
+                    descripcion = obj.getString("descripcion")
+                )
+            )
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return items
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    items: List<RecommendationItem>? = null,
+    favorites: List<RecommendationItem> = emptyList(),
+    onToggleFavorite: (RecommendationItem) -> Unit = {}
+) {
+    val context = LocalContext.current
+    val recommendations = remember(items) { items ?: loadRecommendationsFromAssets(context) }
+
     Scaffold(
         topBar = { HomeTopBar() },
         containerColor = MaterialTheme.colorScheme.background
@@ -30,140 +84,119 @@ fun HomeScreen() {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(16.dp)
         ) {
-            item { Spacer(modifier = Modifier.height(8.dp)) }
-            
-            // Acceso rápido al último viaje
             item {
                 Text(
-                    text = "Acceso rápido",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.SemiBold
+                    text = "Explora el mundo",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                QuickAccessCard()
             }
 
-            // Resumen del próximo viaje
-            item {
-                Text(
-                    text = "Próxima aventura",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                NextTripSummaryCard(
-                    destination = "Grecia Clásica",
-                    dates = "15 Jun – 22 Jun",
-                    daysRemaining = 12
-                )
+            if (recommendations.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillParentMaxHeight(0.7f), contentAlignment = Alignment.Center) {
+                        Text("No se pudieron cargar las recomendaciones.")
+                    }
+                }
+            } else {
+                items(recommendations) { item ->
+                    val isFavorite = favorites.any { it.lugar == item.lugar }
+                    RecommendationCard(
+                        item = item,
+                        isFavorite = isFavorite,
+                        onToggleFavorite = { onToggleFavorite(item) }
+                    )
+                }
             }
-            
             item { Spacer(modifier = Modifier.height(16.dp)) }
         }
     }
 }
 
 @Composable
-fun QuickAccessCard() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp),
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Place, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            }
-            Text(
-                text = "Continuar con tu último viaje",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSecondary,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@Composable
-fun NextTripSummaryCard(destination: String, dates: String, daysRemaining: Int) {
+fun RecommendationCard(
+    item: RecommendationItem,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
             ) {
-                Column {
-                    Text(
-                        text = destination,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "📅 $dates",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(DoradoAtenea.copy(alpha = 0.1f))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                Icon(
+                    Icons.Default.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$daysRemaining días restantes",
-                        style = MaterialTheme.typography.labelLarge,
+                        text = item.tipo,
+                        style = MaterialTheme.typography.labelSmall,
                         color = DoradoAtenea,
                         fontWeight = FontWeight.Bold
                     )
+                    IconButton(onClick = onToggleFavorite) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = null,
+                            tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
+                Text(
+                    text = item.lugar,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "${item.ciudadRegion}, ${item.pais}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                // Precio sustituyendo a la descripción
+                Text(
+                    text = if (item.precio > 0) "${item.precio}€" else "Gratis",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
             }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            LinearProgressIndicator(
-                progress = 0.4f,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(CircleShape),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-            )
         }
     }
 }
@@ -183,12 +216,7 @@ fun HomeTopBar() {
         },
         actions = {
             IconButton(onClick = { }) {
-                Icon(
-                    Icons.Default.Notifications,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onTertiary,
-                    modifier = Modifier.size(28.dp)
-                )
+                Icon(Icons.Default.Notifications, null, tint = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.size(28.dp))
             }
             Box(
                 modifier = Modifier
@@ -198,30 +226,31 @@ fun HomeTopBar() {
                     .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    "VS",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                Text("VS", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             }
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
     )
 }
 
+private val previewItems = listOf(
+    RecommendationItem("Hotel Rosewood Mayakoba", "Hotel", "México", "Riviera Maya", 800, ""),
+    RecommendationItem("Chichén Itzá", "Sitio Arqueológico", "México", "Yucatán", 35, ""),
+    RecommendationItem("Pujol", "Restaurante", "México", "CDMX", 200, "")
+)
+
 @Preview(showBackground = true, name = "Modo Claro")
 @Composable
 fun HomeScreenPreviewLight() {
     Hermes_travelappTheme(darkTheme = false) {
-        HomeScreen()
+        HomeScreen(items = previewItems)
     }
 }
 
-@Preview(showBackground = true, name = "Modo Oscuro")
+@Preview(showBackground = true, name = "Modo Oscuro", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun HomeScreenPreviewDark() {
     Hermes_travelappTheme(darkTheme = true) {
-        HomeScreen()
+        HomeScreen(items = previewItems)
     }
 }

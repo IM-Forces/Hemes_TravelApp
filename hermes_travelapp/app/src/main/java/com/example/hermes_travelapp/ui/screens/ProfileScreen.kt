@@ -218,7 +218,7 @@ fun ProfileOptionItem(
             containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.4f)
         ),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
