@@ -1,41 +1,43 @@
 package com.example.hermes_travelapp.domain
 
-/** * Represents a single scheduled activity within a Trip's itinerary.
+import java.time.LocalDate
+import java.time.LocalTime
+
+/**
+ * Represents a single scheduled activity within a Trip's itinerary.
+ *
+ * @property id Unique identifier for the activity.
+ * @property tripId Identifier for the trip this activity belongs to.
+ * @property dayId Identifier for the specific day within the trip.
+ * @property title Name of the activity (required).
+ * @property description Detailed explanation of the activity (required).
+ * @property date The date the activity takes place (required).
+ * @property time The time the activity starts (required).
+ * @property location Physical location or venue (optional).
+ * @property cost Estimated cost in euros (optional).
  */
 data class ItineraryItem(
     val id: String,
-    val time: String,
+    val tripId: String,
+    val dayId: String,
     val title: String,
-    val location: String,
-    val isCompleted: Boolean = false
+    val description: String,
+    val date: LocalDate,
+    val time: LocalTime,
+    val location: String? = null,
+    val cost: Double? = null
 ) {
-
     /**
-     * Validates if all required fields for an activity are non-blank.
+     * Validates if all required fields for an activity are present and valid.
+     * Checks that IDs, title, and description are not blank.
+     *
+     * @return True if the activity meets the minimum data requirements.
      */
     fun isValid(): Boolean {
-        // @TODO Implement strict validation for time formats and titles
-        return id.isNotBlank() && time.isNotBlank() && title.isNotBlank()
-    }
-
-    /**
-     * Future feature: Saves this item to the database under a specific trip.
-     */
-    fun save(tripId: String) {
-        // @TODO Implement persistence via ItineraryRepository
-    }
-
-    /**
-     * Future feature: Removes this activity from the trip's itinerary.
-     */
-    fun delete() {
-        // @TODO Implement deletion logic in ItineraryRepository
-    }
-
-    /**
-     * Future feature: Toggles the completion status of the activity.
-     */
-    fun toggleComplete() {
-        // @TODO Update isCompleted state and persist
+        return id.isNotBlank() &&
+                tripId.isNotBlank() &&
+                dayId.isNotBlank() &&
+                title.isNotBlank() &&
+                description.isNotBlank()
     }
 }

@@ -9,8 +9,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+<<<<<<< HEAD
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+=======
+import androidx.compose.material.icons.filled.Notifications
+>>>>>>> main
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,11 +35,16 @@ import com.example.hermes_travelapp.ui.theme.TerracotaSuave
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripsScreen(
+<<<<<<< HEAD
     trips: List<Trip> = emptyList(),
     onTripClick: (Trip) -> Unit = {},
     onEditTripClick: (Trip) -> Unit = {},
     onCreateTripClick: () -> Unit = {},
     onDeleteTripClick: (String) -> Unit = {}
+=======
+    onTripClick: () -> Unit = {},
+    onCreateTripClick: () -> Unit = {}
+>>>>>>> main
 ) {
     var tripToDelete by remember { mutableStateOf<Trip?>(null) }
 
