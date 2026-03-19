@@ -24,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.TripDay
 import com.example.hermes_travelapp.ui.theme.*
 import com.example.hermes_travelapp.ui.viewmodels.TripDayViewModel
@@ -64,13 +66,13 @@ fun TripOverviewScreen(
 
     if (trip == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Viaje no encontrado")
+            Text(stringResource(R.string.error_trip_not_found))
         }
         return
     }
 
-    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale("es", "ES"))
-    val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEE", Locale("es", "ES"))
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale.getDefault())
+    val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEE", Locale.getDefault())
 
     val uiDays = realDays.map { domainDay ->
         TripDayUI(
@@ -78,7 +80,7 @@ fun TripOverviewScreen(
             date = domainDay.date.format(dateFormatter),
             dayOfWeek = domainDay.date.format(dayOfWeekFormatter).replaceFirstChar { it.uppercase() },
             dayNumber = domainDay.dayNumber,
-            location = domainDay.subtitle.ifBlank { "Sin descripción" },
+            location = domainDay.subtitle.ifBlank { stringResource(R.string.itinerary_no_activities) },
             activitiesCount = 0
         )
     }
@@ -109,7 +111,7 @@ fun TripOverviewScreen(
 
             item {
                 Text(
-                    text = "📅 Itinerario del viaje",
+                    text = "📅 " + stringResource(R.string.itinerary_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -120,7 +122,7 @@ fun TripOverviewScreen(
             if (uiDays.isEmpty()) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                        Text("No hay días generados.", color = Color.Gray)
+                        Text(stringResource(R.string.itinerary_no_days), color = Color.Gray)
                     }
                 }
             } else {
@@ -147,7 +149,7 @@ fun TripOverviewScreen(
                     ) {
                         Icon(Icons.Default.Add, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Añadir día", fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.itinerary_add_day), fontWeight = FontWeight.SemiBold)
                     }
                     Spacer(modifier = Modifier.height(32.dp))
                 }
@@ -161,13 +163,13 @@ fun TripOverviewHeader(tripName: String, dates: String, duration: String, daysRe
     Box(modifier = Modifier.fillMaxWidth().height(280.dp).background(MaterialTheme.colorScheme.surfaceVariant)) {
         Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f)))))
         IconButton(onClick = onBack, modifier = Modifier.statusBarsPadding().padding(8.dp).align(Alignment.TopStart).background(Color.Black.copy(alpha = 0.3f), CircleShape)) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = BlancoMarmol)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), tint = BlancoMarmol)
         }
         Column(modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(text = tripName, style = MaterialTheme.typography.headlineMedium, color = BlancoMarmol, fontWeight = FontWeight.Bold)
                 Surface(color = DoradoAtenea, shape = RoundedCornerShape(8.dp)) {
-                    Text(text = "Faltan $daysRemaining días", style = MaterialTheme.typography.labelMedium, color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                    Text(text = stringResource(R.string.itinerary_days_remaining, daysRemaining), style = MaterialTheme.typography.labelMedium, color = Color.Black, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
                 }
             }
             Text(text = "📅 $dates" + (if (duration.isNotBlank()) " • $duration" else ""), style = MaterialTheme.typography.bodyLarge, color = BlancoMarmol.copy(alpha = 0.8f))
@@ -181,13 +183,13 @@ fun BudgetOverviewCard(spent: Int, total: Int) {
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "Presupuesto", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.detail_budget), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(text = "€$spent / €$total", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
             }
             Spacer(modifier = Modifier.height(12.dp))
             LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "${(progress * 100).toInt()}% del presupuesto total", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
+            Text(text = stringResource(R.string.detail_budget_total_pct, (progress * 100).toInt()), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
         }
     }
 }
@@ -205,14 +207,14 @@ fun TimelineDayItem(day: TripDayUI, isFirst: Boolean, isLast: Boolean, onClick: 
             Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "Día ${day.dayNumber}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                        Text(text = stringResource(R.string.itinerary_day, day.dayNumber), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(text = "${day.dayOfWeek}, ${day.date}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f))
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(text = day.location, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                 }
-                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Ver detalle", tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+                Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
             }
         }
     }

@@ -13,10 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.RecommendationItem
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 
@@ -31,7 +33,7 @@ fun FavoritesScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Mis Favoritos",
+                        text = stringResource(R.string.favorites_title),
                         style = MaterialTheme.typography.headlineLarge,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
@@ -61,7 +63,7 @@ fun FavoritesScreen(
         if (favorites.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "No tienes lugares favoritos aún.",
+                    text = stringResource(R.string.favorites_empty),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
@@ -76,7 +78,6 @@ fun FavoritesScreen(
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 items(favorites) { item ->
-                    // Usamos el mismo estilo de tarjeta que en Home
                     RecommendationCard(
                         item = item,
                         isFavorite = true,

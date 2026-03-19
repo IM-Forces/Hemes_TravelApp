@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,12 +34,12 @@ fun AboutScreen(onBack: () -> Unit = {}) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("About Hermes", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(R.string.about_title), style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -59,34 +60,32 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // App Logo / Icon
             Image(
                 painter = painterResource(id = R.drawable.logofinal),
-                contentDescription = "Hermes Logo",
+                contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier
                     .size(120.dp)
                     .padding(bottom = 16.dp)
             )
 
             Text(
-                text = "Hermes Travel App",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
                 color = DoradoAtenea,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "Version 1.0.0",
+                text = stringResource(R.string.about_version, "1.0.0"),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Summary Section
-            AboutSection(title = "Summary", icon = Icons.Default.Info) {
+            AboutSection(title = stringResource(R.string.about_summary), icon = Icons.Default.Info) {
                 Text(
-                    text = "Hermes is your ultimate travel companion, designed to simplify journey planning, budget tracking, and discovering hidden gems across the globe. Inspired by the god of travelers, we aim to make every trip legendary.",
+                    text = stringResource(R.string.about_summary_text),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Justify
@@ -95,8 +94,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Technical Specifications Table
-            AboutSection(title = "Technical Specs", icon = Icons.Default.Settings) {
+            AboutSection(title = stringResource(R.string.about_tech_specs), icon = Icons.Default.Settings) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -105,23 +103,22 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        TechnicalRow(label = "App Version", value = "1.0.0")
+                        TechnicalRow(label = stringResource(R.string.about_app_version), value = "1.0.0")
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                        TechnicalRow(label = "Sprint", value = "01")
+                        TechnicalRow(label = stringResource(R.string.about_sprint), value = "01")
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                        TechnicalRow(label = "Android Version", value = Build.VERSION.RELEASE)
+                        TechnicalRow(label = stringResource(R.string.about_android_version), value = Build.VERSION.RELEASE)
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                        TechnicalRow(label = "SDK Level", value = Build.VERSION.SDK_INT.toString())
+                        TechnicalRow(label = stringResource(R.string.about_sdk_level), value = Build.VERSION.SDK_INT.toString())
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                        TechnicalRow(label = "Environment", value = "Development")
+                        TechnicalRow(label = stringResource(R.string.about_environment), value = "Development")
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Team Section
-            AboutSection(title = "Our Team", icon = Icons.Default.Person) {
+            AboutSection(title = stringResource(R.string.about_team), icon = Icons.Default.Person) {
                 Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     TeamMemberItem(name = "Marco Beruet", role = "Front-end Programmer")
                     TeamMemberItem(name = "Ivan Gil", role = "Back-end Programmer")
@@ -131,7 +128,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = "© 2025 Hermes Travel Co. \nMade with ❤️ for travelers.",
+                text = stringResource(R.string.about_copyright),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center
@@ -231,14 +228,6 @@ fun TeamMemberItem(name: String, role: String) {
 @Composable
 fun AboutScreenPreviewLight() {
     Hermes_travelappTheme(darkTheme = false) {
-        AboutScreen()
-    }
-}
-
-@Preview(showBackground = true, name = "About Mode Dark")
-@Composable
-fun AboutScreenPreviewDark() {
-    Hermes_travelappTheme(darkTheme = true) {
         AboutScreen()
     }
 }

@@ -24,10 +24,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 
 @Composable
@@ -37,8 +39,6 @@ fun ProfileScreen(
     onNavigateToTerms: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
-    // Detectamos si el tema actual es oscuro basándonos en la luminosidad del fondo
-    val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -65,7 +65,6 @@ fun ProfileScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    // Avatar de Usuario (120dp)
                     Box(
                         modifier = Modifier
                             .size(120.dp)
@@ -98,38 +97,36 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Stats/Badges
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        ProfileStatBadge(text = "3 Active Trips", icon = Icons.Default.TravelExplore)
+                        ProfileStatBadge(text = "3 " + stringResource(R.string.nav_trips), icon = Icons.Default.TravelExplore)
                         ProfileStatBadge(text = "12 Countries", icon = Icons.Default.Map)
                     }
                 }
             }
             
-            // Options Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
             ) {
                 Text(
-                    text = "Account",
+                    text = stringResource(R.string.prefs_user_profile),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
                 
                 ProfileOptionItem(
-                    title = "Personal Info",
+                    title = stringResource(R.string.prefs_username),
                     icon = Icons.Default.Person,
                     onClick = { /* Acción mock */ }
                 )
                 
                 ProfileOptionItem(
-                    title = "Preferences",
+                    title = stringResource(R.string.prefs_title),
                     icon = Icons.Default.Settings,
                     onClick = onNavigateToPreferences
                 )
@@ -142,20 +139,19 @@ fun ProfileScreen(
                 )
                 
                 ProfileOptionItem(
-                    title = "Terms & Conditions",
+                    title = stringResource(R.string.profile_terms),
                     icon = Icons.Default.Description,
                     onClick = onNavigateToTerms
                 )
                 
                 ProfileOptionItem(
-                    title = "About Hermes",
+                    title = stringResource(R.string.profile_about),
                     icon = Icons.Default.Info,
                     onClick = onNavigateToAbout
                 )
                 
                 Spacer(modifier = Modifier.height(48.dp))
                 
-                // Botón de Cerrar Sesión destacado
                 OutlinedButton(
                     onClick = { /* Acción mock */ },
                     modifier = Modifier
@@ -169,7 +165,7 @@ fun ProfileScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "Sign Out",
+                        text = stringResource(R.string.profile_logout),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.ExtraBold
                     )
@@ -229,7 +225,6 @@ fun ProfileOptionItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icono con fondo circular llamativo
             Box(
                 modifier = Modifier
                     .size(40.dp)

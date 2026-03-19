@@ -18,12 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.Trip
 import com.example.hermes_travelapp.ui.theme.DoradoAtenea
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
@@ -43,8 +44,8 @@ fun TripsScreen(
     if (tripToDelete != null) {
         AlertDialog(
             onDismissRequest = { tripToDelete = null },
-            title = { Text(text = "Eliminar viaje") },
-            text = { Text(text = "¿Estás seguro de que quieres eliminar '${tripToDelete?.title}'?") },
+            title = { Text(text = stringResource(R.string.trips_delete_title)) },
+            text = { Text(text = stringResource(R.string.trips_delete_msg, tripToDelete?.title ?: "")) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -52,12 +53,12 @@ fun TripsScreen(
                         tripToDelete = null
                     }
                 ) {
-                    Text(text = "Eliminar", color = MaterialTheme.colorScheme.error)
+                    Text(text = stringResource(R.string.delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { tripToDelete = null }) {
-                    Text(text = "Cancelar")
+                    Text(text = stringResource(R.string.cancel))
                 }
             }
         )
@@ -66,10 +67,10 @@ fun TripsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mis Viajes", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.trips_title), fontWeight = FontWeight.Bold) },
                 actions = {
                     IconButton(onClick = { /* TODO */ }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notificaciones")
+                        Icon(Icons.Default.Notifications, contentDescription = null)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -86,7 +87,7 @@ fun TripsScreen(
                 shape = CircleShape,
                 modifier = Modifier.padding(bottom = 16.dp, end = 8.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Trip", modifier = Modifier.size(32.dp))
+                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(32.dp))
             }
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -94,7 +95,7 @@ fun TripsScreen(
         if (trips.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "No hay viajes guardados.",
+                    text = stringResource(R.string.trips_empty),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -136,15 +137,14 @@ fun TripCard(trip: Trip, onClick: () -> Unit, onEdit: () -> Unit, onDelete: () -
                 }
                 Row {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary)
+                        Icon(Icons.Default.Edit, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
+                        Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error)
                     }
                 }
             }
             
-            // Barra de progreso (Saving/Completion progress)
             Column {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -152,7 +152,7 @@ fun TripCard(trip: Trip, onClick: () -> Unit, onEdit: () -> Unit, onDelete: () -
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Progreso del viaje: ${(trip.progress * 100).toInt()}%",
+                        text = stringResource(R.string.trips_progress, (trip.progress * 100).toInt()),
                         style = MaterialTheme.typography.bodySmall,
                         color = DoradoAtenea,
                         fontSize = 11.sp

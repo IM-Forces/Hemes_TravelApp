@@ -19,10 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.Trip
 import com.example.hermes_travelapp.ui.theme.*
 
@@ -33,9 +35,8 @@ fun TripDetailScreen(
     onBack: () -> Unit = {}
 ) {
     if (trip == null) {
-        // Fallback en caso de que no haya viaje seleccionado
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No se encontró información del viaje.")
+            Text(stringResource(R.string.detail_not_found))
         }
         return
     }
@@ -49,7 +50,6 @@ fun TripDetailScreen(
                 .padding(bottom = paddingValues.calculateBottomPadding())
                 .verticalScroll(rememberScrollState())
         ) {
-            // Banner del destino (Placeholder de imagen)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -57,7 +57,6 @@ fun TripDetailScreen(
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                // Icono de placeholder
                 Icon(
                     imageVector = Icons.Default.Image,
                     contentDescription = null,
@@ -65,7 +64,6 @@ fun TripDetailScreen(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                 )
                 
-                // Overlay oscuro para legibilidad del texto inferior
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -76,7 +74,6 @@ fun TripDetailScreen(
                         )
                 )
 
-                // Boton Atras
                 IconButton(
                     onClick = onBack,
                     modifier = Modifier
@@ -84,7 +81,7 @@ fun TripDetailScreen(
                         .statusBarsPadding()
                         .padding(8.dp)
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = BlancoMarmol)
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back), tint = BlancoMarmol)
                 }
 
                 Column(
@@ -92,7 +89,6 @@ fun TripDetailScreen(
                         .align(Alignment.BottomStart)
                         .padding(16.dp)
                 ) {
-                    // Nombre del viaje
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = trip.emoji, fontSize = 24.sp)
                         Spacer(modifier = Modifier.width(8.dp))
@@ -103,7 +99,6 @@ fun TripDetailScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    // Fechas
                     Text(
                         text = "📅 ${trip.startDate} - ${trip.endDate}",
                         style = MaterialTheme.typography.bodyLarge,
@@ -118,7 +113,6 @@ fun TripDetailScreen(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                // Dias restantes
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = DoradoAtenea.copy(alpha = 0.1f)),
@@ -132,7 +126,7 @@ fun TripDetailScreen(
                         Icon(Icons.Default.Timer, contentDescription = null, tint = DoradoAtenea)
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Faltan ${trip.daysRemaining} días para tu aventura",
+                            text = stringResource(R.string.detail_days_to_adventure, trip.daysRemaining),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             color = DoradoAtenea
@@ -140,7 +134,6 @@ fun TripDetailScreen(
                     }
                 }
 
-                // Presupuesto total y gastado
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(20.dp),
@@ -149,7 +142,7 @@ fun TripDetailScreen(
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Text(
-                            text = "Presupuesto",
+                            text = stringResource(R.string.detail_budget),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -159,11 +152,11 @@ fun TripDetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column {
-                                Text("Gastado", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                                Text(stringResource(R.string.detail_spent), style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                                 Text("€${trip.spent}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
                             }
                             Column(horizontalAlignment = Alignment.End) {
-                                Text("Total", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+                                Text(stringResource(R.string.detail_total), style = MaterialTheme.typography.labelMedium, color = Color.Gray)
                                 Text("€${trip.budget}", style = MaterialTheme.typography.titleMedium)
                             }
                         }
@@ -180,7 +173,6 @@ fun TripDetailScreen(
                     }
                 }
 
-                // Descripción
                 if (trip.description.isNotBlank()) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
@@ -189,7 +181,7 @@ fun TripDetailScreen(
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                text = "Descripción",
+                                text = stringResource(R.string.detail_description),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold
                             )
@@ -199,26 +191,25 @@ fun TripDetailScreen(
                     }
                 }
 
-                // Sección de Itinerario
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Itinerario del día",
+                        text = stringResource(R.string.detail_daily_itinerary),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Button(
-                        onClick = { /* Acción para añadir actividad */ },
+                        onClick = { },
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Añadir", fontSize = 14.sp)
+                        Text(stringResource(R.string.add), fontSize = 14.sp)
                     }
                 }
 

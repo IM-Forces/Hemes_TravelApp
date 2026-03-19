@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,13 +33,13 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logofinal),
-                contentDescription = "Logo Hermes Travel App",
+                contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier.size(250.dp).padding(bottom = 32.dp),
                 contentScale = ContentScale.Fit
             )
 
             Text(
-                text = "Welcome to Hermes",
+                text = stringResource(R.string.login_title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 32.dp),
                 color = MaterialTheme.colorScheme.primary
@@ -47,7 +48,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                label = { Text("Email", style = MaterialTheme.typography.bodyMedium) },
+                label = { Text(stringResource(R.string.auth_email), style = MaterialTheme.typography.bodyMedium) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -59,7 +60,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                label = { Text("Password", style = MaterialTheme.typography.bodyMedium) },
+                label = { Text(stringResource(R.string.auth_password), style = MaterialTheme.typography.bodyMedium) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge,
@@ -74,12 +75,12 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Login", color = MaterialTheme.colorScheme.onPrimary)
+                Text(stringResource(R.string.login_title), color = MaterialTheme.colorScheme.onPrimary)
             }
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(onClick = onNavigateToRegister) {
                 Text(
-                    "Don't have an account? Register",
+                    stringResource(R.string.auth_no_account),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -92,14 +93,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreviewLight() {
     Hermes_travelappTheme(darkTheme = false) {
-        LoginScreen()
-    }
-}
-
-
-@Composable
-fun LoginScreenPreviewDark() {
-    Hermes_travelappTheme(darkTheme = true) {
         LoginScreen()
     }
 }

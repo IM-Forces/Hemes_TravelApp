@@ -1,0 +1,136 @@
+<resources>
+    <string name="app_name">Hermes Travel App</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Inici</string>
+    <string name="nav_explore">Explorar</string>
+    <string name="nav_trips">Viatges</string>
+    <string name="nav_favorites">Preferits</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="back">Enrere</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_settings">Configuració</string>
+    <string name="profile_about">Sobre nosaltres</string>
+    <string name="profile_terms">Termes i Condicions</string>
+    <string name="profile_logout">Tancar sessió</string>
+    <string name="profile_account">Compte</string>
+    <string name="profile_personal_info">Informació Personal</string>
+    <string name="profile_support_legal">Suport i Legal</string>
+    <string name="profile_about_hermes">Sobre Hermes</string>
+
+    <!-- Preferences Screen -->
+    <string name="prefs_title">Preferències</string>
+    <string name="prefs_user_profile">Perfil d\'Usuari</string>
+    <string name="prefs_username">Nom d\'usuari</string>
+    <string name="prefs_dob">Data de naixement (DD/MM/AAAA)</string>
+    <string name="prefs_settings">Configuració</string>
+    <string name="prefs_dark_mode">Mode Fosc</string>
+    <string name="prefs_language">Idioma</string>
+    <string name="prefs_save">Guardar canvis</string>
+
+    <!-- Trips Screen -->
+    <string name="trips_title">Els meus Viatges</string>
+    <string name="trips_empty">No hi ha viatges guardats.</string>
+    <string name="trips_delete_title">Eliminar viatge</string>
+    <string name="trips_delete_msg">Estàs segur que vols eliminar \'%1$s\'?</string>
+    <string name="delete">Eliminar</string>
+    <string name="cancel">Cancel·lar</string>
+    <string name="trips_progress">Progressió del viatge: %1$d%%</string>
+
+    <!-- Create Trip Screen -->
+    <string name="create_trip_title">Crear Viatge</string>
+    <string name="edit_trip_title">Editar Viatge</string>
+    <string name="trip_field_title">Títol del viatge</string>
+    <string name="trip_field_desc">Descripció</string>
+    <string name="trip_field_start">Data d\'inici (DD/MM/AAAA)</string>
+    <string name="trip_field_end">Data de finalització (DD/MM/AAAA)</string>
+    <string name="trip_save">Guardar Viatge</string>
+    <string name="trip_budget">Pressupost inicial (€)</string>
+
+    <!-- Errors -->
+    <string name="error_required_dates">Ambdues dates són obligatòries</string>
+    <string name="error_invalid_range">La data d\'inici ha de ser anterior a la de finalització</string>
+    <string name="error_invalid_format">Format de data invàlid. Utilitza DD/MM/AAAA</string>
+    <string name="error_trip_not_found">Viatge no trobat</string>
+    <string name="error_validation">Error de Validació</string>
+
+    <!-- Itinerary -->
+    <string name="itinerary_title">Itinerari</string>
+    <string name="itinerary_days_remaining">Falten %1$d dies</string>
+    <string name="itinerary_day">Dia %1$d</string>
+    <string name="itinerary_no_days">No hi ha dies generats per a aquest viatge.</string>
+    <string name="itinerary_add_day">Afegir dia</string>
+    <string name="itinerary_activities">%1$d activitats</string>
+    <string name="itinerary_no_activities">No hi ha activitats planificades</string>
+    <string name="itinerary_add_first_activity">Afegir primera activitat</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Explora el món</string>
+    <string name="home_loading">Carregant destins...</string>
+    <string name="home_welcome">Hola, %1$s 👋</string>
+    <string name="home_free">Gratis</string>
+
+    <!-- Auth -->
+    <string name="login_title">Iniciar Sessió</string>
+    <string name="register_title">Registrar-se</string>
+    <string name="auth_create_account">Crear compte</string>
+    <string name="auth_welcome_hermes">Benvingut a Hermes</string>
+    <string name="auth_name">Nom</string>
+    <string name="auth_surname">Cognom</string>
+    <string name="auth_email">Correu electrònic</string>
+    <string name="auth_password">Contrasenya</string>
+    <string name="auth_no_account">No tens compte? Registra\'t</string>
+    <string name="auth_has_account">Ja tens compte? Inicia sessió</string>
+
+    <!-- Explore Screen -->
+    <string name="explore_title">Explorar destins</string>
+    <string name="explore_search_placeholder">Cerca per nom, país, tipus o preu...</string>
+    <string name="explore_no_results">No s\'han trobat resultats per a \"%1$s\"</string>
+    <string name="explore_start_typing">Comença a escriure per descobrir llocs increïbles...</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Els meus Preferits</string>
+    <string name="favorites_empty">Encara no has afegit cap preferit.</string>
+    <string name="favorites_remove">Eliminar de preferits</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_starting">Iniciant el teu viatge...</string>
+    <string name="splash_hermes">HERMES</string>
+    <string name="splash_travel_app">TRAVEL APP</string>
+    <string name="splash_version_sprint">v%1$s - Sprint %2$s</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Sobre Hermes</string>
+    <string name="about_version">Versió %1$s</string>
+    <string name="about_summary">Resum</string>
+    <string name="about_summary_text">Hermes és el teu company de viatge definitiu, dissenyat per simplificar la planificació de trajectes, el seguiment del pressupost i el descobriment de joies ocultes per tot el món. Inspirats pel déu dels viatgers, el nostre objectiu és fer que cada viatge sigui legendari.</string>
+    <string name="about_tech_specs">Especificacions Tècniques</string>
+    <string name="about_app_version">Versió de l\'App</string>
+    <string name="about_sprint">Sprint</string>
+    <string name="about_android_version">Versió d\'Android</string>
+    <string name="about_sdk_level">Nivel de SDK</string>
+    <string name="about_environment">Entorn</string>
+    <string name="about_team">El nostre Equip</string>
+    <string name="about_copyright">© 2025 Hermes Travel Co. \nFet amb ❤️ per a viatgers.</string>
+
+    <!-- Terms Screen -->
+    <string name="terms_title">Termes i Condicions</string>
+    <string name="terms_accept">Acceptar</string>
+    <string name="terms_reject">Rebutjar</string>
+    <string name="terms_content">Benvingut a Hermes Travel App. En utilitzar aquesta aplicació, acceptes complir i estar subjecte als següents termes i condicions d\'ús.\n\n1. Ús de l\'Aplicació: Acceptes utilitzar l\'app només per a fins legals i d\'una manera que no infringeixi els drets d\'altres.\n\n2. Comptes d\'Usuari: Ets responsable de mantenir la confidencialitat del teu compte i contrasenya.\n\n3. Privadesa: El teu ús de l\'app també es regeix per la nostra Política de Privadesa.\n\n4. Contingut: Conserves la propietat de qualsevol contingut que enviïs, però ens otorgues una llicència per utilitzar-lo dins del context de l\'app.\n\n5. Limitació de Responsabilitat: No serem responsables de cap dany indirecte o conseqüent resultants del teu ús de l\'app.\n\n6. Canvis en els Termes: Ens reservem el dret de modificar aquests termes en qualsevol moment.\n\nSi tens alguna pregunta sobre aquests termes, si us plau contacta amb nosaltres.</string>
+
+    <!-- Detail Screen -->
+    <string name="detail_not_found">No s\'ha trobat informació del viatge.</string>
+    <string name="detail_days_to_adventure">Falten %1$d dies per a la teva aventura</string>
+    <string name="detail_budget">Pressupost</string>
+    <string name="detail_spent">Gastat</string>
+    <string name="detail_total">Total</string>
+    <string name="detail_description">Descripció</string>
+    <string name="detail_daily_itinerary">Itinerari diari</string>
+    <string name="add">Afegir</string>
+
+    <!-- Common -->
+    <string name="ok">Acceptar</string>
+    <string name="edit">Editar</string>
+</resources>

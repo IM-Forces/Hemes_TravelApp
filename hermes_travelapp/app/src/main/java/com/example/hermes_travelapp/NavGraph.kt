@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -30,12 +31,12 @@ import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
 import com.example.hermes_travelapp.ui.viewmodels.ViewModelFactory
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 
-sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
-    object Home : BottomNavItem("home", Icons.Default.Home, "Home")
-    object Explore : BottomNavItem("explore", Icons.Default.Search, "Explore")
-    object Trips : BottomNavItem("trips", Icons.Default.Place, "Trips")
-    object Favorites : BottomNavItem("favorites", Icons.Default.Favorite, "Favorites")
-    object Profile : BottomNavItem("profile", Icons.Default.Person, "Profile")
+sealed class BottomNavItem(val route: String, val icon: ImageVector, val labelRes: Int) {
+    object Home : BottomNavItem("home", Icons.Default.Home, R.string.nav_home)
+    object Explore : BottomNavItem("explore", Icons.Default.Search, R.string.nav_explore)
+    object Trips : BottomNavItem("trips", Icons.Default.Place, R.string.nav_trips)
+    object Favorites : BottomNavItem("favorites", Icons.Default.Favorite, R.string.nav_favorites)
+    object Profile : BottomNavItem("profile", Icons.Default.Person, R.string.nav_profile)
 }
 
 @Composable
@@ -210,7 +211,7 @@ fun MainScreen(
 
                     NavigationBarItem(
                         icon = { Icon(screen.icon, contentDescription = null) },
-                        label = { Text(text = screen.label, style = MaterialTheme.typography.labelSmall) },
+                        label = { Text(text = stringResource(screen.labelRes), style = MaterialTheme.typography.labelSmall) },
                         selected = selected,
                         onClick = {
                             navController.navigate(screen.route) {

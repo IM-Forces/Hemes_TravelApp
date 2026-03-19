@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.data.PreferencesManager
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,10 +37,10 @@ fun PreferencesScreen(onBack: () -> Unit = {}) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Preferences") },
+                title = { Text(stringResource(R.string.prefs_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -56,12 +58,12 @@ fun PreferencesScreen(onBack: () -> Unit = {}) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("User Profile", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.prefs_user_profile), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
             
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username") },
+                label = { Text(stringResource(R.string.prefs_username)) },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) }
             )
@@ -69,24 +71,23 @@ fun PreferencesScreen(onBack: () -> Unit = {}) {
             OutlinedTextField(
                 value = dateOfBirth,
                 onValueChange = { dateOfBirth = it },
-                label = { Text("Date of Birth (DD/MM/YYYY)") },
+                label = { Text(stringResource(R.string.prefs_dob)) },
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Default.CalendarToday, contentDescription = null) }
             )
 
             HorizontalDivider()
 
-            Text("Settings", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.prefs_settings), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
 
             PreferenceSwitchItem(
-                title = "Dark Mode",
+                title = stringResource(R.string.prefs_dark_mode),
                 subtitle = if (isDarkMode) "On" else "Off",
                 icon = Icons.Default.DarkMode,
                 checked = isDarkMode,
                 onCheckedChange = { isDarkMode = it }
             )
 
-            // Language Selector (Simplificado)
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -95,7 +96,7 @@ fun PreferencesScreen(onBack: () -> Unit = {}) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Language, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text("Language", style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(R.string.prefs_language), style = MaterialTheme.typography.bodyLarge)
                 }
                 
                 var expanded by remember { mutableStateOf(false) }
@@ -129,7 +130,7 @@ fun PreferencesScreen(onBack: () -> Unit = {}) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Save Changes", fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.prefs_save), fontWeight = FontWeight.Bold)
             }
         }
     }

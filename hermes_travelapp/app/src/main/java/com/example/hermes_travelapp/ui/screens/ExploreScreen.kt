@@ -15,9 +15,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.RecommendationItem
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 
@@ -31,10 +33,8 @@ fun ExploreScreen(
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     
-    // Cargar todos los datos una vez
     val allItems = remember { loadRecommendationsFromAssets(context) }
     
-    // Filtrar los resultados basados en la búsqueda
     val filteredItems = remember(searchQuery) {
         if (searchQuery.isBlank()) {
             emptyList()
@@ -49,7 +49,6 @@ fun ExploreScreen(
         }
     }
 
-    // Efecto para abrir el teclado automáticamente al entrar
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -63,20 +62,19 @@ fun ExploreScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Explorar destinos",
+                    text = stringResource(R.string.explore_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                // Barra de búsqueda con auto-focus
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
-                    placeholder = { Text("Buscar por nombre, país, tipo o precio...") },
+                    placeholder = { Text(stringResource(R.string.explore_search_placeholder)) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -89,7 +87,7 @@ fun ExploreScreen(
                     trailingIcon = {
                         if (searchQuery.isNotEmpty()) {
                             IconButton(onClick = { searchQuery = "" }) {
-                                Icon(Icons.Default.Search, contentDescription = "Clear") // Reusing Search icon as clear for simplicity, or could use Icons.Default.Clear
+                                Icon(Icons.Default.Search, contentDescription = "Clear") 
                             }
                         }
                     }
@@ -109,7 +107,7 @@ fun ExploreScreen(
             if (searchQuery.isNotEmpty() && filteredItems.isEmpty()) {
                 item {
                     Text(
-                        text = "No se encontraron resultados para \"$searchQuery\"",
+                        text = stringResource(R.string.explore_no_results, searchQuery),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
@@ -117,7 +115,7 @@ fun ExploreScreen(
             } else if (searchQuery.isEmpty()) {
                 item {
                     Text(
-                        text = "Empieza a escribir para descubrir lugares increíbles...",
+                        text = stringResource(R.string.explore_start_typing),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )

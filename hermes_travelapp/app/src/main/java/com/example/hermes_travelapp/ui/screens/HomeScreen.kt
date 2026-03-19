@@ -21,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.RecommendationItem
 import com.example.hermes_travelapp.ui.theme.*
 import org.json.JSONArray
@@ -39,7 +41,6 @@ fun loadRecommendationsFromAssets(context: Context): List<RecommendationItem> {
         for (i in 0 until jsonArray.length()) {
             val obj = jsonArray.getJSONObject(i)
             
-            // Manejamos la inconsistencia de nombres de campo en el JSON
             val precio = if (obj.has("precio_estimado_usd")) {
                 obj.getInt("precio_estimado_usd")
             } else if (obj.has("precio_estimated_usd")) {
@@ -60,7 +61,6 @@ fun loadRecommendationsFromAssets(context: Context): List<RecommendationItem> {
             )
         }
     } catch (e: Exception) {
-        println("ERROR CARGANDO ASSETS: ${e.message}")
         e.printStackTrace()
     }
     return items
@@ -89,7 +89,7 @@ fun HomeScreen(
         ) {
             item {
                 Text(
-                    text = "Explora el mundo",
+                    text = stringResource(R.string.home_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -102,7 +102,7 @@ fun HomeScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text("Cargando destinos...")
+                            Text(stringResource(R.string.home_loading))
                         }
                     }
                 }
@@ -193,7 +193,7 @@ fun RecommendationCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = if (item.precio > 0) "$${item.precio}" else "Gratis",
+                    text = if (item.precio > 0) "$${item.precio}" else stringResource(R.string.home_free),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
@@ -209,7 +209,7 @@ fun HomeTopBar() {
     MediumTopAppBar(
         title = {
             Text(
-                text = "Hola, Vítor 👋",
+                text = stringResource(R.string.home_welcome, "Vítor"),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -233,26 +233,4 @@ fun HomeTopBar() {
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondary)
     )
-}
-
-private val previewItems = listOf(
-    RecommendationItem("Hotel Rosewood Mayakoba", "Hotel", "México", "Riviera Maya", 800, ""),
-    RecommendationItem("Chichén Itzá", "Sitio Arqueológico", "México", "Yucatán", 35, ""),
-    RecommendationItem("Pujol", "Restaurante", "México", "CDMX", 200, "")
-)
-
-@Preview(showBackground = true, name = "Modo Claro")
-@Composable
-fun HomeScreenPreviewLight() {
-    Hermes_travelappTheme(darkTheme = false) {
-        HomeScreen(items = previewItems)
-    }
-}
-
-@Preview(showBackground = true, name = "Modo Oscuro", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun HomeScreenPreviewDark() {
-    Hermes_travelappTheme(darkTheme = true) {
-        HomeScreen(items = previewItems)
-    }
 }

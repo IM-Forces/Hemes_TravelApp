@@ -1,0 +1,126 @@
+<resources>
+    <string name="app_name">Hermes Travel App</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_explore">Explorar</string>
+    <string name="nav_trips">Viajes</string>
+    <string name="nav_favorites">Favoritos</string>
+    <string name="nav_profile">Perfil</string>
+    <string name="back">Atrás</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_settings">Ajustes</string>
+    <string name="profile_about">Sobre nosotros</string>
+    <string name="profile_terms">Términos y Condiciones</string>
+    <string name="profile_logout">Cerrar sesión</string>
+    <string name="profile_account">Cuenta</string>
+    <string name="profile_personal_info">Información Personal</string>
+    <string name="profile_support_legal">Soporte y Legal</string>
+    <string name="profile_about_hermes">Sobre Hermes</string>
+
+    <!-- Preferences Screen -->
+    <string name="prefs_title">Preferencias</string>
+    <string name="prefs_user_profile">Perfil de Usuario</string>
+    <string name="prefs_username">Nombre de usuario</string>
+    <string name="prefs_dob">Fecha de nacimiento (DD/MM/AAAA)</string>
+    <string name="prefs_settings">Ajustes</string>
+    <string name="prefs_dark_mode">Modo Oscuro</string>
+    <string name="prefs_language">Idioma</string>
+    <string name="prefs_save">Guardar cambios</string>
+
+    <!-- Trips Screen -->
+    <string name="trips_title">Mis Viajes</string>
+    <string name="trips_empty">No hay viajes guardados.</string>
+    <string name="trips_delete_title">Eliminar viaje</string>
+    <string name="trips_delete_msg">¿Estás seguro de que quieres eliminar \'%1$s\'?</string>
+    <string name="delete">Eliminar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="trips_progress">Progreso del viaje: %1$d%%</string>
+
+    <!-- Create Trip Screen -->
+    <string name="create_trip_title">Crear Viaje</string>
+    <string name="edit_trip_title">Editar Viaje</string>
+    <string name="trip_field_title">Título del viaje</string>
+    <string name="trip_field_desc">Descripción</string>
+    <string name="trip_field_start">Fecha de inicio (DD/MM/AAAA)</string>
+    <string name="trip_field_end">Fecha de fin (DD/MM/AAAA)</string>
+    <string name="trip_save">Guardar Viaje</string>
+    <string name="trip_budget">Presupuesto inicial (€)</string>
+
+    <!-- Errors -->
+    <string name="error_required_dates">Ambas fechas son obligatorias</string>
+    <string name="error_invalid_range">La fecha de inicio debe ser anterior a la de fin</string>
+    <string name="error_invalid_format">Formato de fecha inválido. Usa DD/MM/AAAA</string>
+    <string name="error_trip_not_found">Viaje no encontrado</string>
+    <string name="error_validation">Error de Validación</string>
+
+    <!-- Itinerary -->
+    <string name="itinerary_title">Itinerario</string>
+    <string name="itinerary_days_remaining">Faltan %1$d días</string>
+    <string name="itinerary_day">Día %1$d</string>
+    <string name="itinerary_no_days">No hay días generados para este viaje.</string>
+    <string name="itinerary_add_day">Añadir día</string>
+    <string name="itinerary_activities">%1$d actividades</string>
+    <string name="itinerary_no_activities">No hay actividades planeadas</string>
+    <string name="itinerary_add_first_activity">Añadir primera actividad</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Explora el mundo</string>
+    <string name="home_loading">Cargando destinos...</string>
+    <string name="home_welcome">Hola, %1$s 👋</string>
+    <string name="home_free">Gratis</string>
+
+    <!-- Auth -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="register_title">Registrarse</string>
+    <string name="auth_create_account">Crear cuenta</string>
+    <string name="auth_welcome_hermes">Bienvenido a Hermes</string>
+    <string name="auth_name">Nombre</string>
+    <string name="auth_surname">Apellido</string>
+    <string name="auth_email">Correo electrónico</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_no_account">¿No tienes cuenta? Regístrate</string>
+    <string name="auth_has_account">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Explore Screen -->
+    <string name="explore_title">Explorar destinos</string>
+    <string name="explore_search_placeholder">Buscar por nombre, país, tipo o precio...</string>
+    <string name="explore_no_results">No se encontraron resultados para \"%1$s\"</string>
+    <string name="explore_start_typing">Empieza a escribir para descubrir lugares increíbles...</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Mis Favoritos</string>
+    <string name="favorites_empty">Aún no tienes lugares favoritos.</string>
+    <string name="favorites_remove">Eliminar de favoritos</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_starting">Iniciando tu viaje...</string>
+    <string name="splash_hermes">HERMES</string>
+    <string name="splash_travel_app">TRAVEL APP</string>
+    <string name="splash_version_sprint">v%1$s - Sprint %2$s</string>
+
+    <!-- About Screen -->
+    <string name="about_title">Sobre Hermes</string>
+    <string name="about_version">Versión %1$s</string>
+    <string name="about_summary">Resumen</string>
+    <string name="about_summary_text">Hermes es tu compañero de viaje definitivo, diseñado para simplificar la planificación de trayectos, el seguimiento del presupuesto y el descubrimiento de joyas ocultas por todo el mundo. Inspirados por el dios de los viajeros, nuestro objetivo es hacer que cada viaje sea legendario.</string>
+    <string name="about_tech_specs">Especificaciones Técnicas</string>
+    <string name="about_app_version">Versión de la App</string>
+    <string name="about_sprint">Sprint</string>
+    <string name="about_android_version">Versión de Android</string>
+    <string name="about_sdk_level">Nivel de SDK</string>
+    <string name="about_environment">Entorno</string>
+    <string name="about_team">Nuestro Equipo</string>
+    <string name="about_copyright">© 2025 Hermes Travel Co. \nHecho con ❤️ para viajeros.</string>
+
+    <!-- Terms Screen -->
+    <string name="terms_title">Términos y Condiciones</string>
+    <string name="terms_accept">Aceptar</string>
+    <string name="terms_reject">Rechazar</string>
+    <string name="terms_content">Bienvenido a Hermes Travel App. Al utilizar esta aplicación, aceptas cumplir y estar sujeto a los siguientes términos y condiciones de uso.\n\n1. Uso de la Aplicación: Aceptas usar la app solo para fines legales y de una manera que no infrinja los derechos de otros.\n\n2. Cuentas de Usuario: Eres responsable de mantener la confidencialidad de tu cuenta y contraseña.\n\n3. Privacidad: Tu uso de la app también se rige por nuestra Política de Privacidad.\n\n4. Contenido: Conservas la propiedad de cualquier contenido que envíes, pero nos otorgas una licencia para usarlo dentro del contexto de la app.\n\n5. Limitación de Responsabilidad: No seremos responsables de ningún daño indirecto o consecuente resultante de tu uso de la app.\n\n6. Cambios en los Términos: Nos reservamos el derecho de modificar estos términos en cualquier momento.\n\nSi tienes alguna pregunta sobre estos términos, por favor contáctanos.</string>
+
+    <!-- Common -->
+    <string name="ok">Aceptar</string>
+    <string name="edit">Editar</string>
+</resources>

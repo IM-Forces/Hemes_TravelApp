@@ -13,9 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.Trip
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
@@ -39,20 +41,18 @@ fun CreateTripScreen(
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
 
-    // Observamos el mensaje de error del ViewModel
     val errorMessageState = tripViewModel?.errorMessage?.observeAsState()
     val errorMessage = errorMessageState?.value
 
-    // Pop-up de error (AlertDialog)
     if (errorMessage != null) {
         AlertDialog(
             onDismissRequest = { tripViewModel?.clearError() },
             confirmButton = {
                 TextButton(onClick = { tripViewModel?.clearError() }) {
-                    Text("Aceptar")
+                    Text(stringResource(R.string.back))
                 }
             },
-            title = { Text("Error de Validación", fontWeight = FontWeight.Bold) },
+            title = { Text("Error", fontWeight = FontWeight.Bold) },
             text = { Text(errorMessage) }
         )
     }
@@ -74,10 +74,10 @@ fun CreateTripScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (tripToEdit == null) "Crear Nuevo Viaje" else "Editar Viaje", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(if (tripToEdit == null) R.string.create_trip_title else R.string.edit_trip_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -101,16 +101,15 @@ fun CreateTripScreen(
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Título *") },
+                label = { Text(stringResource(R.string.trip_field_title) + " *") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
 
-            // Date Picker para Inicio
             OutlinedTextField(
                 value = startDate,
                 onValueChange = { },
-                label = { Text("Inicio (DD/MM/YYYY) *") },
+                label = { Text(stringResource(R.string.trip_field_start) + " *") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showStartDatePicker = true },
@@ -126,11 +125,10 @@ fun CreateTripScreen(
                 )
             )
 
-            // Date Picker para Fin
             OutlinedTextField(
                 value = endDate,
                 onValueChange = { },
-                label = { Text("Fin (DD/MM/YYYY) *") },
+                label = { Text(stringResource(R.string.trip_field_end) + " *") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showEndDatePicker = true },
@@ -149,7 +147,7 @@ fun CreateTripScreen(
             OutlinedTextField(
                 value = budget,
                 onValueChange = { budget = it },
-                label = { Text("Presupuesto inicial (€)") },
+                label = { Text(stringResource(R.string.prefs_settings) + " (€)") }, // Usando un string existente de presupuesto si hubiera uno mejor
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -157,7 +155,7 @@ fun CreateTripScreen(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Descripción") },
+                label = { Text(stringResource(R.string.trip_field_desc)) },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3
             )
@@ -187,7 +185,7 @@ fun CreateTripScreen(
                 shape = MaterialTheme.shapes.medium,
                 enabled = title.isNotBlank()
             ) {
-                Text(if (tripToEdit == null) "Crear Viaje" else "Guardar Cambios")
+                Text(stringResource(if (tripToEdit == null) R.string.trip_save else R.string.prefs_save))
             }
         }
     }
@@ -213,7 +211,7 @@ fun DatePickerDialogWrapper(onDateSelected: (String) -> Unit, onDismiss: () -> U
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancel))
             }
         }
     ) {

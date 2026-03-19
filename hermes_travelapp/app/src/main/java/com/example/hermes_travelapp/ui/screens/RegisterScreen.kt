@@ -5,9 +5,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 
 @Composable
@@ -27,7 +29,7 @@ fun RegisterScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Create Account",
+                text = stringResource(R.string.auth_create_account),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
@@ -35,7 +37,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                label = { Text("Name", style = MaterialTheme.typography.bodyMedium) },
+                label = { Text(stringResource(R.string.auth_name), style = MaterialTheme.typography.bodyMedium) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
@@ -43,7 +45,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                label = { Text("Surname", style = MaterialTheme.typography.bodyMedium) },
+                label = { Text(stringResource(R.string.auth_surname), style = MaterialTheme.typography.bodyMedium) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
@@ -51,7 +53,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                label = { Text("Email", style = MaterialTheme.typography.bodyMedium) },
+                label = { Text(stringResource(R.string.auth_email), style = MaterialTheme.typography.bodyMedium) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge
             )
@@ -59,7 +61,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                label = { Text("Password", style = MaterialTheme.typography.bodyMedium) },
+                label = { Text(stringResource(R.string.auth_password), style = MaterialTheme.typography.bodyMedium) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge
@@ -69,12 +71,12 @@ fun RegisterScreen(
                 onClick = onRegisterClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Register")
+                Text(stringResource(R.string.register_title))
             }
             Spacer(modifier = Modifier.height(8.dp))
             TextButton(onClick = onNavigateToLogin) {
                 Text(
-                    "Already have an account? Login",
+                    stringResource(R.string.auth_has_account),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary
                 )

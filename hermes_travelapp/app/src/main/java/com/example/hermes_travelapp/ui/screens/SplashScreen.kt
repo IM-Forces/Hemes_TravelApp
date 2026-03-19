@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,6 @@ fun SplashScreen(onNavigateToLogin: () -> Unit) {
     var progress by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(Unit) {
-        // Animación de la barra de progreso
         while (progress < 1f) {
             delay(30L)
             progress += 0.01f
@@ -54,14 +54,13 @@ fun SplashScreenContent(progress: Float = 0f) {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logofinal),
-                contentDescription = "Logo Hermes Travel App",
+                contentDescription = stringResource(R.string.app_name),
                 modifier = Modifier.size(400.dp),
                 contentScale = ContentScale.Fit
             )
 
-            // Título HERMES - Forzamos Primary (Dorado) para identidad de marca
             Text(
-                text = "HERMES",
+                text = stringResource(R.string.splash_hermes),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 48.sp,
@@ -71,7 +70,6 @@ fun SplashScreenContent(progress: Float = 0f) {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Línea decorativa - Usa Primary con opacidad
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.width(220.dp)
@@ -99,9 +97,8 @@ fun SplashScreenContent(progress: Float = 0f) {
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Subtítulo TRAVEL APP - Dinámico según el tema (onBackground)
             Text(
-                text = "TRAVEL APP",
+                text = stringResource(R.string.splash_travel_app),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 13.sp,
@@ -112,7 +109,7 @@ fun SplashScreenContent(progress: Float = 0f) {
             Spacer(modifier = Modifier.height(56.dp))
 
             Text(
-                text = "Starting your Journey...",
+                text = stringResource(R.string.splash_starting),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 letterSpacing = 1.sp
@@ -120,7 +117,6 @@ fun SplashScreenContent(progress: Float = 0f) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Barra de carga usando los colores del Tema
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
@@ -138,7 +134,7 @@ fun SplashScreenContent(progress: Float = 0f) {
         }
 
         Text(
-            text = "v1.0.0 - Sprint 01",
+            text = stringResource(R.string.splash_version_sprint, "1.0.0", "01"),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             fontSize = 12.sp,
@@ -153,14 +149,6 @@ fun SplashScreenContent(progress: Float = 0f) {
 @Composable
 fun SplashScreenPreviewLight() {
     Hermes_travelappTheme(darkTheme = false) {
-        SplashScreenContent(progress = 0.5f)
-    }
-}
-
-@Preview(showBackground = true, name = "Splash Mode Dark")
-@Composable
-fun SplashScreenPreviewDark() {
-    Hermes_travelappTheme(darkTheme = true) {
         SplashScreenContent(progress = 0.5f)
     }
 }
