@@ -18,6 +18,8 @@
     <string name="profile_personal_info">Información Personal</string>
     <string name="profile_support_legal">Soporte y Legal</string>
     <string name="profile_about_hermes">Sobre Hermes</string>
+    <string name="profile_trips_active">%1$d Viajes Activos</string>
+    <string name="profile_countries_visited">%1$d Países</string>
 
     <!-- Preferences Screen -->
     <string name="prefs_title">Preferencias</string>
@@ -28,6 +30,8 @@
     <string name="prefs_dark_mode">Modo Oscuro</string>
     <string name="prefs_language">Idioma</string>
     <string name="prefs_save">Guardar cambios</string>
+    <string name="prefs_on">Encendido</string>
+    <string name="prefs_off">Apagado</string>
 
     <!-- Trips Screen -->
     <string name="trips_title">Mis Viajes</string>
@@ -111,6 +115,7 @@
     <string name="about_android_version">Versión de Android</string>
     <string name="about_sdk_level">Nivel de SDK</string>
     <string name="about_environment">Entorno</string>
+    <string name="about_env_dev">Desarrollo</string>
     <string name="about_team">Nuestro Equipo</string>
     <string name="about_copyright">© 2025 Hermes Travel Co. \nHecho con ❤️ para viajeros.</string>
 
@@ -119,6 +124,17 @@
     <string name="terms_accept">Aceptar</string>
     <string name="terms_reject">Rechazar</string>
     <string name="terms_content">Bienvenido a Hermes Travel App. Al utilizar esta aplicación, aceptas cumplir y estar sujeto a los siguientes términos y condiciones de uso.\n\n1. Uso de la Aplicación: Aceptas usar la app solo para fines legales y de una manera que no infrinja los derechos de otros.\n\n2. Cuentas de Usuario: Eres responsable de mantener la confidencialidad de tu cuenta y contraseña.\n\n3. Privacidad: Tu uso de la app también se rige por nuestra Política de Privacidad.\n\n4. Contenido: Conservas la propiedad de cualquier contenido que envíes, pero nos otorgas una licencia para usarlo dentro del contexto de la app.\n\n5. Limitación de Responsabilidad: No seremos responsables de ningún daño indirecto o consecuente resultante de tu uso de la app.\n\n6. Cambios en los Términos: Nos reservamos el derecho de modificar estos términos en cualquier momento.\n\nSi tienes alguna pregunta sobre estos términos, por favor contáctanos.</string>
+
+    <!-- Detail Screen -->
+    <string name="detail_not_found">No s\'ha trobat informació del viatge.</string>
+    <string name="detail_days_to_adventure">Falten %1$d dies per a la teva aventura</string>
+    <string name="detail_budget">Presupuesto</string>
+    <string name="detail_spent">Gastado</string>
+    <string name="detail_total">Total</string>
+    <string name="detail_description">Descripción</string>
+    <string name="detail_daily_itinerary">Itinerari diari</string>
+    <string name="detail_budget_total_pct">%1$d%% del presupuesto total</string>
+    <string name="add">Añadir</string>
 
     <!-- Common -->
     <string name="ok">Aceptar</string>

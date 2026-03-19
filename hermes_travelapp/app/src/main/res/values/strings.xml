@@ -18,6 +18,8 @@
     <string name="profile_personal_info">Personal Info</string>
     <string name="profile_support_legal">Support &amp; Legal</string>
     <string name="profile_about_hermes">About Hermes</string>
+    <string name="profile_trips_active">%1$d Active Trips</string>
+    <string name="profile_countries_visited">%1$d Countries</string>
 
     <!-- Preferences Screen -->
     <string name="prefs_title">Preferences</string>
@@ -28,6 +30,8 @@
     <string name="prefs_dark_mode">Dark Mode</string>
     <string name="prefs_language">Language</string>
     <string name="prefs_save">Save Changes</string>
+    <string name="prefs_on">On</string>
+    <string name="prefs_off">Off</string>
 
     <!-- Trips Screen -->
     <string name="trips_title">My Trips</string>
@@ -111,6 +115,7 @@
     <string name="about_android_version">Android Version</string>
     <string name="about_sdk_level">SDK Level</string>
     <string name="about_environment">Environment</string>
+    <string name="about_env_dev">Development</string>
     <string name="about_team">Our Team</string>
     <string name="about_copyright">© 2025 Hermes Travel Co. \nMade with ❤️ for travelers.</string>
 

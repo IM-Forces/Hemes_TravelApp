@@ -2,6 +2,7 @@ package com.example.hermes_travelapp.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 /**
  * Manager class to handle SharedPreferences for user settings.
@@ -20,17 +21,17 @@ class PreferencesManager(context: Context) {
 
     var username: String
         get() = sharedPreferences.getString(KEY_USERNAME, "") ?: ""
-        set(value) = sharedPreferences.edit().putString(KEY_USERNAME, value).apply()
+        set(value) = sharedPreferences.edit { putString(KEY_USERNAME, value) }
 
     var dateOfBirth: String
         get() = sharedPreferences.getString(KEY_DATE_OF_BIRTH, "") ?: ""
-        set(value) = sharedPreferences.edit().putString(KEY_DATE_OF_BIRTH, value).apply()
+        set(value) = sharedPreferences.edit { putString(KEY_DATE_OF_BIRTH, value) }
 
     var isDarkMode: Boolean
         get() = sharedPreferences.getBoolean(KEY_DARK_MODE, false)
-        set(value) = sharedPreferences.edit().putBoolean(KEY_DARK_MODE, value).apply()
+        set(value) = sharedPreferences.edit { putBoolean(KEY_DARK_MODE, value) }
 
     var language: String
         get() = sharedPreferences.getString(KEY_LANGUAGE, "es") ?: "es"
-        set(value) = sharedPreferences.edit().putString(KEY_LANGUAGE, value).apply()
+        set(value) = sharedPreferences.edit { putString(KEY_LANGUAGE, value) }
 }
