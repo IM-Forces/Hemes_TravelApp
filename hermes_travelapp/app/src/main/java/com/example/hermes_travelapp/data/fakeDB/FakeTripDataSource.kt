@@ -1,18 +1,16 @@
 package com.example.hermes_travelapp.data.fakeDB
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import com.example.hermes_travelapp.domain.Trip
 
 /**
  * Singleton data source providing in-memory storage for Trips.
- * This class handles the actual data manipulation, similar to FakeActivityDataSource.
+ * Reactivity is now managed by the ViewModel's StateFlow.
  */
 object FakeTripDataSource {
     private const val TAG = "FakeTripDataSource"
     
-    // Using mutableStateListOf to ensure Compose observers are notified of changes
-    private val _trips = mutableStateListOf<Trip>()
+    private val _trips = mutableListOf<Trip>()
 
     init {
         // Pre-load sample data
@@ -50,7 +48,7 @@ object FakeTripDataSource {
      */
     fun getTrips(): List<Trip> {
         Log.d(TAG, "Fetching all trips. Total: ${_trips.size}")
-        return _trips
+        return _trips.toList()
     }
 
     /**

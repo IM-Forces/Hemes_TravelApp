@@ -80,7 +80,7 @@ fun TripOverviewScreen(
             date = domainDay.date.format(dateFormatter),
             dayOfWeek = domainDay.date.format(dayOfWeekFormatter).replaceFirstChar { it.uppercase() },
             dayNumber = domainDay.dayNumber,
-            location = domainDay.subtitle.ifBlank { stringResource(R.string.itinerary_no_activities) },
+            location = domainDay.subtitle.ifBlank { stringResource(R.string.itinerary_no_desc) },
             activitiesCount = 0
         )
     }
@@ -184,7 +184,7 @@ fun BudgetOverviewCard(spent: Int, total: Int) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(R.string.detail_budget), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(text = "€$spent / €$total", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
+                Text(text = stringResource(R.string.itinerary_budget_total, spent, total), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
             }
             Spacer(modifier = Modifier.height(12.dp))
             LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))

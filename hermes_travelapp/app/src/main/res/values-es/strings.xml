@@ -58,6 +58,7 @@
     <string name="error_invalid_format">Formato de fecha inválido. Usa DD/MM/AAAA</string>
     <string name="error_trip_not_found">Viaje no encontrado</string>
     <string name="error_validation">Error de Validación</string>
+    <string name="error_field_required">El campo es obligatorio</string>
 
     <!-- Itinerary -->
     <string name="itinerary_title">Itinerario</string>
@@ -68,6 +69,23 @@
     <string name="itinerary_activities">%1$d actividades</string>
     <string name="itinerary_no_activities">No hay actividades planeadas</string>
     <string name="itinerary_add_first_activity">Añadir primera actividad</string>
+    <string name="itinerary_new_activity">Nueva Actividad</string>
+    <string name="itinerary_edit_activity">Editar Actividad</string>
+    <string name="itinerary_activity_title">Título de la actividad *</string>
+    <string name="itinerary_activity_desc">Descripción *</string>
+    <string name="itinerary_activity_time">Hora *</string>
+    <string name="itinerary_activity_location">Ubicación (opcional)</string>
+    <string name="itinerary_activity_cost">Coste estimado (€)</string>
+    <string name="itinerary_delete_activity">¿Eliminar actividad?</string>
+    <string name="itinerary_delete_confirm">¿Estás seguro de que quieres eliminar \'%1$s\' permanentemente?</string>
+    <string name="itinerary_activity_added">Actividad añadida: %1$s</string>
+    <string name="itinerary_activity_updated">Actividad actualizada: %1$s</string>
+    <string name="itinerary_activity_deleted">Actividad eliminada</string>
+    <string name="itinerary_no_location">Sin ubicación</string>
+    <string name="itinerary_budget_total">€%1$d / €%2$d</string>
+    <string name="itinerary_no_desc">Sin descripción</string>
+    <string name="itinerary_options">Opciones</string>
+    <string name="itinerary_add_activity_cd">Añadir actividad</string>
 
     <!-- Home Screen -->
     <string name="home_title">Explora el mundo</string>
@@ -132,11 +150,12 @@
     <string name="detail_spent">Gastado</string>
     <string name="detail_total">Total</string>
     <string name="detail_description">Descripción</string>
-    <string name="detail_daily_itinerary">Itinerari diari</string>
+    <string name="detail_daily_itinerary">Itinerario diario</string>
     <string name="detail_budget_total_pct">%1$d%% del presupuesto total</string>
     <string name="add">Añadir</string>
 
     <!-- Common -->
     <string name="ok">Aceptar</string>
     <string name="edit">Editar</string>
+    <string name="save">Guardar</string>
 </resources>
