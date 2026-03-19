@@ -16,6 +16,9 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,13 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.hermes_travelapp.domain.TripDay
 import com.example.hermes_travelapp.ui.theme.*
+import com.example.hermes_travelapp.ui.viewmodels.TripDayViewModel
+import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 /**
- * Data class representing a day within a trip itinerary.
+ * UI representation of a trip day for the overview timeline.
  */
-data class TripDay(
+data class TripDayUI(
     val id: String,
     val date: String,
     val dayOfWeek: String,
@@ -39,32 +47,47 @@ data class TripDay(
     val activitiesCount: Int
 )
 
-/**
- * Mock data for TripOverviewScreen preview and development.
- */
-val mockTripDays = listOf(
-    TripDay("1", "15 Jun", "Miér", 1, "Llegada a Atenas", 3),
-    TripDay("2", "16 Jun", "Juev", 2, "Acrópolis y Plaka", 4),
-    TripDay("3", "17 Jun", "Vier", 3, "Museos de Atenas", 2),
-    TripDay("4", "18 Jun", "Sáb", 4, "Viaje a Mykonos", 3),
-    TripDay("5", "19 Jun", "Dom", 5, "Playas de Mykonos", 2),
-    TripDay("6", "20 Jun", "Lun", 6, "Puesta de sol en Little Venice", 3),
-    TripDay("7", "21 Jun", "Mar", 7, "Regreso a Atenas", 2),
-    TripDay("8", "22 Jun", "Miér", 8, "Vuelo de vuelta", 1),
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TripOverviewScreen(
-    tripId: String = "1",
-    tripName: String = "Grecia Clásica",
-    emoji: String = "🏛️",
-    dates: String = "15 Jun - 22 Jun",
-    duration: String = "8 días",
-    daysRemaining: Int = 12,
+    tripId: String,
+    tripViewModel: TripViewModel = viewModel(),
+    tripDayViewModel: TripDayViewModel = viewModel(),
     onDayClick: (dayId: String) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
+    // Find the trip data
+    val trip = tripViewModel.trips.find { it.id == tripId }
+    
+    // Load real days from ViewModel
+    val realDays by tripDayViewModel.tripDays.collectAsState()
+    
+    LaunchedEffect(tripId) {
+        tripDayViewModel.loadDaysForTrip(tripId)
+    }
+
+    if (trip == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Viaje no encontrado", style = MaterialTheme.typography.headlineMedium)
+        }
+        return
+    }
+
+    // Map domain TripDay to TripDayUI
+    val dateFormatter = DateTimeFormatter.ofPattern("dd MMM", Locale("es", "ES"))
+    val dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEE", Locale("es", "ES"))
+
+    val uiDays = realDays.map { domainDay ->
+        TripDayUI(
+            id = domainDay.id,
+            date = domainDay.date.format(dateFormatter),
+            dayOfWeek = domainDay.date.format(dayOfWeekFormatter).replaceFirstChar { it.uppercase() },
+            dayNumber = domainDay.dayNumber,
+            location = domainDay.subtitle.ifBlank { "Sin descripción" },
+            activitiesCount = 0 // Future: get from ActivityViewModel if needed
+        )
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
@@ -73,13 +96,13 @@ fun TripOverviewScreen(
                 .fillMaxSize()
                 .padding(bottom = paddingValues.calculateBottomPadding())
         ) {
-            // 1. Header Section with Hero Image Placeholder
+            // 1. Header Section
             item {
                 TripOverviewHeader(
-                    tripName = "$emoji $tripName",
-                    dates = dates,
-                    duration = duration,
-                    daysRemaining = daysRemaining,
+                    tripName = "${trip.emoji} ${trip.title}",
+                    dates = "${trip.startDate} - ${trip.endDate}",
+                    duration = "", // Could be calculated if needed
+                    daysRemaining = trip.daysRemaining,
                     onBack = onBack
                 )
             }
@@ -87,7 +110,7 @@ fun TripOverviewScreen(
             // 2. Budget Overview Card
             item {
                 Box(modifier = Modifier.padding(16.dp)) {
-                    BudgetOverviewCard(spent = 450, total = 1200)
+                    BudgetOverviewCard(spent = trip.spent, total = trip.budget)
                 }
             }
 
@@ -102,14 +125,22 @@ fun TripOverviewScreen(
                 )
             }
 
-            // 4. Vertical Timeline with Days
-            itemsIndexed(mockTripDays) { index, day ->
-                TimelineDayItem(
-                    day = day,
-                    isFirst = index == 0,
-                    isLast = index == mockTripDays.size - 1,
-                    onClick = { onDayClick(day.id) }
-                )
+            // 4. Vertical Timeline with Real Days
+            if (uiDays.isEmpty()) {
+                item {
+                    Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                        Text("No hay días generados para este viaje.", color = Color.Gray)
+                    }
+                }
+            } else {
+                itemsIndexed(uiDays) { index, day ->
+                    TimelineDayItem(
+                        day = day,
+                        isFirst = index == 0,
+                        isLast = index == uiDays.size - 1,
+                        onClick = { onDayClick(day.id) }
+                    )
+                }
             }
 
             // 5. Add Day Button
@@ -152,7 +183,6 @@ fun TripOverviewHeader(
             .height(280.dp)
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        // Hero Image Placeholder Icon
         Icon(
             imageVector = Icons.Default.Image,
             contentDescription = null,
@@ -162,7 +192,6 @@ fun TripOverviewHeader(
             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
         )
 
-        // Dark gradient for text legibility
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -173,7 +202,6 @@ fun TripOverviewHeader(
                 )
         )
 
-        // Back Button with semi-transparent background
         IconButton(
             onClick = onBack,
             modifier = Modifier
@@ -185,7 +213,6 @@ fun TripOverviewHeader(
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = BlancoMarmol)
         }
 
-        // Trip Details at the bottom of the banner
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -202,7 +229,6 @@ fun TripOverviewHeader(
                     fontWeight = FontWeight.Bold
                 )
                 
-                // Days Remaining Badge using custom DoradoAtenea color
                 Surface(
                     color = DoradoAtenea,
                     shape = RoundedCornerShape(8.dp)
@@ -218,7 +244,7 @@ fun TripOverviewHeader(
             }
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "📅 $dates • $duration",
+                text = "📅 $dates" + (if (duration.isNotBlank()) " • $duration" else ""),
                 style = MaterialTheme.typography.bodyLarge,
                 color = BlancoMarmol.copy(alpha = 0.8f)
             )
@@ -228,7 +254,7 @@ fun TripOverviewHeader(
 
 @Composable
 fun BudgetOverviewCard(spent: Int, total: Int) {
-    val progress = spent.toFloat() / total.toFloat()
+    val progress = if (total > 0) spent.toFloat() / total.toFloat() else 0f
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -275,7 +301,7 @@ fun BudgetOverviewCard(spent: Int, total: Int) {
 
 @Composable
 fun TimelineDayItem(
-    day: TripDay,
+    day: TripDayUI,
     isFirst: Boolean,
     isLast: Boolean,
     onClick: () -> Unit
@@ -286,26 +312,22 @@ fun TimelineDayItem(
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.Top
     ) {
-        // Vertical Timeline Connector
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.width(40.dp)
         ) {
-            // Top line (hidden for first item)
             Box(
                 modifier = Modifier
                     .width(2.dp)
                     .height(24.dp)
                     .background(if (isFirst) Color.Transparent else MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
             )
-            // Timeline Node (Dot)
             Box(
                 modifier = Modifier
                     .size(16.dp)
                     .background(MaterialTheme.colorScheme.primary, CircleShape)
                     .border(4.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.2f), CircleShape)
             )
-            // Bottom line (hidden for last item)
             Box(
                 modifier = Modifier
                     .width(2.dp)
@@ -317,7 +339,6 @@ fun TimelineDayItem(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Clickable Day Card
         Card(
             modifier = Modifier
                 .weight(1f)
@@ -377,18 +398,5 @@ fun TimelineDayItem(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true, name = "Modo Claro")
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "Modo Oscuro"
-)
-@Composable
-fun TripOverviewScreenPreview() {
-    Hermes_travelappTheme {
-        TripOverviewScreen()
     }
 }

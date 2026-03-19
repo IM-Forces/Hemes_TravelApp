@@ -19,10 +19,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.hermes_travelapp.data.repository.TripDayRepositoryImpl
 import com.example.hermes_travelapp.data.repository.TripRepositoryImpl
 import com.example.hermes_travelapp.domain.RecommendationItem
 import com.example.hermes_travelapp.domain.Trip
+import com.example.hermes_travelapp.domain.generateDaysForTrip
 import com.example.hermes_travelapp.ui.screens.*
+import com.example.hermes_travelapp.ui.viewmodels.TripDayViewModel
 import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
 import com.example.hermes_travelapp.ui.viewmodels.ViewModelFactory
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
@@ -39,9 +42,16 @@ sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: 
 fun NavGraph(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     
-    // Inyección manual simple por ahora
-    val repository = TripRepositoryImpl()
-    val tripViewModel: TripViewModel = viewModel(factory = ViewModelFactory(repository))
+    // Inyección manual simple con persistencia durante recomposiciones
+    val tripRepository = remember { TripRepositoryImpl() }
+    val tripDayRepository = remember { TripDayRepositoryImpl() }
+    
+    val tripViewModel: TripViewModel = viewModel(
+        factory = ViewModelFactory(tripRepository = tripRepository)
+    )
+    val tripDayViewModel: TripDayViewModel = viewModel(
+        factory = ViewModelFactory(tripDayRepository = tripDayRepository)
+    )
     
     var tripToEdit by remember { mutableStateOf<Trip?>(null) }
     var selectedTrip by remember { mutableStateOf<Trip?>(null) }
@@ -85,7 +95,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
                 },
                 onTripClick = { trip ->
                     selectedTrip = trip
-                    navController.navigate("tripOverview/\${trip.id}")
+                    navController.navigate("tripOverview/${trip.id}")
                 },
                 favoritePlaces = favoritePlaces,
                 onToggleFavorite = { item ->
@@ -103,8 +113,10 @@ fun NavGraph(modifier: Modifier = Modifier) {
             val tripId = backStackEntry.arguments?.getString("tripId") ?: "1"
             TripOverviewScreen(
                 tripId = tripId,
+                tripViewModel = tripViewModel, // Faltaba pasar este VM
+                tripDayViewModel = tripDayViewModel,
                 onDayClick = { dayId -> 
-                    navController.navigate("dayItinerary/\$tripId/\$dayId") 
+                    navController.navigate("dayItinerary/$tripId/$dayId")
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -116,6 +128,8 @@ fun NavGraph(modifier: Modifier = Modifier) {
             DayItineraryScreen(
                 tripId = tripId,
                 dayId = dayId,
+                tripViewModel = tripViewModel, // Añadido para mostrar el título
+                tripDayViewModel = tripDayViewModel,
                 onBack = { navController.popBackStack() },
                 onNavigateToEditActivity = { activityId -> /* TODO */ }
             )
@@ -132,9 +146,17 @@ fun NavGraph(modifier: Modifier = Modifier) {
                 },
                 onSaveTrip = { trip ->
                     val success = if (tripToEdit == null) {
-                        tripViewModel.addTrip(trip)
+                        val added = tripViewModel.addTrip(trip)
+                        if (added) {
+                            generateDaysForTrip(trip, tripDayRepository)
+                        }
+                        added
                     } else {
-                        tripViewModel.editTrip(trip)
+                        val edited = tripViewModel.editTrip(trip)
+                        if (edited) {
+                            generateDaysForTrip(trip, tripDayRepository)
+                        }
+                        edited
                     }
                     if (success) {
                         tripToEdit = null
