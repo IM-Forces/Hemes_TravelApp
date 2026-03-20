@@ -1,6 +1,5 @@
 package com.example.hermes_travelapp.ui.screens
 
-import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -68,15 +67,22 @@ fun PreferencesScreenContent(
     var emailUpdatesEnabled by remember { mutableStateOf(false) }
     
     val currentLangDisplay = when (currentLangCode) {
-        "es" -> "Español"
-        "ca" -> "Català"
-        else -> "English"
+        "es" -> stringResource(R.string.prefs_lang_spanish)
+        "ca" -> stringResource(R.string.prefs_lang_catalan)
+        else -> stringResource(R.string.prefs_lang_english)
     }
     
     var showLanguageDialog by remember { mutableStateOf(false) }
-    var selectedCurrency by remember { mutableStateOf("EUR (€)") }
-    var selectedDateFormat by remember { mutableStateOf("DD/MM/YYYY") }
-    var selectedTextSize by remember { mutableStateOf("Medium") }
+    
+    // Fixed: stringResource() must be called in a @Composable context, not inside remember's non-composable lambda
+    val initialCurrency = stringResource(R.string.prefs_currency_default)
+    var selectedCurrency by remember { mutableStateOf(initialCurrency) }
+    
+    val initialDateFormat = stringResource(R.string.prefs_date_format_default)
+    var selectedDateFormat by remember { mutableStateOf(initialDateFormat) }
+    
+    val initialTextSize = stringResource(R.string.prefs_text_size_default)
+    var selectedTextSize by remember { mutableStateOf(initialTextSize) }
 
     if (showLanguageDialog) {
         AlertDialog(
@@ -84,15 +90,15 @@ fun PreferencesScreenContent(
             title = { Text(stringResource(R.string.prefs_language)) },
             text = {
                 Column {
-                    LanguageOption("English", "en") { 
+                    LanguageOption(stringResource(R.string.prefs_lang_english)) { 
                         onLanguageChange("en")
                         showLanguageDialog = false
                     }
-                    LanguageOption("Español", "es") { 
+                    LanguageOption(stringResource(R.string.prefs_lang_spanish)) { 
                         onLanguageChange("es")
                         showLanguageDialog = false
                     }
-                    LanguageOption("Català", "ca") { 
+                    LanguageOption(stringResource(R.string.prefs_lang_catalan)) { 
                         onLanguageChange("ca")
                         showLanguageDialog = false
                     }
@@ -137,7 +143,7 @@ fun PreferencesScreenContent(
         ) {
             // Section: App Settings
             Text(
-                text = "App Settings",
+                text = stringResource(R.string.prefs_app_settings),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 8.dp)
@@ -151,14 +157,14 @@ fun PreferencesScreenContent(
             )
 
             PreferenceItem(
-                title = "Currency",
+                title = stringResource(R.string.prefs_currency),
                 subtitle = selectedCurrency,
                 icon = Icons.Default.Payments,
                 onClick = { /* Mock: Open Currency Dialog */ }
             )
 
             PreferenceItem(
-                title = "Date Format",
+                title = stringResource(R.string.prefs_date_format),
                 subtitle = selectedDateFormat,
                 icon = Icons.Default.CalendarToday,
                 onClick = { /* Mock: Open Date Format Dialog */ }
@@ -168,7 +174,7 @@ fun PreferencesScreenContent(
 
             // Section: Appearance
             Text(
-                text = "Appearance",
+                text = stringResource(R.string.prefs_appearance),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 8.dp, top = 8.dp)
@@ -183,7 +189,7 @@ fun PreferencesScreenContent(
             )
 
             PreferenceItem(
-                title = "Text Size",
+                title = stringResource(R.string.prefs_text_size),
                 subtitle = selectedTextSize,
                 icon = Icons.Default.FormatSize,
                 onClick = { /* Mock: Open Text Size Dialog */ }
@@ -193,23 +199,23 @@ fun PreferencesScreenContent(
 
             // Section: Notifications
             Text(
-                text = "Notifications",
+                text = stringResource(R.string.prefs_notifications),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(start = 8.dp, top = 8.dp)
             )
 
             PreferenceSwitchItem(
-                title = "Push Notifications",
-                subtitle = "Receive alerts about your trips",
+                title = stringResource(R.string.prefs_push_notifications),
+                subtitle = stringResource(R.string.prefs_push_notifications_subtitle),
                 icon = Icons.Default.NotificationsActive,
                 checked = notificationsEnabled,
                 onCheckedChange = { notificationsEnabled = it }
             )
 
             PreferenceSwitchItem(
-                title = "Email Updates",
-                subtitle = "Get travel tips and offers",
+                title = stringResource(R.string.prefs_email_updates),
+                subtitle = stringResource(R.string.prefs_email_updates_subtitle),
                 icon = Icons.Default.Mail,
                 checked = emailUpdatesEnabled,
                 onCheckedChange = { emailUpdatesEnabled = it }
@@ -230,7 +236,7 @@ fun PreferencesScreenContent(
 }
 
 @Composable
-fun LanguageOption(label: String, code: String, onClick: () -> Unit) {
+fun LanguageOption(label: String, onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),

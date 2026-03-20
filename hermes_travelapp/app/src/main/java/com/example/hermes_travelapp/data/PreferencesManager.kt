@@ -14,6 +14,7 @@ class PreferencesManager(context: Context) {
 
     companion object {
         private const val KEY_USERNAME = "username"
+        private const val KEY_EMAIL = "email"
         private const val KEY_DATE_OF_BIRTH = "birth_date"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_LANGUAGE = "app_language"
@@ -22,6 +23,10 @@ class PreferencesManager(context: Context) {
     var username: String
         get() = sharedPreferences.getString(KEY_USERNAME, "") ?: ""
         set(value) = sharedPreferences.edit { putString(KEY_USERNAME, value) }
+
+    var email: String
+        get() = sharedPreferences.getString(KEY_EMAIL, "vitor.dasilva@example.com") ?: "vitor.dasilva@example.com"
+        set(value) = sharedPreferences.edit { putString(KEY_EMAIL, value) }
 
     var dateOfBirth: String
         get() = sharedPreferences.getString(KEY_DATE_OF_BIRTH, "") ?: ""

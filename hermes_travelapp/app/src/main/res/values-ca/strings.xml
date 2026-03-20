@@ -28,6 +28,22 @@
     <string name="prefs_dark_mode">Mode Fosc</string>
     <string name="prefs_language">Idioma</string>
     <string name="prefs_save">Guardar canvis</string>
+    <string name="prefs_app_settings">Configuració de l\'aplicació</string>
+    <string name="prefs_currency">Moneda</string>
+    <string name="prefs_date_format">Format de data</string>
+    <string name="prefs_appearance">Aparença</string>
+    <string name="prefs_text_size">Mida del text</string>
+    <string name="prefs_notifications">Notificacions</string>
+    <string name="prefs_push_notifications">Notificacions push</string>
+    <string name="prefs_push_notifications_subtitle">Rep alertes sobre els teus viatges</string>
+    <string name="prefs_email_updates">Actualitzacions per correu</string>
+    <string name="prefs_email_updates_subtitle">Rep consells i ofertes de viatge</string>
+    <string name="prefs_currency_default">EUR (€)</string>
+    <string name="prefs_date_format_default">DD/MM/AAAA</string>
+    <string name="prefs_text_size_default">Mitjà</string>
+    <string name="prefs_lang_english">English</string>
+    <string name="prefs_lang_spanish">Español</string>
+    <string name="prefs_lang_catalan">Català</string>
 
     <!-- Account Screen -->
     <string name="account_save">Desar canvis</string>
@@ -117,7 +133,7 @@
     <string name="about_sprint">Sprint</string>
     <string name="about_android_version">Versió d\'Android</string>
     <string name="about_sdk_level">Nivel de SDK</string>
-    <string name="about_environment">Entorn</string>
+    <string name="about_environment">Entorno</string>
     <string name="about_team">El nostre Equip</string>
     <string name="about_copyright">© 2025 Hermes Travel Co. \nFet amb ❤️ per a viatgers.</string>
 

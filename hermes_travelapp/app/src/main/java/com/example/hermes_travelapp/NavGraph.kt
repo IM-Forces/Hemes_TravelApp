@@ -282,7 +282,8 @@ fun MainScreen(
                     onNavigateToAbout = { rootNavController.navigate("about") },
                     onNavigateToPreferences = { rootNavController.navigate("preferences") },
                     onNavigateToTerms = { rootNavController.navigate("terms") },
-                    accountViewModel = accountViewModel
+                    accountViewModel = accountViewModel,
+                    tripViewModel = tripViewModel
                 ) 
             }
         }

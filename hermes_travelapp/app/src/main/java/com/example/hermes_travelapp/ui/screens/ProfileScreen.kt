@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TravelExplore
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 import com.example.hermes_travelapp.ui.viewmodels.AccountViewModel
+import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
 
 @Composable
 fun ProfileScreen(
@@ -40,14 +40,17 @@ fun ProfileScreen(
     onNavigateToAbout: () -> Unit = {},
     onNavigateToPreferences: () -> Unit = {},
     onNavigateToTerms: () -> Unit = {},
-    accountViewModel: AccountViewModel = viewModel()
+    accountViewModel: AccountViewModel = viewModel(),
+    tripViewModel: TripViewModel = viewModel()
 ) {
     val username by accountViewModel.username.collectAsState()
     val email by accountViewModel.email.collectAsState()
+    val trips by tripViewModel.trips.collectAsState()
 
     ProfileScreenContent(
         username = username,
         email = email,
+        tripCount = trips.size,
         onNavigateToAccount = onNavigateToAccount,
         onNavigateToAbout = onNavigateToAbout,
         onNavigateToPreferences = onNavigateToPreferences,
@@ -59,6 +62,7 @@ fun ProfileScreen(
 fun ProfileScreenContent(
     username: String,
     email: String,
+    tripCount: Int = 0,
     onNavigateToAccount: () -> Unit = {},
     onNavigateToAbout: () -> Unit = {},
     onNavigateToPreferences: () -> Unit = {},
@@ -124,13 +128,10 @@ fun ProfileScreenContent(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ProfileStatBadge(text = "3 " + stringResource(R.string.nav_trips), icon = Icons.Default.TravelExplore)
-                        ProfileStatBadge(text = "12 Countries", icon = Icons.Default.Map)
-                    }
+                    ProfileStatBadge(
+                        text = "$tripCount " + stringResource(R.string.nav_trips),
+                        icon = Icons.Default.TravelExplore
+                    )
                 }
             }
             
@@ -291,7 +292,8 @@ fun ProfileScreenPreviewLight() {
     Hermes_travelappTheme(darkTheme = false) {
         ProfileScreenContent(
             username = "Vítor Da Silva",
-            email = "vitor.dasilva@example.com"
+            email = "vitor.dasilva@example.com",
+            tripCount = 3
         )
     }
 }
@@ -302,7 +304,8 @@ fun ProfileScreenPreviewDark() {
     Hermes_travelappTheme(darkTheme = true) {
         ProfileScreenContent(
             username = "Vítor Da Silva",
-            email = "vitor.dasilva@example.com"
+            email = "vitor.dasilva@example.com",
+            tripCount = 3
         )
     }
 }

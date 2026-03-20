@@ -32,6 +32,22 @@
     <string name="prefs_save">Save Changes</string>
     <string name="prefs_on">On</string>
     <string name="prefs_off">Off</string>
+    <string name="prefs_app_settings">App Settings</string>
+    <string name="prefs_currency">Currency</string>
+    <string name="prefs_date_format">Date Format</string>
+    <string name="prefs_appearance">Appearance</string>
+    <string name="prefs_text_size">Text Size</string>
+    <string name="prefs_notifications">Notifications</string>
+    <string name="prefs_push_notifications">Push Notifications</string>
+    <string name="prefs_push_notifications_subtitle">Receive alerts about your trips</string>
+    <string name="prefs_email_updates">Email Updates</string>
+    <string name="prefs_email_updates_subtitle">Get travel tips and offers</string>
+    <string name="prefs_currency_default">EUR (€)</string>
+    <string name="prefs_date_format_default">DD/MM/YYYY</string>
+    <string name="prefs_text_size_default">Medium</string>
+    <string name="prefs_lang_english">English</string>
+    <string name="prefs_lang_spanish">Español</string>
+    <string name="prefs_lang_catalan">Català</string>
 
     <!-- Account Screen -->
     <string name="account_save">Save changes</string>

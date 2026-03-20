@@ -18,7 +18,7 @@ class AccountViewModel(private val preferencesManager: PreferencesManager) : Vie
     private val _birthDate = MutableStateFlow(preferencesManager.dateOfBirth)
     val birthDate: StateFlow<String> = _birthDate.asStateFlow()
 
-    private val _email = MutableStateFlow("vitor.dasilva@example.com")
+    private val _email = MutableStateFlow(preferencesManager.email)
     val email: StateFlow<String> = _email.asStateFlow()
 
     private val _password = MutableStateFlow("")
@@ -68,6 +68,7 @@ class AccountViewModel(private val preferencesManager: PreferencesManager) : Vie
         
         preferencesManager.username = _username.value
         preferencesManager.dateOfBirth = _birthDate.value
+        preferencesManager.email = _email.value
         
         Log.d("AccountViewModel", "Username: ${_username.value}")
         Log.d("AccountViewModel", "BirthDate: ${_birthDate.value}")
