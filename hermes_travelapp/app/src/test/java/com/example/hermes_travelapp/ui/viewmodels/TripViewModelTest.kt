@@ -2,8 +2,9 @@ package com.example.hermes_travelapp.ui.viewmodels
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.hermes_travelapp.domain.Trip
-import com.example.hermes_travelapp.domain.TripRepository
+import com.example.hermes_travelapp.R
+import com.example.hermes_travelapp.domain.model.Trip
+import com.example.hermes_travelapp.domain.repository.TripRepository
 import io.mockk.*
 import org.junit.After
 import org.junit.Before
@@ -50,7 +51,7 @@ class TripViewModelTest {
         
         assertTrue(result)
         verify { repository.addTrip(trip) }
-        assertNull(viewModel.errorMessage.value)
+        assertNull(viewModel.errorMessageRes.value)
     }
 
     @Test
@@ -61,7 +62,7 @@ class TripViewModelTest {
         
         assertTrue(result)
         verify { repository.editTrip(trip) }
-        assertNull(viewModel.errorMessage.value)
+        assertNull(viewModel.errorMessageRes.value)
     }
 
     @Test
@@ -94,7 +95,8 @@ class TripViewModelTest {
         val result = viewModel.addTrip(trip)
         
         assertFalse(result)
-        assertEquals("Ambas fechas son obligatorias", viewModel.errorMessage.value)
+        // Comprobamos contra el ID del recurso de error
+        assertEquals(R.string.error_required_dates, viewModel.errorMessageRes.value)
     }
 
     @Test
@@ -104,6 +106,7 @@ class TripViewModelTest {
         val result = viewModel.addTrip(trip)
         
         assertFalse(result)
-        assertEquals("La fecha de inicio debe ser anterior a la de fin", viewModel.errorMessage.value)
+        // Comprobamos contra el ID del recurso de error de rango
+        assertEquals(R.string.error_invalid_range, viewModel.errorMessageRes.value)
     }
 }

@@ -2,8 +2,8 @@ package com.example.hermes_travelapp.ui.viewmodels
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.hermes_travelapp.domain.ActivityRepository
-import com.example.hermes_travelapp.domain.ItineraryItem
+import com.example.hermes_travelapp.domain.repository.ActivityRepository
+import com.example.hermes_travelapp.domain.model.ItineraryItem
 import io.mockk.*
 import org.junit.After
 import org.junit.Before

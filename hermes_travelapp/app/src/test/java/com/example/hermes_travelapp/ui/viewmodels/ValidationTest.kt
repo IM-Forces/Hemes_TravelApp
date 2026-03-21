@@ -1,6 +1,6 @@
 package com.example.hermes_travelapp.ui.viewmodels
 
-import com.example.hermes_travelapp.domain.Trip
+import com.example.hermes_travelapp.domain.model.Trip
 import com.example.hermes_travelapp.domain.ValidationUtils
 import org.junit.Test
 import java.time.LocalDate
@@ -14,10 +14,9 @@ class ValidationTest {
 
     @Test
     fun `test startDate must be before endDate`() {
-        // Usamos fechas futuras para evitar que salte primero el error de "fecha en el pasado"
         val futureDate = LocalDate.now().plusYears(1)
-        val startDate = futureDate.plusDays(10).format(formatter) // Día 20
-        val endDate = futureDate.plusDays(5).format(formatter)   // Día 15 (Error: inicio > fin)
+        val startDate = futureDate.plusDays(10).format(formatter)
+        val endDate = futureDate.plusDays(5).format(formatter)
         
         val result = ValidationUtils.validateTripDates(startDate, endDate)
         
@@ -30,21 +29,18 @@ class ValidationTest {
         val tripStart = futureDate.format(formatter)
         val tripEnd = futureDate.plusDays(10).format(formatter)
         
-        // Before range
         val beforeDate = futureDate.minusDays(1)
         assertEquals(
             "La fecha de la actividad debe estar dentro del rango del viaje",
             ValidationUtils.validateActivityDate(beforeDate, tripStart, tripEnd)
         )
         
-        // After range
         val afterDate = futureDate.plusDays(11)
         assertEquals(
             "La fecha de la actividad debe estar dentro del rango del viaje",
             ValidationUtils.validateActivityDate(afterDate, tripStart, tripEnd)
         )
         
-        // Within range
         val validDate = futureDate.plusDays(5)
         assertNull(ValidationUtils.validateActivityDate(validDate, tripStart, tripEnd))
     }

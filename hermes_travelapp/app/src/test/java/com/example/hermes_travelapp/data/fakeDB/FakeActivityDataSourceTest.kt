@@ -1,7 +1,7 @@
 package com.example.hermes_travelapp.data.fakeDB
 
 import android.util.Log
-import com.example.hermes_travelapp.domain.ItineraryItem
+import com.example.hermes_travelapp.domain.model.ItineraryItem
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
@@ -11,7 +11,6 @@ import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
-import java.util.UUID
 
 class FakeActivityDataSourceTest {
 

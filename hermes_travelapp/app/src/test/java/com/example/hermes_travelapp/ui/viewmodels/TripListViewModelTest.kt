@@ -2,8 +2,9 @@ package com.example.hermes_travelapp.ui.viewmodels
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.hermes_travelapp.domain.Trip
-import com.example.hermes_travelapp.domain.TripRepository
+import com.example.hermes_travelapp.R
+import com.example.hermes_travelapp.domain.model.Trip
+import com.example.hermes_travelapp.domain.repository.TripRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -97,7 +98,8 @@ class TripListViewModelTest {
         val result = viewModel.addTrip(trip)
         
         assertFalse(result)
-        assertEquals("Ambas fechas son obligatorias", viewModel.errorMessage.value)
+        // Ahora comparamos contra el ID del recurso
+        assertEquals(R.string.error_required_dates, viewModel.errorMessageRes.value)
     }
 
     @Test
@@ -112,7 +114,8 @@ class TripListViewModelTest {
         val result = viewModel.addTrip(trip)
         
         assertFalse(result)
-        assertEquals("La fecha de inicio debe ser anterior a la de fin", viewModel.errorMessage.value)
+        // Ahora comparamos contra el ID del recurso
+        assertEquals(R.string.error_invalid_range, viewModel.errorMessageRes.value)
     }
 
     @Test

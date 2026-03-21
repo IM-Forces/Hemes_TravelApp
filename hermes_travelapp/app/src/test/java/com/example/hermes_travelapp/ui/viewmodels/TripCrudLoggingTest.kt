@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.hermes_travelapp.data.fakeDB.FakeTripDataSource
 import com.example.hermes_travelapp.data.repository.TripRepositoryImpl
-import com.example.hermes_travelapp.domain.Trip
+import com.example.hermes_travelapp.domain.model.Trip
 import io.mockk.*
 import org.junit.After
 import org.junit.Before

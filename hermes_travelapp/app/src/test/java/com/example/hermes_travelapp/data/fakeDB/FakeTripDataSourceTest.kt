@@ -1,7 +1,7 @@
 package com.example.hermes_travelapp.data.fakeDB
 
 import android.util.Log
-import com.example.hermes_travelapp.domain.Trip
+import com.example.hermes_travelapp.domain.model.Trip
 import io.mockk.every
 import io.mockk.mockkStatic
 import org.junit.Before
