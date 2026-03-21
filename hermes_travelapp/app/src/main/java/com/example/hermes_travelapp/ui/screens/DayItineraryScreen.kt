@@ -1,5 +1,6 @@
 package com.example.hermes_travelapp.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.hermes_travelapp.R
@@ -758,5 +760,76 @@ fun EditActivityBottomSheet(
             dismissButton = { TextButton(onClick = { showTimePicker = false }) { Text(stringResource(R.string.cancel)) } },
             text = { TimePicker(state = timePickerState) }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "Light Mode", showBackground = true)
+@Preview(name = "Dark Mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun DayItineraryPreview() {
+    val sampleDays = listOf(
+        TripDayInfo("1", 1, "20 May", LocalDate.now(), "Lun", 2, "€35"),
+        TripDayInfo("2", 2, "21 May", LocalDate.now().plusDays(1), "Mar", 0, "€0"),
+        TripDayInfo("3", 3, "22 May", LocalDate.now().plusDays(2), "Mié", 0, "€0")
+    )
+    val sampleActivities = listOf(
+        ItineraryItem(
+            id = "1",
+            tripId = "trip1",
+            dayId = "1",
+            title = "Acrópolis de Atenas",
+            description = "Visita al Partenón y museos antiguos.",
+            date = LocalDate.now(),
+            time = LocalTime.of(9, 0),
+            location = "Atenas, Grecia",
+            cost = 20.0
+        ),
+        ItineraryItem(
+            id = "2",
+            tripId = "trip1",
+            dayId = "1",
+            title = "Almuerzo en Plaka",
+            description = "Comida tradicional en el barrio histórico.",
+            date = LocalDate.now(),
+            time = LocalTime.of(13, 30),
+            location = "Plaka",
+            cost = 15.0
+        )
+    )
+
+    Hermes_travelappTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Viaje a Grecia", fontWeight = FontWeight.Bold) },
+                    navigationIcon = {
+                        IconButton(onClick = {}) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        titleContentColor = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+        ) { padding ->
+            Column(modifier = Modifier.padding(padding).fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                DayCarousel(
+                    days = sampleDays,
+                    dayCounts = mapOf("1" to 2, "2" to 0, "3" to 0),
+                    selectedPageIndex = 0,
+                    onDayClick = {}
+                )
+                DayContent(
+                    day = sampleDays[0],
+                    activities = sampleActivities,
+                    onEdit = {},
+                    onDelete = {},
+                    onAddFirst = {}
+                )
+            }
+        }
     }
 }

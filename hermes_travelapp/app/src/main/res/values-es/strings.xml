@@ -73,7 +73,7 @@
     <string name="trip_field_start">Fecha de inicio (DD/MM/AAAA)</string>
     <string name="trip_field_end">Fecha de fin (DD/MM/AAAA)</string>
     <string name="trip_save">Guardar Viaje</string>
-    <string name="trip_budget">Presupuesto inicial (€)</string>
+    <string name="trip_budget">Presupuesto</string>
 
     <!-- Errors -->
     <string name="error_required_dates">Ambas fechas son obligatorias</string>

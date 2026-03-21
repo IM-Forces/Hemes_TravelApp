@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +34,9 @@ import com.example.hermes_travelapp.domain.Trip
 import com.example.hermes_travelapp.ui.theme.*
 import com.example.hermes_travelapp.ui.viewmodels.TripDayViewModel
 import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 data class TripDayUI(
@@ -80,17 +83,35 @@ fun TripOverviewScreen(
         )
     }
 
+    // Calcular si se pueden añadir más días basándose en las fechas del viaje
+    // Se recalcula automáticamente cada vez que cambia uiDays.size (ej. al borrar)
+    val canAddDay = remember(trip.startDate, trip.endDate, uiDays.size) {
+        try {
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val start = LocalDate.parse(trip.startDate, formatter)
+            val end = LocalDate.parse(trip.endDate, formatter)
+            val maxDaysPossible = ChronoUnit.DAYS.between(start, end).toInt() + 1
+            uiDays.size < maxDaysPossible
+        } catch (e: Exception) {
+            true
+        }
+    }
+
     TripOverviewContent(
         trip = trip,
         uiDays = uiDays,
+        canAddDay = canAddDay,
         onAddDay = {
-            tripDayViewModel.addDay(trip.id) { newEndDate ->
-                tripViewModel.updateTripEndDate(trip.id, newEndDate)
+            if (canAddDay) {
+                tripDayViewModel.addDay(trip.id) { _ ->
+                    // No actualizamos la fecha fin para respetar el límite definido originalmente
+                }
             }
         },
         onDeleteDay = { dayId ->
             tripDayViewModel.deleteDay(dayId, trip.id, trip.startDate) { newEndDate ->
-                tripViewModel.updateTripEndDate(trip.id, newEndDate)
+                // Al borrar un día, opcionalmente podrías actualizar la fecha fin del viaje, 
+                // pero si quieres que el rango original mande, canAddDay se habilitará solo.
             }
         },
         onDayClick = onDayClick,
@@ -102,6 +123,7 @@ fun TripOverviewScreen(
 fun TripOverviewContent(
     trip: Trip,
     uiDays: List<TripDayUI>,
+    canAddDay: Boolean = true,
     onAddDay: () -> Unit = {},
     onDeleteDay: (dayId: String) -> Unit = {},
     onDayClick: (dayId: String) -> Unit = {},
@@ -166,12 +188,24 @@ fun TripOverviewContent(
                     OutlinedButton(
                         onClick = { onAddDay() },
                         modifier = Modifier.fillMaxWidth(),
+                        enabled = canAddDay,
                         shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = if (canAddDay) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
+                        )
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = if (canAddDay) MaterialTheme.colorScheme.primary else Color.Gray
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.itinerary_add_day), fontWeight = FontWeight.SemiBold)
+                        Text(
+                            text = stringResource(R.string.itinerary_add_day),
+                            fontWeight = FontWeight.SemiBold,
+                            color = if (canAddDay) MaterialTheme.colorScheme.primary else Color.Gray
+                        )
                     }
                     Spacer(modifier = Modifier.height(32.dp))
                 }

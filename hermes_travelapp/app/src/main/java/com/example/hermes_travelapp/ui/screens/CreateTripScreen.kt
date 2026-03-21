@@ -191,7 +191,7 @@ fun CreateTripScreenContent(
             OutlinedTextField(
                 value = budget,
                 onValueChange = { budget = it },
-                label = { Text(stringResource(R.string.prefs_settings) + " (€)") }, 
+                label = { Text(stringResource(R.string.trip_budget) + " (€)") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -199,7 +199,7 @@ fun CreateTripScreenContent(
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text(stringResource(R.string.trip_field_desc)) },
+                label = { Text(stringResource(R.string.trip_field_desc) + " *") },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 3
             )
@@ -208,7 +208,7 @@ fun CreateTripScreenContent(
 
             Button(
                 onClick = {
-                    if (title.isNotBlank()) {
+                    if (title.isNotBlank() && description.isNotBlank()) {
                         val trip = tripToEdit?.copy(
                             title = title,
                             startDate = startDate,
@@ -228,13 +228,13 @@ fun CreateTripScreenContent(
                             pendingTrip = trip
                             showDateChangeWarning = true
                         } else {
-                            onSaveTrip(trip)
+                            onSaveTrip(pendingTrip ?: trip)
                         }
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = MaterialTheme.shapes.medium,
-                enabled = title.isNotBlank()
+                enabled = title.isNotBlank() && description.isNotBlank()
             ) {
                 Text(stringResource(if (tripToEdit == null) R.string.trip_save else R.string.prefs_save))
             }

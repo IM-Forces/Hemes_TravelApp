@@ -13,34 +13,8 @@ object FakeTripDataSource {
     private val _trips = mutableListOf<Trip>()
 
     init {
-        // Pre-load sample data
-        _trips.addAll(listOf(
-            Trip(
-                id = "grecia_trip",
-                title = "Grecia Clásica",
-                startDate = "15/06/2024",
-                endDate = "22/06/2024",
-                description = "Un viaje increíble por la cuna de la civilización occidental.",
-                budget = 1200,
-                spent = 450,
-                progress = 0.375f,
-                daysRemaining = 12,
-                emoji = "🏛️"
-            ),
-            Trip(
-                id = "kenia_trip",
-                title = "Safari en Kenia",
-                startDate = "10/08/2024",
-                endDate = "20/08/2024",
-                description = "Aventura salvaje en el Masai Mara y lagos del Rift.",
-                budget = 3500,
-                spent = 1200,
-                progress = 0.34f,
-                daysRemaining = 65,
-                emoji = "🦁"
-            )
-        ))
-        Log.d(TAG, "Initialized with ${_trips.size} sample trips.")
+        // La lista comienza vacía.
+        Log.d(TAG, "Initialized with 0 trips.")
     }
 
     /**

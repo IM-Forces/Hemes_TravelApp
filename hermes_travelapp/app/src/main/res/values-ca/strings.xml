@@ -73,7 +73,7 @@
     <string name="trip_field_start">Data d\'inici (DD/MM/AAAA)</string>
     <string name="trip_field_end">Data de finalització (DD/MM/AAAA)</string>
     <string name="trip_save">Guardar Viatge</string>
-    <string name="trip_budget">Pressupost inicial (€)</string>
+    <string name="trip_budget">Pressupost</string>
 
     <!-- Errors -->
     <string name="error_required_dates">Ambdues dates són obligatòries</string>
