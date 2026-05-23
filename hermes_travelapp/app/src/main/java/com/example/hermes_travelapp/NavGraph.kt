@@ -29,6 +29,7 @@ import com.example.hermes_travelapp.domain.model.RecommendationItem
 import com.example.hermes_travelapp.domain.model.Trip
 import com.example.hermes_travelapp.ui.screens.*
 import com.example.hermes_travelapp.ui.viewmodels.*
+import kotlinx.coroutines.launch
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val labelRes: Int) {
     object Home : BottomNavItem("home", Icons.Default.Home, R.string.nav_home)
@@ -157,6 +158,7 @@ fun NavGraph(
         }
 
         composable("createTrip") {
+            val scope = rememberCoroutineScope()
             CreateTripScreen(
                 tripToEdit = tripToEdit,
                 tripViewModel = tripViewModel,
@@ -165,21 +167,23 @@ fun NavGraph(
                     navController.popBackStack() 
                 },
                 onSaveTrip = { trip ->
-                    val success = if (tripToEdit == null) {
-                        val added = tripViewModel.addTrip(trip)
-                        if (added) {
-                            tripDayViewModel.generateDays(trip)
+                    scope.launch {
+                        val success = if (tripToEdit == null) {
+                            val added = tripViewModel.addTrip(trip)
+                            if (added) {
+                                tripDayViewModel.generateDays(trip)
+                            }
+                            added
+                        } else {
+                            val edited = tripViewModel.editTrip(trip)
+                            if (edited) {
+                                tripDayViewModel.generateDays(trip)
+                            }
+                            edited
                         }
-                        added
-                    } else {
-                        val edited = tripViewModel.editTrip(trip)
-                        if (edited) {
-                            tripDayViewModel.generateDays(trip)
+                        if (success) {
+                            navController.popBackStack()
                         }
-                        edited
-                    }
-                    if (success) {
-                        navController.popBackStack()
                     }
                 }
             )

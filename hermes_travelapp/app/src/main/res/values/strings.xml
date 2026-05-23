@@ -193,6 +193,16 @@
     <string name="detail_budget_total_pct">%1$d%% of total budget</string>
     <string name="add">Add</string>
 
+    <!-- Photo Selection -->
+    <string name="photo_option_title">Add Photo</string>
+    <string name="photo_option_desc">How would you like to add your photo?</string>
+    <string name="photo_option_camera">Take Photo</string>
+    <string name="photo_option_gallery">Choose from Gallery</string>
+    <string name="cd_add_photo">Add photo</string>
+    <string name="cd_close">Close</string>
+    <string name="cd_delete_photo">Delete photo</string>
+    <string name="cd_set_as_cover">Set as cover photo</string>
+
     <!-- Common -->
     <string name="ok">OK</string>
     <string name="edit">Edit</string>

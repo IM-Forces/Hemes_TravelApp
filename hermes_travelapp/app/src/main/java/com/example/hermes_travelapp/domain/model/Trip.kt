@@ -16,7 +16,8 @@ data class Trip(
     val budget: Int = 0,
     val spent: Int = 0,
     val progress: Float = 0.0f,
-    val daysRemaining: Int = 0
+    val daysRemaining: Int = 0,
+    val coverPhotoUrl: String? = null
 ) {
     fun calculateDaysRemaining(): Int {
         return daysRemaining

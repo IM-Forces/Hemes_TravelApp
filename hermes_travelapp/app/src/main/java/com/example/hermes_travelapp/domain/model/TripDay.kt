@@ -14,5 +14,6 @@ data class TripDay(
     val id: String,
     val tripId: String,
     val dayNumber: Int,
-    val date: LocalDate
+    val date: LocalDate,
+    val photos: List<String> = emptyList()
 )

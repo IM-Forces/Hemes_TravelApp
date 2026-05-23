@@ -61,15 +61,19 @@ class TripViewModel @Inject constructor(private val repository: TripRepository) 
     /**
      * Validates trip dates and adds the trip if valid.
      */
-    fun addTrip(trip: Trip): Boolean {
+    suspend fun addTrip(trip: Trip): Boolean {
         Log.d(TAG, "addTrip: attempting to add trip '${trip.title}'")
         if (validateTrip(trip)) {
-            viewModelScope.launch {
+            try {
                 repository.addTrip(trip)
                 _errorMessageRes.value = null
                 Log.i(TAG, "Trip created successfully: ${trip.title} (id=${trip.id})")
+                return true
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to add trip: ${e.message}", e)
+                // You might want to map specific exceptions to string resources here
+                return false
             }
-            return true
         }
         return false
     }
@@ -77,15 +81,18 @@ class TripViewModel @Inject constructor(private val repository: TripRepository) 
     /**
      * Validates trip dates and updates the trip if valid.
      */
-    fun editTrip(updatedTrip: Trip): Boolean {
+    suspend fun editTrip(updatedTrip: Trip): Boolean {
         Log.d(TAG, "editTrip: attempting to edit trip id=${updatedTrip.id}")
         if (validateTrip(updatedTrip)) {
-            viewModelScope.launch {
+            try {
                 repository.editTrip(updatedTrip)
                 _errorMessageRes.value = null
                 Log.i(TAG, "Trip updated successfully: ${updatedTrip.title} (id=${updatedTrip.id})")
+                return true
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to edit trip: ${e.message}", e)
+                return false
             }
-            return true
         }
         return false
     }
@@ -105,6 +112,16 @@ class TripViewModel @Inject constructor(private val repository: TripRepository) 
         viewModelScope.launch {
             repository.editTrip(updatedTrip)
             Log.i(TAG, "Trip end date updated successfully for trip id=$tripId")
+        }
+    }
+
+    fun setTripCoverPhoto(tripId: String, photoUrl: String) {
+        Log.d(TAG, "setTripCoverPhoto: updating cover photo for trip id=$tripId to $photoUrl")
+        val trip = _trips.value.find { it.id == tripId } ?: return
+        val updatedTrip = trip.copy(coverPhotoUrl = photoUrl)
+        viewModelScope.launch {
+            repository.editTrip(updatedTrip)
+            Log.i(TAG, "Trip cover photo updated successfully for trip id=$tripId")
         }
     }
 

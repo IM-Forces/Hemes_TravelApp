@@ -8,7 +8,8 @@ fun TripDayEntity.toDomain(): TripDay {
         id = id,
         tripId = tripId,
         dayNumber = dayNumber,
-        date = date
+        date = date,
+        photos = photos
     )
 }
 
@@ -17,6 +18,7 @@ fun TripDay.toEntity(): TripDayEntity {
         id = id,
         tripId = tripId,
         dayNumber = dayNumber,
-        date = date
+        date = date,
+        photos = photos
     )
 }

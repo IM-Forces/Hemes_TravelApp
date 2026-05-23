@@ -74,4 +74,15 @@ class TripDayRepositoryImpl @Inject constructor(
             throw e
         }
     }
+
+    override suspend fun updateDay(day: TripDay) {
+        try {
+            Log.d(TAG, "updateDay: dayId=${day.id}")
+            tripDayDao.insertTripDay(day.toEntity())
+            Log.i(TAG, "updateDay successful: dayId=${day.id}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating day: ${e.message}", e)
+            throw e
+        }
+    }
 }

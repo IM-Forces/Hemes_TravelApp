@@ -28,7 +28,11 @@ class TripRepositoryImpl @Inject constructor(
     }
 
     override fun getTrips(): Flow<List<Trip>> {
-        val userId = authRepository.getCurrentUserId() ?: "default_user"
+        val userId = authRepository.getCurrentUserId()
+        if (userId == null) {
+            Log.w(TAG, "getTrips: No user authenticated, returning empty flow")
+            return kotlinx.coroutines.flow.flowOf(emptyList())
+        }
         Log.d(TAG, "getTrips called: fetching trips for userId=$userId")
         return tripDao.getTripsByUser(userId)
             .map { list ->
@@ -38,8 +42,9 @@ class TripRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addTrip(trip: Trip) {
-        val userId = authRepository.getCurrentUserId() ?: "default_user"
-        Log.d(TAG, "addTrip: Validando datos para el viaje '${trip.title}'")
+        val userId = authRepository.getCurrentUserId()
+            ?: throw IllegalStateException("User must be authenticated to add a trip")
+        Log.d(TAG, "addTrip: Validando datos para el viaje '${trip.title}' para userId=$userId")
 
         if (tripDao.existsByTitle(userId, trip.title)) {
             Log.e(TAG, "addTrip: Error - El nombre '${trip.title}' ya está en uso para este usuario.")
@@ -61,7 +66,8 @@ class TripRepositoryImpl @Inject constructor(
     }
 
     override suspend fun editTrip(trip: Trip) {
-        val userId = authRepository.getCurrentUserId() ?: "default_user"
+        val userId = authRepository.getCurrentUserId()
+            ?: throw IllegalStateException("User must be authenticated to edit a trip")
         Log.d(TAG, "editTrip: Intentando actualizar viaje ID ${trip.id} para usuario $userId")
 
         if (trip.title.isBlank()) {

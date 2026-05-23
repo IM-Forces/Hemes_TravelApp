@@ -14,7 +14,8 @@ fun TripEntity.toDomain(): Trip {
         budget = budget,
         spent = spent,
         progress = progress,
-        daysRemaining = daysRemaining
+        daysRemaining = daysRemaining,
+        coverPhotoUrl = coverPhotoUrl
     )
 }
 
@@ -30,6 +31,7 @@ fun Trip.toEntity(userId: String): TripEntity {
         spent = spent,
         progress = progress,
         daysRemaining = daysRemaining,
-        userId = userId
+        userId = userId,
+        coverPhotoUrl = coverPhotoUrl
     )
 }

@@ -35,4 +35,9 @@ interface TripDayRepository {
      * Deletes a specific day by its ID.
      */
     suspend fun deleteDay(dayId: String)
+
+    /**
+     * Updates an existing trip day.
+     */
+    suspend fun updateDay(day: TripDay)
 }

@@ -30,6 +30,33 @@ class AuthRepositoryImpl @Inject constructor(
             Log.i(TAG, "Successfully signed in user: ${firebaseAuth.currentUser?.uid}")
             
             val uid = firebaseAuth.currentUser?.uid ?: return Result.success(Unit)
+            
+            // Sync with local database: Ensure user exists in Room
+            val localUser = userRepository.getUserById(uid)
+            if (localUser == null) {
+                Log.d(TAG, "User $uid not found in local DB, creating entry")
+                val emailStr = firebaseAuth.currentUser?.email ?: ""
+                val usernameStr = emailStr.split("@").firstOrNull() ?: "User"
+                val initials = if (usernameStr.length >= 2) usernameStr.substring(0, 2).uppercase() else "U"
+                
+                val newUser = UserEntity(
+                    id = uid,
+                    name = usernameStr,
+                    email = emailStr,
+                    login = emailStr,
+                    username = usernameStr,
+                    birthdate = 0L,
+                    address = "",
+                    country = "",
+                    phone = "",
+                    acceptEmails = false,
+                    profileInitials = initials,
+                    activeTripCount = 0,
+                    countriesVisited = 0
+                )
+                userRepository.createUser(newUser)
+            }
+
             accessLogDao.insertLog(
                 AccessLogEntity(
                     id = UUID.randomUUID().toString(),

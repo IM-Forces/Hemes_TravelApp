@@ -1,5 +1,6 @@
 package com.example.hermes_travelapp.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.hermes_travelapp.data.PreferencesManager
@@ -9,6 +10,7 @@ import com.example.hermes_travelapp.domain.repository.TripRepository
 import com.example.hermes_travelapp.domain.repository.UserRepository
 
 class ViewModelFactory(
+    private val context: Context? = null,
     private val tripRepository: TripRepository? = null,
     private val tripDayRepository: TripDayRepository? = null,
     private val preferencesManager: PreferencesManager? = null,
@@ -23,7 +25,10 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(TripDayViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")
-                TripDayViewModel(tripDayRepository ?: throw IllegalArgumentException("TripDayRepository is required for TripDayViewModel")) as T
+                TripDayViewModel(
+                    tripDayRepository ?: throw IllegalArgumentException("TripDayRepository is required for TripDayViewModel"),
+                    context ?: throw IllegalArgumentException("Context is required for TripDayViewModel")
+                ) as T
             }
             modelClass.isAssignableFrom(AccountViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")

@@ -26,5 +26,6 @@ data class TripDayEntity(
     @ColumnInfo(name = "trip_id")
     val tripId: String,
     val dayNumber: Int,
-    val date: LocalDate
+    val date: LocalDate,
+    val photos: List<String> = emptyList()
 )

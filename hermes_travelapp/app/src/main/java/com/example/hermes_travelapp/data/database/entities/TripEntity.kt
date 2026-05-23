@@ -32,5 +32,6 @@ data class TripEntity(
     val progress: Float,
     val daysRemaining: Int,
     @ColumnInfo(name = "user_id")
-    val userId: String
+    val userId: String,
+    val coverPhotoUrl: String? = null
 )

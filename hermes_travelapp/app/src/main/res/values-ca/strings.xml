@@ -192,6 +192,16 @@
     <string name="detail_budget_total_pct">%1$d%% del pressupost total</string>
     <string name="add">Afegir</string>
 
+    <!-- Photo Selection -->
+    <string name="photo_option_title">Afegir foto</string>
+    <string name="photo_option_desc">Com t\'agradaria afegir la teva foto?</string>
+    <string name="photo_option_camera">Fer foto</string>
+    <string name="photo_option_gallery">Triar de la galeria</string>
+    <string name="cd_add_photo">Afegir foto</string>
+    <string name="cd_close">Tancar</string>
+    <string name="cd_delete_photo">Eliminar foto</string>
+    <string name="cd_set_as_cover">Marcar com a portada</string>
+
     <!-- Common -->
     <string name="ok">Acceptar</string>
     <string name="edit">Editar</string>
@@ -234,4 +244,6 @@
     <string name="hotel_no_results">No s\'han trobat hotels disponibles.</string>
     <string name="hotel_rating">Puntuació: %1$d/5</string>
     <string name="hotel_price_from">Des de €%1$.2f</string>
+    <string name="hotel_details_title">Detalls de l\'hotel</string>
+    <string name="hotel_price_per_night">€%1$.2f / nit</string>
 </resources>
