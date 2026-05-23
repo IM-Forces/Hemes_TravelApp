@@ -14,6 +14,8 @@ import com.example.hermes_travelapp.domain.repository.HotelRepository
 import com.example.hermes_travelapp.domain.repository.TripDayRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import com.example.hermes_travelapp.domain.repository.UserRepository
+import com.example.hermes_travelapp.data.repository.ReservationRepositoryImpl
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -65,4 +67,10 @@ abstract class RepositoryModule {
     abstract fun bindHotelRepository(
         hotelRepositoryImpl: HotelRepositoryImpl
     ): HotelRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReservationRepository(
+        reservationRepositoryImpl: ReservationRepositoryImpl
+    ): ReservationRepository
 }

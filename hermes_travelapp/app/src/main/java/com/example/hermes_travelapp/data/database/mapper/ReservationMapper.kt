@@ -1,19 +1,30 @@
 package com.example.hermes_travelapp.data.database.mapper
 
 import com.example.hermes_travelapp.data.database.entities.ReservationEntity
-import com.example.hermes_travelapp.domain.model.HotelReservation
+import com.example.hermes_travelapp.domain.model.ReservationUI
 
-fun HotelReservation.toEntity(): ReservationEntity {
+fun ReservationEntity.toDomain(): ReservationUI {
+    return ReservationUI(
+        id = id,
+        tripId = tripId,
+        hotelName = hotelName,
+        hotelAddress = hotelAddress,
+        checkInDate = checkInDate,
+        checkOutDate = checkOutDate,
+        hotelImageUrl = hotelImageUrl,
+        roomImageUrl = roomImageUrl
+    )
+}
+
+fun ReservationUI.toEntity(): ReservationEntity {
     return ReservationEntity(
         id = id,
-        hotelId = hotelId,
-        roomId = roomId,
-        hotelName = hotel?.name ?: "Hotel desconocido",
-        roomType = room?.roomType ?: "Habitación desconocida",
-        price = room?.price ?: 0.0,
-        startDate = startDate,
-        endDate = endDate,
-        guestName = guestName,
-        guestEmail = guestEmail
+        tripId = tripId,
+        hotelName = hotelName,
+        hotelAddress = hotelAddress,
+        checkInDate = checkInDate,
+        checkOutDate = checkOutDate,
+        hotelImageUrl = hotelImageUrl,
+        roomImageUrl = roomImageUrl
     )
 }
