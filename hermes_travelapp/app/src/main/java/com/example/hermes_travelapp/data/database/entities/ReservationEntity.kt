@@ -1,19 +1,33 @@
 package com.example.hermes_travelapp.data.database.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "reservations")
+@Entity(
+    tableName = "reservations",
+    foreignKeys = [
+        ForeignKey(
+            entity = TripEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["trip_id"],
+            onDelete = CASCADE
+        )
+    ],
+    indices = [Index(value = ["trip_id"])]
+)
 data class ReservationEntity(
     @PrimaryKey
     val id: String,
-    val hotelId: String,
-    val roomId: String,
+    @ColumnInfo(name = "trip_id")
+    val tripId: String,
     val hotelName: String,
-    val roomType: String,
-    val price: Double,
-    val startDate: String,
-    val endDate: String,
-    val guestName: String,
-    val guestEmail: String
+    val hotelAddress: String,
+    val checkInDate: String,
+    val checkOutDate: String,
+    val hotelImageUrl: String,
+    val roomImageUrl: String
 )

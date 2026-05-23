@@ -19,6 +19,9 @@ interface ReservationDao {
     @Query("SELECT * FROM reservations WHERE id = :id")
     suspend fun getReservationById(id: String): ReservationEntity?
 
+    @Query("SELECT * FROM reservations WHERE trip_id = :tripId")
+    fun getReservationByTripId(tripId: String): Flow<ReservationEntity?>
+
     @Query("SELECT * FROM reservations")
     fun getAllReservations(): Flow<List<ReservationEntity>>
 }

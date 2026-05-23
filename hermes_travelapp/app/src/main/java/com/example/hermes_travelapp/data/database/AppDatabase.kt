@@ -25,7 +25,7 @@ import com.example.hermes_travelapp.data.database.entities.UserEntity
         AccessLogEntity::class,
         ReservationEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(AppTypeConverters::class)
