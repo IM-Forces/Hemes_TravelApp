@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -131,12 +132,26 @@ fun HotelListContent(
                         }
                     }
                 } else if (searchResults.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.hotel_no_results),
-                        modifier = Modifier.align(Alignment.Center),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                    )
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.hotel_no_results),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Intenta con otras fechas (ej. Junio 2026) o una ciudad diferente. La disponibilidad puede ser limitada en algunas fechas.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),

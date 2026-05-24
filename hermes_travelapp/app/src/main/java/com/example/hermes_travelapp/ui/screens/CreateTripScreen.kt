@@ -59,6 +59,10 @@ fun CreateTripScreenContent(
     var endDate by remember { mutableStateOf(tripToEdit?.endDate ?: "") }
     var budget by remember { mutableStateOf(tripToEdit?.budget?.toString() ?: "") }
     var description by remember { mutableStateOf(tripToEdit?.description ?: "") }
+    var destinationCity by remember { mutableStateOf(tripToEdit?.destinationCity ?: "") }
+
+    val cities = listOf("London", "Paris", "Barcelona")
+    var cityExpanded by remember { mutableStateOf(false) }
 
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
@@ -152,6 +156,42 @@ fun CreateTripScreenContent(
                 singleLine = true
             )
 
+            ExposedDropdownMenuBox(
+                expanded = cityExpanded,
+                onExpandedChange = { cityExpanded = !cityExpanded },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = destinationCity,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text(stringResource(R.string.hotel_search_city) + " *") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = cityExpanded) },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    shape = MaterialTheme.shapes.extraSmall,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                    )
+                )
+                ExposedDropdownMenu(
+                    expanded = cityExpanded,
+                    onDismissRequest = { cityExpanded = false }
+                ) {
+                    cities.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            text = { Text(selectionOption) },
+                            onClick = {
+                                destinationCity = selectionOption
+                                cityExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
             OutlinedTextField(
                 value = startDate,
                 onValueChange = { },
@@ -211,19 +251,21 @@ fun CreateTripScreenContent(
 
             Button(
                 onClick = {
-                    if (title.isNotBlank() && description.isNotBlank()) {
+                    if (title.isNotBlank() && description.isNotBlank() && destinationCity.isNotBlank()) {
                         val trip = tripToEdit?.copy(
                             title = title,
                             startDate = startDate,
                             endDate = endDate,
                             budget = budget.toIntOrNull() ?: 0,
-                            description = description
+                            description = description,
+                            destinationCity = destinationCity
                         ) ?: Trip(
                             title = title,
                             startDate = startDate,
                             endDate = endDate,
                             budget = budget.toIntOrNull() ?: 0,
-                            description = description
+                            description = description,
+                            destinationCity = destinationCity
                         )
                         val datesChanged = tripToEdit != null &&
                                 (startDate != tripToEdit.startDate || endDate != tripToEdit.endDate)
@@ -237,7 +279,7 @@ fun CreateTripScreenContent(
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = MaterialTheme.shapes.medium,
-                enabled = title.isNotBlank() && description.isNotBlank()
+                enabled = title.isNotBlank() && description.isNotBlank() && destinationCity.isNotBlank()
             ) {
                 Text(stringResource(if (tripToEdit == null) R.string.trip_save else R.string.prefs_save))
             }

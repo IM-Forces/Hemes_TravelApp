@@ -63,6 +63,7 @@ class TripViewModelTest {
     fun `test addTrip successfully`() = runTest {
         val trip = Trip(
             title = "Test Trip",
+            destinationCity = "London",
             startDate = "01/01/2024",
             endDate = "10/01/2024",
             description = "Desc"
@@ -81,6 +82,7 @@ class TripViewModelTest {
         val trip = Trip(
             id = "1",
             title = "Updated Trip",
+            destinationCity = "Paris",
             startDate = "01/01/2024",
             endDate = "10/01/2024",
             description = "Desc"
@@ -119,8 +121,18 @@ class TripViewModelTest {
     }
 
     @Test
+    fun `test validation rejects empty city`() = runTest {
+        val trip = Trip(title = "No City", destinationCity = "", startDate = "01/01/2024", endDate = "10/01/2024", description = "Desc")
+        
+        val result = viewModel.addTrip(trip)
+        
+        assertFalse(result)
+        assertEquals(R.string.error_field_required, viewModel.errorMessageRes.value)
+    }
+
+    @Test
     fun `test validation rejects empty dates`() = runTest {
-        val trip = Trip(title = "Error", startDate = "", endDate = "", description = "No dates")
+        val trip = Trip(title = "Error", destinationCity = "London", startDate = "", endDate = "", description = "No dates")
         
         val result = viewModel.addTrip(trip)
         
@@ -130,7 +142,7 @@ class TripViewModelTest {
 
     @Test
     fun `test validation rejects invalid date range`() = runTest {
-        val trip = Trip(title = "Range Error", startDate = "20/01/2024", endDate = "10/01/2024", description = "Desc")
+        val trip = Trip(title = "Range Error", destinationCity = "London", startDate = "20/01/2024", endDate = "10/01/2024", description = "Desc")
         
         val result = viewModel.addTrip(trip)
         

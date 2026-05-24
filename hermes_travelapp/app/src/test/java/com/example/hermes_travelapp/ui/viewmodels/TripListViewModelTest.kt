@@ -60,6 +60,7 @@ class TripListViewModelTest {
     fun `test addTrip with valid data adds trip via repository`() = runTest {
         val trip = Trip(
             title = "Atenas",
+            destinationCity = "Atenas",
             startDate = "01/05/2024",
             endDate = "10/05/2024",
             description = "Viaje cultural"
@@ -76,6 +77,23 @@ class TripListViewModelTest {
     fun `test addTrip with empty title triggers error`() = runTest {
         val trip = Trip(
             title = "",
+            destinationCity = "Atenas",
+            startDate = "01/05/2024",
+            endDate = "10/05/2024",
+            description = "Desc"
+        )
+        
+        val result = viewModel.addTrip(trip)
+        
+        assertFalse(result)
+        assertEquals(R.string.error_field_required, viewModel.errorMessageRes.value)
+    }
+
+    @Test
+    fun `test addTrip with empty city triggers error`() = runTest {
+        val trip = Trip(
+            title = "Atenas",
+            destinationCity = "",
             startDate = "01/05/2024",
             endDate = "10/05/2024",
             description = "Desc"
@@ -91,6 +109,7 @@ class TripListViewModelTest {
     fun `test addTrip with invalid date range triggers error`() = runTest {
         val trip = Trip(
             title = "Error Trip",
+            destinationCity = "London",
             startDate = "20/05/2024",
             endDate = "10/05/2024",
             description = "D"
@@ -114,7 +133,7 @@ class TripListViewModelTest {
 
     @Test
     fun `test editTrip calls repository`() = runTest {
-        val trip = Trip(id = "1", title = "Original", startDate = "01/01/2024", endDate = "02/01/2024", description = "D")
+        val trip = Trip(id = "1", title = "Original", destinationCity = "London", startDate = "01/01/2024", endDate = "02/01/2024", description = "D")
         coEvery { repository.editTrip(any()) } just Runs
         
         val updatedTrip = trip.copy(title = "Actualizado")

@@ -56,6 +56,7 @@ class TripCrudLoggingTest {
     fun `test addTrip logging and execution flow`() = runTest {
         val trip = Trip(
             title = "Tokio",
+            destinationCity = "Tokio",
             startDate = "10/11/2025",
             endDate = "20/11/2025",
             description = "Viaje a Japón"

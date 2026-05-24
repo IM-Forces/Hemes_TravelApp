@@ -144,7 +144,7 @@ fun SplashScreenContent(progress: Float = 0f) {
         }
 
         Text(
-            text = stringResource(R.string.splash_version_sprint, "3.0.0", "03"),
+            text = stringResource(R.string.splash_version_sprint, "4.0.0", "04"),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
             fontSize = 12.sp,

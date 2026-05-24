@@ -97,13 +97,15 @@ class HotelViewModel @Inject constructor(
     fun onTripSelected(trip: Trip?) {
         _selectedTrip.value = trip
         if (trip != null) {
+            _city.value = trip.destinationCity
             _startDate.value = trip.startDate
             _endDate.value = trip.endDate
+            _cityError.value = null
             _startDateError.value = null
             _endDateError.value = null
-            // Reset search results when changing trip to ensure new search respects trip dates
+            // Reset search results when changing trip to ensure new search respects trip dates and city
             _availableHotels.value = emptyList()
-            Log.d(TAG, "onTripSelected: Selected trip ${trip.title}, dates set to ${trip.startDate} - ${trip.endDate}")
+            Log.d(TAG, "onTripSelected: Selected trip ${trip.title}, city ${trip.destinationCity}, dates set to ${trip.startDate} - ${trip.endDate}")
         }
     }
 
@@ -160,7 +162,21 @@ class HotelViewModel @Inject constructor(
                 onSuccess()
             }.onFailure { exception ->
                 Log.e(TAG, "searchHotels: Error searching hotels: ${exception.message}")
-                _errorMessage.value = exception.message ?: "Error al buscar hoteles"
+                val displayError = if (exception is HttpException) {
+                    try {
+                        val errorBody = exception.response()?.errorBody()?.string()
+                        if (errorBody?.contains("detail") == true) {
+                            errorBody.substringAfter("\"detail\":\"").substringBefore("\"")
+                        } else {
+                            "Error del servidor: ${exception.code()}"
+                        }
+                    } catch (e: Exception) {
+                        "Error al buscar hoteles"
+                    }
+                } else {
+                    exception.message ?: "Error al buscar hoteles"
+                }
+                _errorMessage.value = displayError
                 _isLoading.value = false
             }
         }
@@ -205,6 +221,12 @@ class HotelViewModel @Inject constructor(
                     }
                     if (tripEnd != null && endObj != null && endObj.after(tripEnd)) {
                         _endDateError.value = "La fecha de salida está fuera del rango del viaje (${trip.endDate})"
+                        isValid = false
+                    }
+
+                    // Check if city matches trip destination
+                    if (city != trip.destinationCity) {
+                        _cityError.value = "La ciudad debe coincidir con el destino del viaje: ${trip.destinationCity}"
                         isValid = false
                     }
                 }
@@ -317,16 +339,14 @@ class HotelViewModel @Inject constructor(
                             title = "Viaje a ${hotel.name}",
                             startDate = startDate,
                             endDate = endDate,
+                            destinationCity = hotel.address.split(",").last().trim(), // Use city from address
                             description = "Estancia en ${hotel.name} (${hotel.address})",
                             coverPhotoUrl = hotel.imageUrl
                         )
+                        Log.d(TAG, "confirmReservation: Creating new trip: ${newTrip.title} in ${newTrip.destinationCity}")
                         tripRepository.addTrip(newTrip)
                         finalTripId = newId
                         isNewTrip = true
-                        
-                        // IMPORTANT: We need to give Room a tiny bit of time or ensure the insert is finished
-                        // before the reservation tries to link to it via ForeignKey.
-                        // tripRepository.addTrip is suspend, so it should be fine now.
                     }
 
                     // 2. Generate days if it's a new trip
@@ -336,6 +356,7 @@ class HotelViewModel @Inject constructor(
                             title = "Viaje a ${hotel.name}",
                             startDate = startDate,
                             endDate = endDate,
+                            destinationCity = hotel.address.split(",").last().trim(),
                             description = "Estancia en ${hotel.name}"
                         )
                         generateDaysForTrip(createdTrip, tripDayRepository)

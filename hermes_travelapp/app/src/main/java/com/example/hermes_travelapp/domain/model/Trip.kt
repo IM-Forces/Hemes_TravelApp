@@ -12,6 +12,7 @@ data class Trip(
     val startDate: String,
     val endDate: String,
     val description: String,
+    val destinationCity: String = "",
     val emoji: String = "🌍",
     val budget: Int = 0,
     val spent: Int = 0,

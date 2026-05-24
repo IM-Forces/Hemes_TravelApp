@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
@@ -208,7 +209,19 @@ fun HotelSearchContent(
                                 onValueChange = {},
                                 readOnly = true,
                                 label = { Text("Vincular a un viaje") },
-                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = tripExpanded) },
+                                trailingIcon = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        if (selectedTrip != null) {
+                                            IconButton(onClick = { onTripSelected(null) }) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Close,
+                                                    contentDescription = "Limpiar selección"
+                                                )
+                                            }
+                                        }
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = tripExpanded)
+                                    }
+                                },
                                 modifier = Modifier
                                     .menuAnchor()
                                     .fillMaxWidth(),
@@ -254,35 +267,49 @@ fun HotelSearchContent(
                 // City Selector
                 Column {
                     ExposedDropdownMenuBox(
-                        expanded = cityExpanded,
-                        onExpandedChange = { cityExpanded = !cityExpanded },
+                        expanded = if (selectedTrip == null) cityExpanded else false,
+                        onExpandedChange = { if (selectedTrip == null) cityExpanded = !cityExpanded },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         OutlinedTextField(
                             value = city,
                             onValueChange = {},
                             readOnly = true,
+                            enabled = selectedTrip == null,
                             label = { Text(stringResource(R.string.hotel_search_city)) },
                             leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = cityExpanded) },
+                            trailingIcon = { if (selectedTrip == null) ExposedDropdownMenuDefaults.TrailingIcon(expanded = cityExpanded) else null },
                             modifier = Modifier
                                 .menuAnchor()
                                 .fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp),
-                            isError = cityError != null
+                            isError = cityError != null,
+                            supportingText = if (selectedTrip != null) {
+                                { Text("La ciudad está fijada al destino del viaje") }
+                            } else null,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                                disabledBorderColor = MaterialTheme.colorScheme.outline,
+                                disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                disabledSupportingTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         )
-                        ExposedDropdownMenu(
-                            expanded = cityExpanded,
-                            onDismissRequest = { cityExpanded = false }
-                        ) {
-                            cities.forEach { selectionOption ->
-                                DropdownMenuItem(
-                                    text = { Text(selectionOption) },
-                                    onClick = {
-                                        onCitySelected(selectionOption)
-                                        cityExpanded = false
-                                    }
-                                )
+                        if (selectedTrip == null) {
+                            ExposedDropdownMenu(
+                                expanded = cityExpanded,
+                                onDismissRequest = { cityExpanded = false }
+                            ) {
+                                cities.forEach { selectionOption ->
+                                    DropdownMenuItem(
+                                        text = { Text(selectionOption) },
+                                        onClick = {
+                                            onCitySelected(selectionOption)
+                                            cityExpanded = false
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -513,8 +540,8 @@ fun HotelSearchScreenPreview() {
     Hermes_travelappTheme {
         HotelSearchContent(
             city = "Barcelona",
-            startDate = "20/12/2024",
-            endDate = "27/12/2024",
+            startDate = "20/06/2026",
+            endDate = "27/06/2026",
             isLoading = false,
             error = null,
             cityError = null,

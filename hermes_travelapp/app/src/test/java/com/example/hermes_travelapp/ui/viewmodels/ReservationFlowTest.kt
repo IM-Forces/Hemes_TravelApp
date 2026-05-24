@@ -196,7 +196,14 @@ class ReservationFlowTest {
     @Test
     fun `confirmReservation success links to existing Trip`() = runTest {
         // Arrange
-        val existingTrip = Trip(id = "trip123", title = "My Trip", startDate = "10/05/2026", endDate = "30/05/2026", description = "")
+        val existingTrip = Trip(
+            id = "trip123",
+            title = "My Trip",
+            startDate = "10/05/2026",
+            endDate = "30/05/2026",
+            description = "",
+            destinationCity = "Paris"
+        )
         val room = HotelRoom("room1", "Deluxe", 100.0, emptyList())
         val hotel = Hotel("1", "Hotel Paris", "Address", 4, "url", listOf(room))
         val startDate = "20/05/2026"
@@ -204,7 +211,6 @@ class ReservationFlowTest {
         val apiReservation = HotelReservation("res_123", "1", "room1", "2026-05-20", "2026-05-25", "User", "test@example.com")
 
         hotelViewModel.onTripSelected(existingTrip)
-        hotelViewModel.onCitySelected("Paris")
 
         coEvery { 
             hotelRepository.reserveRoom(any(), any(), any(), any(), any(), any(), any()) 
@@ -224,7 +230,14 @@ class ReservationFlowTest {
     @Test
     fun `confirmReservation fails when dates are outside existing Trip range`() = runTest {
         // Arrange
-        val existingTrip = Trip(id = "trip123", title = "My Trip", startDate = "20/05/2026", endDate = "25/05/2026", description = "")
+        val existingTrip = Trip(
+            id = "trip123",
+            title = "My Trip",
+            startDate = "20/05/2026",
+            endDate = "25/05/2026",
+            description = "",
+            destinationCity = "Paris"
+        )
         val room = HotelRoom("room1", "Deluxe", 100.0, emptyList())
         val hotel = Hotel("1", "Hotel Paris", "Address", 4, "url", listOf(room))
         
@@ -233,7 +246,6 @@ class ReservationFlowTest {
         val endDate = "22/05/2026"
 
         hotelViewModel.onTripSelected(existingTrip)
-        hotelViewModel.onCitySelected("Paris")
 
         // Act
         hotelViewModel.confirmReservation(hotel, "room1", startDate, endDate)
@@ -245,13 +257,21 @@ class ReservationFlowTest {
     }
 
     @Test
-    fun `onTripSelected sets filter dates automatically`() {
-        val trip = Trip(id = "t1", title = "Paris", startDate = "10/06/2026", endDate = "15/06/2026", description = "")
+    fun `onTripSelected sets filter dates and city automatically`() {
+        val trip = Trip(
+            id = "t1",
+            title = "Paris",
+            startDate = "10/06/2026",
+            endDate = "15/06/2026",
+            description = "",
+            destinationCity = "Paris"
+        )
         
         hotelViewModel.onTripSelected(trip)
         
         assertEquals("10/06/2026", hotelViewModel.startDate.value)
         assertEquals("15/06/2026", hotelViewModel.endDate.value)
+        assertEquals("Paris", hotelViewModel.city.value)
         assertEquals(trip, hotelViewModel.selectedTrip.value)
     }
 }

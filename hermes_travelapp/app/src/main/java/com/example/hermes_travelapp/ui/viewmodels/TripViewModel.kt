@@ -162,6 +162,12 @@ class TripViewModel @Inject constructor(
             return false
         }
 
+        if (trip.destinationCity.isBlank()) {
+            _errorMessageRes.value = R.string.error_field_required
+            Log.e(TAG, "Validation failed: destination city is blank")
+            return false
+        }
+
         if (trip.startDate.isBlank() || trip.endDate.isBlank()) {
             Log.e(TAG, "error_required_dates")
             _errorMessageRes.value = R.string.error_required_dates

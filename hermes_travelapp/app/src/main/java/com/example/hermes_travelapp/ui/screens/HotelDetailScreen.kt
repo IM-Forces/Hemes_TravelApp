@@ -146,16 +146,12 @@ fun HotelDetailScreen(
                     hotel = hotel,
                     isReserving = isReserving,
                     onReserveClick = { room ->
-                        if (tripId != null) {
-                            viewModel.createReservation(tripId, hotel, room.id)
-                        } else {
-                            viewModel.confirmReservation(
-                                hotel = hotel,
-                                roomId = room.id,
-                                startDate = startDate,
-                                endDate = endDate
-                            )
-                        }
+                        viewModel.confirmReservation(
+                            hotel = hotel,
+                            roomId = room.id,
+                            startDate = startDate,
+                            endDate = endDate
+                        )
                     }
                 )
             }
