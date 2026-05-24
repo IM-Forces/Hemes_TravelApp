@@ -74,6 +74,7 @@ fun TripOverviewScreen(
     tripViewModel: TripViewModel,
     tripDayViewModel: TripDayViewModel,
     onDayClick: (dayId: String) -> Unit = {},
+    onSearchHotels: (String) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
     Log.d("Navigation", "TripDetailScreen composed, tripId: $tripId")
@@ -170,6 +171,7 @@ fun TripOverviewScreen(
             tripViewModel.setTripCoverPhoto(trip.id, photoUrl)
         },
         onDayClick = onDayClick,
+        onSearchHotels = { onSearchHotels(trip.id) },
         onBack = onBack
     )
 
@@ -210,12 +212,23 @@ fun TripOverviewContent(
     onDeletePhoto: (String, String) -> Unit = { _, _ -> },
     onDayClick: (dayId: String) -> Unit = {},
     onSetAsCover: (String) -> Unit = {},
+    onSearchHotels: () -> Unit = {},
     onBack: () -> Unit = {}
 ){
     var selectedPhotoInfo by remember { mutableStateOf<Pair<String, Int>?>(null) } // DayId to PhotoIndex
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onSearchHotels,
+                icon = { Icon(Icons.Default.Hotel, contentDescription = null) },
+                text = { Text("Buscar Hotel") },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                shape = RoundedCornerShape(16.dp)
+            )
+        }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier

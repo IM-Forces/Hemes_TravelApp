@@ -7,6 +7,7 @@ fun ReservationEntity.toDomain(): ReservationUI {
     return ReservationUI(
         id = id,
         tripId = tripId,
+        roomId = roomId,
         hotelName = hotelName,
         hotelAddress = hotelAddress,
         checkInDate = checkInDate,
@@ -20,6 +21,7 @@ fun ReservationUI.toEntity(): ReservationEntity {
     return ReservationEntity(
         id = id,
         tripId = tripId,
+        roomId = roomId,
         hotelName = hotelName,
         hotelAddress = hotelAddress,
         checkInDate = checkInDate,

@@ -247,4 +247,10 @@
     <string name="hotel_price_from">From €%1$.2f</string>
     <string name="hotel_details_title">Hotel Details</string>
     <string name="hotel_price_per_night">€%1$.2f / night</string>
+
+    <!-- Reservations Screen -->
+    <string name="reservations_title">My Reservations</string>
+    <string name="reservations_empty">No active reservations found.</string>
+    <string name="reservations_delete_title">Delete Reservation</string>
+    <string name="reservations_delete_msg">Are you sure you want to delete your reservation at %1$s?</string>
 </resources>

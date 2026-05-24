@@ -1,7 +1,6 @@
 package com.example.hermes_travelapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,12 +27,12 @@ import com.example.hermes_travelapp.domain.model.HotelRoom
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
 import com.example.hermes_travelapp.ui.viewmodels.HotelViewModel
 import com.example.hermes_travelapp.ui.theme.DoradoAtenea
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HotelDetailScreen(
     hotelId: String,
+    tripId: String? = null,
     city: String,
     startDate: String,
     endDate: String,
@@ -53,7 +52,6 @@ fun HotelDetailScreen(
     val reservationError by viewModel.errorMessage.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     // Handle Reservation Success
     if (reservationSuccess) {
@@ -148,12 +146,16 @@ fun HotelDetailScreen(
                     hotel = hotel,
                     isReserving = isReserving,
                     onReserveClick = { room ->
-                        viewModel.confirmReservation(
-                            hotelId = hotel.id,
-                            roomId = room.id,
-                            startDate = startDate,
-                            endDate = endDate
-                        )
+                        if (tripId != null) {
+                            viewModel.createReservation(tripId, hotel, room.id)
+                        } else {
+                            viewModel.confirmReservation(
+                                hotel = hotel,
+                                roomId = room.id,
+                                startDate = startDate,
+                                endDate = endDate
+                            )
+                        }
                     }
                 )
             }

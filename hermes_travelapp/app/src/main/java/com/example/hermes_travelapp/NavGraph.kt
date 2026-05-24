@@ -120,6 +120,9 @@ fun NavGraph(
                 onTripClick = { trip ->
                     navController.navigate("tripOverview/${trip.id}")
                 },
+                onNavigateToReservations = {
+                    navController.navigate("reservations")
+                },
                 favoritePlaces = favoritePlaces,
                 onToggleFavorite = { item ->
                     if (favoritePlaces.any { it.lugar == item.lugar }) {
@@ -139,6 +142,9 @@ fun NavGraph(
                 tripDayViewModel = tripDayViewModel,
                 onDayClick = { dayId -> 
                     navController.navigate("dayItinerary/$tripId/$dayId")
+                },
+                onSearchHotels = { id ->
+                    navController.navigate(BottomNavItem.Explore.route + "?tripId=$id")
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -189,6 +195,12 @@ fun NavGraph(
             )
         }
 
+        composable("reservations") {
+            ReservationsScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable("about") { AboutScreen(onBack = { navController.popBackStack() }) }
         composable("preferences") { 
             PreferencesScreen(
@@ -223,6 +235,7 @@ fun MainScreen(
     onEditTrip: (Trip) -> Unit,
     onCreateTrip: () -> Unit,
     onTripClick: (Trip) -> Unit,
+    onNavigateToReservations: () -> Unit,
     favoritePlaces: List<RecommendationItem>,
     onToggleFavorite: (RecommendationItem) -> Unit
 ) {
@@ -236,6 +249,7 @@ fun MainScreen(
     )
     
     val trips by tripViewModel.trips.collectAsState()
+    val tripsWithReservations by tripViewModel.tripsWithReservations.collectAsState()
 
     LaunchedEffect(Unit) {
         tripViewModel.loadTrips()
@@ -258,7 +272,7 @@ fun MainScreen(
                     items.forEach { screen ->
                         val selected = currentDestination?.hierarchy?.any { 
                             it.route == screen.route || 
-                            (screen == BottomNavItem.Explore && (it.route?.startsWith("hotelList") == true || it.route?.startsWith("hotelDetail") == true))
+                            (screen == BottomNavItem.Explore && (it.route?.startsWith("hotelList") == true || it.route?.startsWith("hotelDetail") == true || it.route?.startsWith("explore") == true))
                         } == true
 
                         NavigationBarItem(
@@ -309,7 +323,8 @@ fun MainScreen(
                     }
                 ) 
             }
-            composable(BottomNavItem.Explore.route) { backStackEntry ->
+            composable(BottomNavItem.Explore.route + "?tripId={tripId}") { backStackEntry ->
+                val tripId = backStackEntry.arguments?.getString("tripId")
                 // Use ViewModel scoped to "main" (the parent route)
                 val mainEntry = remember(backStackEntry) {
                     rootNavController.getBackStackEntry("main")
@@ -323,7 +338,8 @@ fun MainScreen(
                         val city = hotelViewModel.city.value
                         val start = hotelViewModel.startDate.value.replace("/", "-")
                         val end = hotelViewModel.endDate.value.replace("/", "-")
-                        navController.navigate("hotelList/$city/$start/$end")
+                        val route = if (tripId != null) "hotelList/$city/$start/$end?tripId=$tripId" else "hotelList/$city/$start/$end"
+                        navController.navigate(route)
                     },
                     onProfileClick = {
                         navController.navigate(BottomNavItem.Profile.route) {
@@ -336,10 +352,11 @@ fun MainScreen(
                     username = username
                 )
             }
-            composable("hotelList/{city}/{start}/{end}") { backStackEntry ->
+            composable("hotelList/{city}/{start}/{end}?tripId={tripId}") { backStackEntry ->
                 val city = backStackEntry.arguments?.getString("city") ?: ""
                 val start = backStackEntry.arguments?.getString("start") ?: ""
                 val end = backStackEntry.arguments?.getString("end") ?: ""
+                val tripId = backStackEntry.arguments?.getString("tripId")
                 
                 val mainEntry = remember(backStackEntry) {
                     rootNavController.getBackStackEntry("main")
@@ -353,15 +370,17 @@ fun MainScreen(
                     viewModel = hotelViewModel,
                     onBack = { navController.popBackStack() },
                     onHotelClick = { hotel ->
-                        navController.navigate("hotelDetail/${hotel.id}/$city/$start/$end")
+                        val route = if (tripId != null) "hotelDetail/${hotel.id}/$city/$start/$end?tripId=$tripId" else "hotelDetail/${hotel.id}/$city/$start/$end"
+                        navController.navigate(route)
                     }
                 )
             }
-            composable("hotelDetail/{hotelId}/{city}/{start}/{end}") { backStackEntry ->
+            composable("hotelDetail/{hotelId}/{city}/{start}/{end}?tripId={tripId}") { backStackEntry ->
                 val hotelId = backStackEntry.arguments?.getString("hotelId") ?: ""
                 val city = backStackEntry.arguments?.getString("city") ?: ""
                 val start = backStackEntry.arguments?.getString("start") ?: ""
                 val end = backStackEntry.arguments?.getString("end") ?: ""
+                val tripId = backStackEntry.arguments?.getString("tripId")
                 
                 val mainEntry = remember(backStackEntry) {
                     rootNavController.getBackStackEntry("main")
@@ -370,6 +389,7 @@ fun MainScreen(
 
                 HotelDetailScreen(
                     hotelId = hotelId,
+                    tripId = tripId,
                     city = city,
                     startDate = start.replace("-", "/"),
                     endDate = end.replace("-", "/"),
@@ -381,6 +401,7 @@ fun MainScreen(
                 val username by accountViewModel.username.collectAsState()
                 TripsScreen(
                     trips = trips,
+                    tripsWithReservations = tripsWithReservations,
                     onTripClick = onTripClick,
                     onEditTripClick = onEditTrip,
                     onCreateTripClick = onCreateTrip,
@@ -415,6 +436,7 @@ fun MainScreen(
                     onNavigateToAbout = { rootNavController.navigate("about") },
                     onNavigateToPreferences = { rootNavController.navigate("preferences") },
                     onNavigateToTerms = { rootNavController.navigate("terms") },
+                    onNavigateToReservations = onNavigateToReservations,
                     onNavigateToHotelSearch = {
                         navController.navigate(BottomNavItem.Explore.route) {
                             popUpTo(navController.graph.findStartDestination().id) { saveState = true }

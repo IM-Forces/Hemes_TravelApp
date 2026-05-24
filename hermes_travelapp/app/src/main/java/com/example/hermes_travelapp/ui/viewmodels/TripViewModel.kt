@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hermes_travelapp.domain.model.Trip
 import com.example.hermes_travelapp.domain.repository.TripRepository
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +22,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class TripViewModel @Inject constructor(private val repository: TripRepository) : ViewModel() {
+class TripViewModel @Inject constructor(
+    private val repository: TripRepository,
+    private val reservationRepository: ReservationRepository
+) : ViewModel() {
     
     private companion object {
         const val TAG = "TripViewModel"
@@ -32,15 +36,27 @@ class TripViewModel @Inject constructor(private val repository: TripRepository) 
     val errorMessageRes: LiveData<Int?> = _errorMessageRes
 
     private val _trips = MutableStateFlow<List<Trip>>(emptyList())
-    /**
-     * Observable stream of all trips.
-     */
     val trips: StateFlow<List<Trip>> = _trips.asStateFlow()
 
+    private val _reservations = MutableStateFlow<Set<String>>(emptySet())
+    val tripsWithReservations: StateFlow<Set<String>> = _reservations.asStateFlow()
+
     private var loadTripsJob: Job? = null
+    private var loadReservationsJob: Job? = null
 
     init {
         loadTrips()
+        loadReservations()
+    }
+
+    private fun loadReservations() {
+        loadReservationsJob?.cancel()
+        loadReservationsJob = viewModelScope.launch {
+            reservationRepository.getAllReservations().collect { reservations ->
+                _reservations.value = reservations.mapNotNull { it.tripId }.toSet()
+                Log.d(TAG, "Reservations updated, trips with reservation: ${_reservations.value.size}")
+            }
+        }
     }
 
     /**

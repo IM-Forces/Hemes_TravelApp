@@ -246,4 +246,10 @@
     <string name="hotel_price_from">Des de €%1$.2f</string>
     <string name="hotel_details_title">Detalls de l\'hotel</string>
     <string name="hotel_price_per_night">€%1$.2f / nit</string>
+
+    <!-- Reservations Screen -->
+    <string name="reservations_title">Les meves reserves</string>
+    <string name="reservations_empty">No tens reserves actives.</string>
+    <string name="reservations_delete_title">Eliminar Reserva</string>
+    <string name="reservations_delete_msg">Estàs segur que vols eliminar la reserva a %1$s?</string>
 </resources>

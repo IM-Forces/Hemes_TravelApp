@@ -1,8 +1,6 @@
 package com.example.hermes_travelapp.data.repository
 
 import android.util.Log
-import com.example.hermes_travelapp.data.database.dao.ReservationDao
-import com.example.hermes_travelapp.data.database.mapper.toEntity
 import com.example.hermes_travelapp.data.remote.api.HotelApiService
 import com.example.hermes_travelapp.data.remote.dto.ReserveRequestDto
 import com.example.hermes_travelapp.data.remote.mapper.toDomain
@@ -14,8 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class HotelRepositoryImpl @Inject constructor(
-    private val apiService: HotelApiService,
-    private val reservationDao: ReservationDao
+    private val apiService: HotelApiService
 ) : HotelRepository {
 
     override suspend fun getHotels(groupId: String): Result<List<Hotel>> {
@@ -55,15 +52,6 @@ class HotelRepositoryImpl @Inject constructor(
             val request = ReserveRequestDto(hotelId, roomId, startDate, endDate, guestName, guestEmail)
             val reservation = apiService.reserveRoom(groupId, request).reservation.toDomain()
             Log.d("HotelRepository", "API Reserve Success: ${reservation.id}")
-
-            // Save to local database
-            try {
-                reservationDao.insertReservation(reservation.toEntity())
-                Log.d("HotelRepository", "Reservation saved to Room: ${reservation.id}")
-            } catch (e: Exception) {
-                Log.e("HotelRepository", "Error saving reservation to Room: ${e.message}")
-            }
-
             reservation
         }.onFailure { e ->
             Log.e("HotelRepository", "Error in reserveRoom: ${e.message}", e)

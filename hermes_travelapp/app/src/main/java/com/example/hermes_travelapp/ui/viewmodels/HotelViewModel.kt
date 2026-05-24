@@ -5,12 +5,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hermes_travelapp.data.PreferencesManager
 import com.example.hermes_travelapp.domain.model.Hotel
+import com.example.hermes_travelapp.domain.model.HotelRoom
+import com.example.hermes_travelapp.domain.model.ReservationUI
+import com.example.hermes_travelapp.domain.model.Trip
 import com.example.hermes_travelapp.domain.repository.HotelRepository
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
+import com.example.hermes_travelapp.domain.repository.TripRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -18,6 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HotelViewModel @Inject constructor(
     private val repository: HotelRepository,
+    private val reservationRepository: ReservationRepository,
+    private val tripRepository: TripRepository,
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
@@ -187,7 +198,7 @@ class HotelViewModel @Inject constructor(
      * Confirms a hotel reservation.
      */
     fun confirmReservation(
-        hotelId: String,
+        hotel: Hotel,
         roomId: String,
         startDate: String,
         endDate: String,
@@ -196,7 +207,7 @@ class HotelViewModel @Inject constructor(
         val guestName = preferencesManager.username
         val guestEmail = preferencesManager.email
 
-        Log.d(TAG, "confirmReservation: hotelId=$hotelId, roomId=$roomId, guest=$guestName")
+        Log.d(TAG, "confirmReservation: hotelId=${hotel.id}, roomId=$roomId, guest=$guestName")
         
         if (guestName.isBlank() || guestEmail.isBlank()) {
             _errorMessage.value = "Datos de usuario incompletos en el perfil"
@@ -211,22 +222,68 @@ class HotelViewModel @Inject constructor(
         val apiEndDate = convertDateFormat(endDate)
 
         viewModelScope.launch {
+            // Local validation: Check if a reservation already exists for the same room and dates
+            try {
+                val existingReservations = reservationRepository.getAllReservations().first()
+                val duplicate = existingReservations.find { 
+                    it.hotelName == hotel.name && it.roomId == roomId && 
+                    it.checkInDate == startDate && it.checkOutDate == endDate 
+                }
+                
+                if (duplicate != null) {
+                    _errorMessage.value = "Ya tienes una reserva idéntica guardada localmente."
+                    _isReserving.value = false
+                    return@launch
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Error checking local duplicates: ${e.message}")
+            }
+
             repository.reserveRoom(
                 groupId = "G03",
-                hotelId = hotelId,
+                hotelId = hotel.id,
                 roomId = roomId,
                 startDate = apiStartDate,
                 endDate = apiEndDate,
                 guestName = guestName,
                 guestEmail = guestEmail
-            ).onSuccess {
-                Log.d(TAG, "confirmReservation: Success")
-                _isReserving.value = false
-                _reservationSuccess.value = true
-                onSuccess()
+            ).onSuccess { apiReservation ->
+                Log.d(TAG, "confirmReservation: API Success. Saving locally...")
+                
+                // Also save locally so it appears in "My Reservations"
+                try {
+                    val reservationUI = ReservationUI(
+                        id = apiReservation.id,
+                        tripId = null,
+                        roomId = roomId,
+                        hotelName = hotel.name,
+                        hotelAddress = hotel.address,
+                        checkInDate = startDate,
+                        checkOutDate = endDate,
+                        hotelImageUrl = hotel.imageUrl,
+                        roomImageUrl = hotel.rooms.find { it.id == roomId }?.images?.firstOrNull() ?: hotel.imageUrl
+                    )
+                    reservationRepository.addReservation(reservationUI)
+                    
+                    _isReserving.value = false
+                    _reservationSuccess.value = true
+                    onSuccess()
+                } catch (e: Exception) {
+                    Log.e(TAG, "confirmReservation: Error saving local reservation", e)
+                    _errorMessage.value = "Reserva realizada en el servidor, pero hubo un error al guardarla localmente"
+                    _isReserving.value = false
+                }
             }.onFailure { exception ->
                 Log.e(TAG, "confirmReservation: Error: ${exception.message}")
-                _errorMessage.value = exception.message ?: "Error al realizar la reserva"
+                
+                // Handle 409 Conflict specifically
+                val errorMsg = if (exception is retrofit2.HttpException && exception.code() == 409) {
+                    "Esta habitación ya no está disponible para las fechas seleccionadas (Conflicto 409)."
+                } else {
+                    exception.message ?: "Error al realizar la reserva"
+                }
+                
+                _errorMessage.value = errorMsg
                 _isReserving.value = false
             }
         }
@@ -235,5 +292,60 @@ class HotelViewModel @Inject constructor(
     fun resetReservationState() {
         _reservationSuccess.value = false
         _errorMessage.value = null
+    }
+
+    /**
+     * Creates a local reservation in the database.
+     */
+    fun createReservation(tripId: String, hotel: Hotel, roomId: String) {
+        val start = _startDate.value
+        val end = _endDate.value
+
+        if (start.isBlank() || end.isBlank()) {
+            _errorMessage.value = "Selecciona fechas antes de reservar"
+            return
+        }
+
+        _isReserving.value = true
+        _errorMessage.value = null
+
+        viewModelScope.launch {
+            try {
+                // Local validation for linked trips too
+                val existingReservations = reservationRepository.getAllReservations().first()
+                val duplicate = existingReservations.find { 
+                    it.hotelName == hotel.name && it.roomId == roomId && 
+                    it.checkInDate == start && it.checkOutDate == end 
+                }
+                
+                if (duplicate != null) {
+                    _errorMessage.value = "Ya tienes una reserva para esta habitación en estas fechas."
+                    _isReserving.value = false
+                    return@launch
+                }
+
+                val reservation = ReservationUI(
+                    id = UUID.randomUUID().toString(),
+                    tripId = tripId,
+                    roomId = roomId,
+                    hotelName = hotel.name,
+                    hotelAddress = hotel.address,
+                    checkInDate = start,
+                    checkOutDate = end,
+                    hotelImageUrl = hotel.imageUrl,
+                    roomImageUrl = hotel.rooms.find { it.id == roomId }?.images?.firstOrNull() ?: hotel.imageUrl
+                )
+                
+                reservationRepository.addReservation(reservation)
+                
+                Log.d(TAG, "createReservation: Local reservation saved successfully")
+                _reservationSuccess.value = true
+                _isReserving.value = false
+            } catch (e: Exception) {
+                Log.e(TAG, "createReservation: Error saving local reservation", e)
+                _errorMessage.value = "Error al guardar la reserva localmente"
+                _isReserving.value = false
+            }
+        }
     }
 }

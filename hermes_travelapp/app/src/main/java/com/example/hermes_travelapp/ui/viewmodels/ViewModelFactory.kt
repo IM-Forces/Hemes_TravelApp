@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.hermes_travelapp.data.PreferencesManager
 import com.example.hermes_travelapp.domain.repository.AuthRepository
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
 import com.example.hermes_travelapp.domain.repository.TripDayRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import com.example.hermes_travelapp.domain.repository.UserRepository
@@ -15,13 +16,17 @@ class ViewModelFactory(
     private val tripDayRepository: TripDayRepository? = null,
     private val preferencesManager: PreferencesManager? = null,
     private val userRepository: UserRepository? = null,
-    private val authRepository: AuthRepository? = null
+    private val authRepository: AuthRepository? = null,
+    private val reservationRepository: ReservationRepository? = null
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(TripViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")
-                TripViewModel(tripRepository ?: throw IllegalArgumentException("TripRepository is required for TripViewModel")) as T
+                TripViewModel(
+                    repository = tripRepository ?: throw IllegalArgumentException("TripRepository is required for TripViewModel"),
+                    reservationRepository = reservationRepository ?: throw IllegalArgumentException("ReservationRepository is required for TripViewModel")
+                ) as T
             }
             modelClass.isAssignableFrom(TripDayViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")
@@ -41,6 +46,12 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(ThemeViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")
                 ThemeViewModel(preferencesManager ?: throw IllegalArgumentException("PreferencesManager is required for ThemeViewModel")) as T
+            }
+            modelClass.isAssignableFrom(ReservationViewModel::class.java) -> {
+                @Suppress("UNCHECKED_CAST")
+                ReservationViewModel(
+                    reservationRepository ?: throw IllegalArgumentException("ReservationRepository is required for ReservationViewModel")
+                ) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

@@ -41,6 +41,7 @@ fun ProfileScreen(
     onNavigateToAbout: () -> Unit = {},
     onNavigateToPreferences: () -> Unit = {},
     onNavigateToTerms: () -> Unit = {},
+    onNavigateToReservations: () -> Unit = {},
     onNavigateToHotelSearch: () -> Unit = {},
     onLogout: () -> Unit = {},
     accountViewModel: AccountViewModel = viewModel(),
@@ -58,6 +59,7 @@ fun ProfileScreen(
         onNavigateToAbout = onNavigateToAbout,
         onNavigateToPreferences = onNavigateToPreferences,
         onNavigateToTerms = onNavigateToTerms,
+        onNavigateToReservations = onNavigateToReservations,
         onNavigateToHotelSearch = onNavigateToHotelSearch,
         onLogout = onLogout
     )
@@ -72,6 +74,7 @@ fun ProfileScreenContent(
     onNavigateToAbout: () -> Unit = {},
     onNavigateToPreferences: () -> Unit = {},
     onNavigateToTerms: () -> Unit = {},
+    onNavigateToReservations: () -> Unit = {},
     onNavigateToHotelSearch: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
@@ -164,6 +167,12 @@ fun ProfileScreenContent(
                     title = stringResource(R.string.prefs_title),
                     icon = Icons.Default.Settings,
                     onClick = onNavigateToPreferences
+                )
+
+                ProfileOptionItem(
+                    title = stringResource(R.string.reservations_title),
+                    icon = Icons.Default.Description,
+                    onClick = onNavigateToReservations
                 )
 
                 ProfileOptionItem(
