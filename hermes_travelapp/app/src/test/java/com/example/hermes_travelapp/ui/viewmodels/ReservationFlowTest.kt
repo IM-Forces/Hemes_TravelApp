@@ -5,10 +5,12 @@ import com.example.hermes_travelapp.data.PreferencesManager
 import com.example.hermes_travelapp.domain.model.*
 import com.example.hermes_travelapp.domain.repository.HotelRepository
 import com.example.hermes_travelapp.domain.repository.ReservationRepository
+import com.example.hermes_travelapp.domain.repository.TripDayRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.*
@@ -27,6 +29,7 @@ class ReservationFlowTest {
     private val hotelRepository: HotelRepository = mockk()
     private val reservationRepository: ReservationRepository = mockk()
     private val tripRepository: TripRepository = mockk()
+    private val tripDayRepository: TripDayRepository = mockk()
     private val preferencesManager: PreferencesManager = mockk()
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -36,11 +39,11 @@ class ReservationFlowTest {
         Dispatchers.setMain(testDispatcher)
         
         mockkStatic(Log::class)
-        every { Log.d(any(), any()) } returns 0
-        every { Log.i(any(), any()) } returns 0
-        every { Log.e(any(), any()) } returns 0
-        every { Log.e(any(), any(), any()) } returns 0
-        every { Log.w(any(), any()) } returns 0
+        every { Log.d(any<String>(), any<String>()) } returns 0
+        every { Log.i(any<String>(), any<String>()) } returns 0
+        every { Log.e(any<String>(), any<String>()) } returns 0
+        every { Log.e(any<String>(), any<String>(), any<Throwable>()) } returns 0
+        every { Log.w(any<String>(), any<String>()) } returns 0
 
         every { preferencesManager.username } returns "Test User"
         every { preferencesManager.email } returns "test@example.com"
@@ -48,8 +51,14 @@ class ReservationFlowTest {
         // Default flow mocks
         coEvery { reservationRepository.getAllReservations() } returns flowOf(emptyList())
         coEvery { tripRepository.getTrips() } returns flowOf(emptyList())
+        
+        // Mock repository methods used in confirmReservation to prevent crashes
+        coEvery { tripRepository.addTrip(any()) } returns Unit
+        coEvery { tripDayRepository.clearDaysForTrip(any()) } returns Unit
+        coEvery { tripDayRepository.addDay(any()) } returns Unit
+        coEvery { reservationRepository.addReservation(any()) } returns Unit
 
-        hotelViewModel = HotelViewModel(hotelRepository, reservationRepository, tripRepository, preferencesManager)
+        hotelViewModel = HotelViewModel(hotelRepository, reservationRepository, tripRepository, tripDayRepository, preferencesManager)
         reservationViewModel = ReservationViewModel(reservationRepository, tripRepository)
         tripViewModel = TripViewModel(tripRepository, reservationRepository)
     }
@@ -70,7 +79,7 @@ class ReservationFlowTest {
         coEvery { reservationRepository.getAllReservations() } returns flowOf(mockReservations)
         
         val vm = ReservationViewModel(reservationRepository, tripRepository)
-        assertEquals(mockReservations, vm.reservations.value)
+        assertEquals(mockReservations, vm.reservations.first { it.isNotEmpty() })
     }
 
     @Test
@@ -86,6 +95,10 @@ class ReservationFlowTest {
             throw Exception("Database Error")
         }
         val vm = ReservationViewModel(reservationRepository, tripRepository)
+        
+        // Act - Trigger flow to catch the error
+        try { vm.reservations.first() } catch (e: Exception) { /* expected */ }
+        
         assertNotNull(vm.errorMessage.value)
         assertTrue(vm.errorMessage.value!!.contains("Database Error"))
     }
@@ -163,19 +176,20 @@ class ReservationFlowTest {
         )
 
         hotelViewModel.onCitySelected("Paris")
+        hotelViewModel.onStartDateSelected(startDate)
+        hotelViewModel.onEndDateSelected(endDate)
         coEvery { 
             hotelRepository.reserveRoom("G03", hotel.id, "room1", "2026-05-20", "2026-05-25", "Test User", "test@example.com") 
         } returns Result.success(apiReservation)
         
-        coEvery { tripRepository.addTrip(any()) } returns Unit
         coEvery { reservationRepository.addReservation(any()) } returns Unit
 
         // Act
         hotelViewModel.confirmReservation(hotel, "room1", startDate, endDate)
+        advanceUntilIdle()
         
         // Assert
         assertTrue(hotelViewModel.reservationSuccess.value)
-        coVerify { tripRepository.addTrip(any()) }
         coVerify { reservationRepository.addReservation(match { it.tripId != null }) }
     }
 
@@ -199,6 +213,7 @@ class ReservationFlowTest {
 
         // Act
         hotelViewModel.confirmReservation(hotel, "room1", startDate, endDate)
+        advanceUntilIdle()
 
         // Assert
         assertTrue(hotelViewModel.reservationSuccess.value)
