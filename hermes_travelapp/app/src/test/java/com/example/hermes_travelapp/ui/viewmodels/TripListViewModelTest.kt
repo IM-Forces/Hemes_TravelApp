@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.model.Trip
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +28,7 @@ class TripListViewModelTest {
 
     private lateinit var viewModel: TripViewModel
     private lateinit var repository: TripRepository
+    private lateinit var reservationRepository: ReservationRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val tripsFlow = MutableStateFlow<List<Trip>>(emptyList())
 
@@ -41,9 +44,10 @@ class TripListViewModelTest {
         every { Log.w(any<String>(), any<String>()) } returns 0
 
         repository = mockk()
+        reservationRepository = mockk(relaxed = true)
         every { repository.getTrips() } returns tripsFlow
         
-        viewModel = TripViewModel(repository)
+        viewModel = TripViewModel(repository, reservationRepository)
     }
 
     @After
@@ -53,7 +57,7 @@ class TripListViewModelTest {
     }
 
     @Test
-    fun `test addTrip with valid data adds trip via repository`() {
+    fun `test addTrip with valid data adds trip via repository`() = runTest {
         val trip = Trip(
             title = "Atenas",
             startDate = "01/05/2024",
@@ -69,7 +73,7 @@ class TripListViewModelTest {
     }
 
     @Test
-    fun `test addTrip with empty title triggers error`() {
+    fun `test addTrip with empty title triggers error`() = runTest {
         val trip = Trip(
             title = "",
             startDate = "01/05/2024",
@@ -84,7 +88,7 @@ class TripListViewModelTest {
     }
 
     @Test
-    fun `test addTrip with invalid date range triggers error`() {
+    fun `test addTrip with invalid date range triggers error`() = runTest {
         val trip = Trip(
             title = "Error Trip",
             startDate = "20/05/2024",
@@ -109,7 +113,7 @@ class TripListViewModelTest {
     }
 
     @Test
-    fun `test editTrip calls repository`() {
+    fun `test editTrip calls repository`() = runTest {
         val trip = Trip(id = "1", title = "Original", startDate = "01/01/2024", endDate = "02/01/2024", description = "D")
         coEvery { repository.editTrip(any()) } just Runs
         

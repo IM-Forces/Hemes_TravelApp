@@ -44,7 +44,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.model.Trip
+import com.example.hermes_travelapp.domain.model.ReservationUI
 import com.example.hermes_travelapp.ui.theme.*
+import com.example.hermes_travelapp.ui.viewmodels.ReservationViewModel
 import com.example.hermes_travelapp.ui.viewmodels.TripDayViewModel
 import com.example.hermes_travelapp.ui.viewmodels.TripViewModel
 import java.time.format.DateTimeFormatter
@@ -55,6 +57,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.core.content.FileProvider
 import java.io.File
 import java.util.UUID
@@ -73,7 +76,9 @@ fun TripOverviewScreen(
     tripId: String,
     tripViewModel: TripViewModel,
     tripDayViewModel: TripDayViewModel,
+    reservationViewModel: ReservationViewModel = hiltViewModel(),
     onDayClick: (dayId: String) -> Unit = {},
+    onNavigateToReservations: () -> Unit = {},
     onSearchHotels: (String) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
@@ -82,6 +87,8 @@ fun TripOverviewScreen(
     val allTrips by tripViewModel.trips.collectAsState()
     val trip = allTrips.find { it.id == tripId }
     val realDays by tripDayViewModel.tripDays.collectAsState()
+    val reservations by reservationViewModel.reservations.collectAsState()
+    val tripReservation = reservations.find { it.tripId == tripId }
     
     LaunchedEffect(tripId) {
         tripDayViewModel.loadDaysForTrip(tripId)
@@ -150,6 +157,7 @@ fun TripOverviewScreen(
     TripOverviewContent(
         trip = trip,
         uiDays = uiDays,
+        reservation = tripReservation,
         onAddDay = {
             tripDayViewModel.addDay(trip.id) { newEndDate ->
                 tripViewModel.updateTripEndDate(trip.id, newEndDate)
@@ -171,6 +179,7 @@ fun TripOverviewScreen(
             tripViewModel.setTripCoverPhoto(trip.id, photoUrl)
         },
         onDayClick = onDayClick,
+        onReservationClick = onNavigateToReservations,
         onSearchHotels = { onSearchHotels(trip.id) },
         onBack = onBack
     )
@@ -206,12 +215,14 @@ fun TripOverviewScreen(
 fun TripOverviewContent(
     trip: Trip,
     uiDays: List<TripDayUI>,
+    reservation: ReservationUI? = null,
     onAddDay: () -> Unit = {},
     onDeleteDay: (dayId: String) -> Unit = {},
     onAddPhotoToDay: (dayId: String) -> Unit = {},
     onDeletePhoto: (String, String) -> Unit = { _, _ -> },
     onDayClick: (dayId: String) -> Unit = {},
     onSetAsCover: (String) -> Unit = {},
+    onReservationClick: () -> Unit = {},
     onSearchHotels: () -> Unit = {},
     onBack: () -> Unit = {}
 ){
@@ -248,6 +259,17 @@ fun TripOverviewContent(
             item {
                 Box(modifier = Modifier.padding(16.dp)) {
                     BudgetOverviewCard(spent = trip.spent, total = trip.budget)
+                }
+            }
+
+            if (reservation != null) {
+                item {
+                    Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                        HotelReservationCard(
+                            reservation = reservation,
+                            onClick = onReservationClick
+                        )
+                    }
                 }
             }
 
@@ -329,6 +351,67 @@ fun TripOverviewContent(
                 onDeletePhoto = { photoUrl ->
                     onDeletePhoto(dayId, photoUrl)
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun HotelReservationCard(
+    reservation: ReservationUI,
+    onClick: () -> Unit = {}
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+        ),
+        border = BorderStroke(1.dp, DoradoAtenea.copy(alpha = 0.5f))
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(12.dp)
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = reservation.hotelImageUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            
+            Spacer(modifier = Modifier.width(12.dp))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.hotel_reservation_indicator).uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = DoradoAtenea,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = reservation.hotelName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${reservation.checkInDate} - ${reservation.checkOutDate}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            Icon(
+                Icons.Default.Hotel,
+                contentDescription = null,
+                tint = DoradoAtenea,
+                modifier = Modifier.size(24.dp)
             )
         }
     }

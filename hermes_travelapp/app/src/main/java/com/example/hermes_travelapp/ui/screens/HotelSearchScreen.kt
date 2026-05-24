@@ -26,6 +26,9 @@ import kotlin.math.roundToInt
 
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hermes_travelapp.ui.theme.Hermes_travelappTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +52,8 @@ fun HotelSearchScreen(
     
     val maxPrice by viewModel.maxPrice.collectAsState()
     val stars by viewModel.stars.collectAsState()
+    val trips by viewModel.trips.collectAsState()
+    val selectedTrip by viewModel.selectedTrip.collectAsState()
 
     HotelSearchContent(
         city = city,
@@ -61,6 +66,8 @@ fun HotelSearchScreen(
         endDateError = endDateError,
         maxPrice = maxPrice,
         stars = stars,
+        trips = trips,
+        selectedTrip = selectedTrip,
         onBack = onBack,
         onProfileClick = onProfileClick,
         showBack = showBack,
@@ -70,6 +77,7 @@ fun HotelSearchScreen(
         onEndDateSelected = viewModel::onEndDateSelected,
         onMaxPriceChanged = viewModel::onMaxPriceChanged,
         onStarsChanged = viewModel::onStarsChanged,
+        onTripSelected = viewModel::onTripSelected,
         onSearchClick = { viewModel.searchHotels(onSuccess = onNavigateToResults) }
     )
 }
@@ -87,6 +95,8 @@ fun HotelSearchContent(
     endDateError: String?,
     maxPrice: Float,
     stars: Int,
+    trips: List<com.example.hermes_travelapp.domain.model.Trip> = emptyList(),
+    selectedTrip: com.example.hermes_travelapp.domain.model.Trip? = null,
     onBack: () -> Unit,
     onProfileClick: () -> Unit = {},
     onCitySelected: (String) -> Unit,
@@ -94,6 +104,7 @@ fun HotelSearchContent(
     onEndDateSelected: (String) -> Unit,
     onMaxPriceChanged: (Float) -> Unit,
     onStarsChanged: (Int) -> Unit,
+    onTripSelected: (com.example.hermes_travelapp.domain.model.Trip?) -> Unit = {},
     onSearchClick: () -> Unit,
     showBack: Boolean = true,
     username: String = "Usuario"
@@ -102,7 +113,8 @@ fun HotelSearchContent(
     var showEndPicker by remember { mutableStateOf(false) }
     
     val cities = listOf("London", "Paris", "Barcelona")
-    var expanded by remember { mutableStateOf(false) }
+    var cityExpanded by remember { mutableStateOf(false) }
+    var tripExpanded by remember { mutableStateOf(false) }
 
     val initials = remember(username) {
         if (username.isBlank()) "U"
@@ -183,11 +195,67 @@ fun HotelSearchContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Trip Selector (T2.3)
+                if (trips.isNotEmpty()) {
+                    Column {
+                        ExposedDropdownMenuBox(
+                            expanded = tripExpanded,
+                            onExpandedChange = { tripExpanded = !tripExpanded },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            OutlinedTextField(
+                                value = selectedTrip?.title ?: "Seleccionar viaje (opcional)",
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Vincular a un viaje") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = tripExpanded) },
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                )
+                            )
+                            ExposedDropdownMenu(
+                                expanded = tripExpanded,
+                                onDismissRequest = { tripExpanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Ninguno (Crear nuevo)") },
+                                    onClick = {
+                                        onTripSelected(null)
+                                        tripExpanded = false
+                                    }
+                                )
+                                trips.forEach { trip ->
+                                    DropdownMenuItem(
+                                        text = { Text(trip.title) },
+                                        onClick = {
+                                            onTripSelected(trip)
+                                            tripExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                        if (selectedTrip != null) {
+                            Text(
+                                text = "Fechas del viaje: ${selectedTrip.startDate} - ${selectedTrip.endDate}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                            )
+                        }
+                    }
+                }
+
                 // City Selector
                 Column {
                     ExposedDropdownMenuBox(
-                        expanded = expanded,
-                        onExpandedChange = { expanded = !expanded },
+                        expanded = cityExpanded,
+                        onExpandedChange = { cityExpanded = !cityExpanded },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         OutlinedTextField(
@@ -196,7 +264,7 @@ fun HotelSearchContent(
                             readOnly = true,
                             label = { Text(stringResource(R.string.hotel_search_city)) },
                             leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = cityExpanded) },
                             modifier = Modifier
                                 .menuAnchor()
                                 .fillMaxWidth(),
@@ -204,15 +272,15 @@ fun HotelSearchContent(
                             isError = cityError != null
                         )
                         ExposedDropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
+                            expanded = cityExpanded,
+                            onDismissRequest = { cityExpanded = false }
                         ) {
                             cities.forEach { selectionOption ->
                                 DropdownMenuItem(
                                     text = { Text(selectionOption) },
                                     onClick = {
                                         onCitySelected(selectionOption)
-                                        expanded = false
+                                        cityExpanded = false
                                     }
                                 )
                             }
@@ -377,6 +445,7 @@ fun HotelSearchContent(
 
     if (showStartPicker) {
         DatePickerDialogWrapper(
+            initialDate = startDate,
             onDateSelected = { 
                 onStartDateSelected(it)
                 showStartPicker = false
@@ -387,12 +456,54 @@ fun HotelSearchContent(
 
     if (showEndPicker) {
         DatePickerDialogWrapper(
+            initialDate = endDate,
             onDateSelected = { 
                 onEndDateSelected(it)
                 showEndPicker = false
             },
             onDismiss = { showEndPicker = false }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerDialogWrapper(
+    initialDate: String = "",
+    onDateSelected: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = if (initialDate.isNotEmpty()) {
+            try {
+                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(initialDate)?.time
+            } catch (e: Exception) {
+                System.currentTimeMillis()
+            }
+        } else {
+            System.currentTimeMillis()
+        }
+    )
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                datePickerState.selectedDateMillis?.let {
+                    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    onDateSelected(sdf.format(Date(it)))
+                }
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
     }
 }
 

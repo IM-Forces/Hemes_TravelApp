@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hermes_travelapp.R
@@ -196,7 +197,9 @@ fun TripCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text(
                         text = "${trip.emoji} ${trip.title}",
                         style = MaterialTheme.typography.titleLarge,
@@ -205,11 +208,11 @@ fun TripCard(
                     )
                     
                     if (hasReservation) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Surface(
                             color = MaterialTheme.colorScheme.primaryContainer,
                             shape = RoundedCornerShape(8.dp),
-                            modifier = Modifier.height(24.dp)
+                            modifier = Modifier.height(24.dp).wrapContentWidth()
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 6.dp),
@@ -286,6 +289,7 @@ fun TripsScreenPreview() {
     Hermes_travelappTheme {
         TripsScreen(
             trips = sampleTrips,
+            tripsWithReservations = setOf("1"),
             username = "Marco"
         )
     }

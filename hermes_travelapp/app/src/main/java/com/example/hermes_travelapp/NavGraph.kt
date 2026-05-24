@@ -61,7 +61,8 @@ fun NavGraph(
             SplashScreen(
                 isLoggedIn = authViewModel.isLoggedIn(),
                 onNavigate = { route ->
-                    navController.navigate(route) {
+                    val finalRoute = if (route == "main") "main?targetTab=${BottomNavItem.Home.route}" else route
+                    navController.navigate(finalRoute) {
                         popUpTo("splash") { inclusive = true }
                     }
                 }
@@ -71,7 +72,7 @@ fun NavGraph(
         composable("login") {
             LoginScreen(
                 onLoginSuccess = { 
-                    navController.navigate("main") {
+                    navController.navigate("main?targetTab=${BottomNavItem.Home.route}") {
                         popUpTo("login") { inclusive = true }
                     }
                 },
@@ -84,7 +85,7 @@ fun NavGraph(
         composable("register") {
             RegisterScreen(
                 onRegisterClick = { 
-                    navController.navigate("main") {
+                    navController.navigate("main?targetTab=${BottomNavItem.Home.route}") {
                         popUpTo("register") { inclusive = true }
                     }
                 },
@@ -102,13 +103,17 @@ fun NavGraph(
             )
         }
 
-        composable("main") { 
+        composable("main?tripId={tripId}&targetTab={targetTab}") { backStackEntry ->
+            val tripId = backStackEntry.arguments?.getString("tripId")
+            val targetTab = backStackEntry.arguments?.getString("targetTab")
             MainScreen(
                 rootNavController = navController,
                 tripViewModel = tripViewModel,
                 accountViewModel = accountViewModel,
                 authViewModel = authViewModel,
                 themeViewModel = themeViewModel,
+                initialTripId = tripId,
+                initialTab = targetTab,
                 onEditTrip = { trip ->
                     tripToEdit = trip
                     navController.navigate("createTrip")
@@ -143,8 +148,13 @@ fun NavGraph(
                 onDayClick = { dayId -> 
                     navController.navigate("dayItinerary/$tripId/$dayId")
                 },
+                onNavigateToReservations = {
+                    navController.navigate("reservations")
+                },
                 onSearchHotels = { id ->
-                    navController.navigate(BottomNavItem.Explore.route + "?tripId=$id")
+                    navController.navigate("main?tripId=$id&targetTab=${BottomNavItem.Explore.route}") {
+                        popUpTo("main") { inclusive = true }
+                    }
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -232,6 +242,8 @@ fun MainScreen(
     accountViewModel: AccountViewModel,
     authViewModel: AuthViewModel,
     themeViewModel: ThemeViewModel,
+    initialTripId: String? = null,
+    initialTab: String? = null,
     onEditTrip: (Trip) -> Unit,
     onCreateTrip: () -> Unit,
     onTripClick: (Trip) -> Unit,
@@ -253,7 +265,22 @@ fun MainScreen(
 
     LaunchedEffect(Unit) {
         tripViewModel.loadTrips()
+        tripViewModel.loadReservations()
         accountViewModel.loadUserData()
+        
+        // Handle initial navigation if parameters are provided
+        if (initialTab != null) {
+            val route = if (initialTripId != null && initialTab == BottomNavItem.Explore.route) {
+                "${BottomNavItem.Explore.route}?tripId=$initialTripId"
+            } else {
+                initialTab
+            }
+            navController.navigate(route) {
+                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
     }
 
     Scaffold(
@@ -331,6 +358,17 @@ fun MainScreen(
                 }
                 val hotelViewModel: HotelViewModel = hiltViewModel(mainEntry)
                 
+                // T2.3: Automatically select the trip if tripId is provided in the route
+                val trips by hotelViewModel.trips.collectAsState()
+                LaunchedEffect(tripId, trips) {
+                    if (tripId != null && hotelViewModel.selectedTrip.value == null) {
+                        val trip = trips.find { it.id == tripId }
+                        if (trip != null) {
+                            hotelViewModel.onTripSelected(trip)
+                        }
+                    }
+                }
+                
                 val username by accountViewModel.username.collectAsState()
                 HotelSearchScreen(
                     viewModel = hotelViewModel,
@@ -338,7 +376,9 @@ fun MainScreen(
                         val city = hotelViewModel.city.value
                         val start = hotelViewModel.startDate.value.replace("/", "-")
                         val end = hotelViewModel.endDate.value.replace("/", "-")
-                        val route = if (tripId != null) "hotelList/$city/$start/$end?tripId=$tripId" else "hotelList/$city/$start/$end"
+                        // T2.3: Pass the effectively selected trip ID (could be from the dropdown or the route)
+                        val effectiveTripId = hotelViewModel.selectedTrip.value?.id ?: tripId
+                        val route = if (effectiveTripId != null) "hotelList/$city/$start/$end?tripId=$effectiveTripId" else "hotelList/$city/$start/$end"
                         navController.navigate(route)
                     },
                     onProfileClick = {

@@ -50,7 +50,8 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(ReservationViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")
                 ReservationViewModel(
-                    reservationRepository ?: throw IllegalArgumentException("ReservationRepository is required for ReservationViewModel")
+                    reservationRepository = reservationRepository ?: throw IllegalArgumentException("ReservationRepository is required for ReservationViewModel"),
+                    tripRepository = tripRepository ?: throw IllegalArgumentException("TripRepository is required for ReservationViewModel")
                 ) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

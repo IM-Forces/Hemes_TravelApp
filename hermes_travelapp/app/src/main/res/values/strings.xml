@@ -253,4 +253,5 @@
     <string name="reservations_empty">No active reservations found.</string>
     <string name="reservations_delete_title">Delete Reservation</string>
     <string name="reservations_delete_msg">Are you sure you want to delete your reservation at %1$s?</string>
+    <string name="hotel_reservation_indicator">Hotel Reservation</string>
 </resources>

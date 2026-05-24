@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ReservationRepositoryImpl @Inject constructor(
-    private val reservationDao: ReservationDao
+    private val reservationDao: ReservationDao,
+    private val hotelRepository: com.example.hermes_travelapp.domain.repository.HotelRepository
 ) : ReservationRepository {
 
     override fun getAllReservations(): Flow<List<ReservationUI>> {
@@ -28,7 +29,12 @@ class ReservationRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteReservation(id: String) {
-        // TODO: Llamar a la API remota para cumplir con el requisito T4.2 en el futuro.
+        // T4.2: Try to delete from API if it's likely a remote reservation (not a local UUID)
+        // Note: Simple check, if it doesn't contain a dash it's probably from API (e.g. "123")
+        // Or we could just try and catch.
+        if (!id.contains("-") || id.length < 30) {
+            hotelRepository.deleteReservation(id)
+        }
         reservationDao.deleteReservationById(id)
     }
 }

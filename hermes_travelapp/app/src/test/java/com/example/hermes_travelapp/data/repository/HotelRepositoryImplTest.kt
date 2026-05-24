@@ -1,10 +1,11 @@
 package com.example.hermes_travelapp.data.repository
 
+import android.util.Log
 import com.example.hermes_travelapp.data.remote.api.HotelApiService
 import com.example.hermes_travelapp.data.remote.dto.*
-import io.mockk.coEvery
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -17,7 +18,19 @@ class HotelRepositoryImplTest {
 
     @Before
     fun setUp() {
+        mockkStatic(Log::class)
+        every { Log.d(any<String>(), any<String>()) } returns 0
+        every { Log.i(any<String>(), any<String>()) } returns 0
+        every { Log.e(any<String>(), any<String>()) } returns 0
+        every { Log.e(any<String>(), any<String>(), any<Throwable>()) } returns 0
+        every { Log.w(any<String>(), any<String>()) } returns 0
+        
         repository = HotelRepositoryImpl(apiService)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkStatic(Log::class)
     }
 
     @Test
@@ -25,7 +38,7 @@ class HotelRepositoryImplTest {
         val mockHotelsDto = listOf(
             HotelDto("H1", "Hotel Test", "Address", 5, "url", emptyList())
         )
-        coEvery { apiService.getHotels("G03") } returns mockHotelsDto
+        coEvery { apiService.getHotels("G03") } returns HotelListDto(mockHotelsDto)
 
         val result = repository.getHotels("G03")
 
@@ -41,7 +54,7 @@ class HotelRepositoryImplTest {
         )
         coEvery {
             apiService.checkAvailability("G03", any(), any(), "2026-05-20", "2026-05-22")
-        } returns mockHotelsDto
+        } returns AvailabilityResponseDto(mockHotelsDto)
 
         val result = repository.checkAvailability("G03", "BCN", "H1", "2026-05-20", "2026-05-22")
 

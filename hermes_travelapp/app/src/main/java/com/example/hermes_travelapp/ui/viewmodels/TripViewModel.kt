@@ -49,11 +49,14 @@ class TripViewModel @Inject constructor(
         loadReservations()
     }
 
-    private fun loadReservations() {
+    fun loadReservations() {
         loadReservationsJob?.cancel()
         loadReservationsJob = viewModelScope.launch {
             reservationRepository.getAllReservations().collect { reservations ->
-                _reservations.value = reservations.mapNotNull { it.tripId }.toSet()
+                _reservations.value = reservations
+                    .filter { !it.tripId.isNullOrBlank() }
+                    .map { it.tripId!! }
+                    .toSet()
                 Log.d(TAG, "Reservations updated, trips with reservation: ${_reservations.value.size}")
             }
         }

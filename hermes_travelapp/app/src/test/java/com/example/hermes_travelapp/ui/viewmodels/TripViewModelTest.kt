@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.hermes_travelapp.R
 import com.example.hermes_travelapp.domain.model.Trip
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -29,6 +31,7 @@ class TripViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var repository: TripRepository
+    private lateinit var reservationRepository: ReservationRepository
     private lateinit var viewModel: TripViewModel
     private val tripsFlow = MutableStateFlow<List<Trip>>(emptyList())
 
@@ -44,9 +47,10 @@ class TripViewModelTest {
         every { Log.w(any<String>(), any<String>()) } returns 0
 
         repository = mockk()
+        reservationRepository = mockk(relaxed = true)
         every { repository.getTrips() } returns tripsFlow
         
-        viewModel = TripViewModel(repository)
+        viewModel = TripViewModel(repository, reservationRepository)
     }
 
     @After
@@ -56,7 +60,7 @@ class TripViewModelTest {
     }
 
     @Test
-    fun `test addTrip successfully`() {
+    fun `test addTrip successfully`() = runTest {
         val trip = Trip(
             title = "Test Trip",
             startDate = "01/01/2024",
@@ -73,7 +77,7 @@ class TripViewModelTest {
     }
 
     @Test
-    fun `test editTrip successfully`() {
+    fun `test editTrip successfully`() = runTest {
         val trip = Trip(
             id = "1",
             title = "Updated Trip",
@@ -115,7 +119,7 @@ class TripViewModelTest {
     }
 
     @Test
-    fun `test validation rejects empty dates`() {
+    fun `test validation rejects empty dates`() = runTest {
         val trip = Trip(title = "Error", startDate = "", endDate = "", description = "No dates")
         
         val result = viewModel.addTrip(trip)
@@ -125,7 +129,7 @@ class TripViewModelTest {
     }
 
     @Test
-    fun `test validation rejects invalid date range`() {
+    fun `test validation rejects invalid date range`() = runTest {
         val trip = Trip(title = "Range Error", startDate = "20/01/2024", endDate = "10/01/2024", description = "Desc")
         
         val result = viewModel.addTrip(trip)

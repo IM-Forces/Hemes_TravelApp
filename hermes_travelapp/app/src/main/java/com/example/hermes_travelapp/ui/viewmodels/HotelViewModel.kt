@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hermes_travelapp.data.PreferencesManager
+import com.example.hermes_travelapp.domain.generateDaysForTrip
 import com.example.hermes_travelapp.domain.model.Hotel
 import com.example.hermes_travelapp.domain.model.HotelRoom
 import com.example.hermes_travelapp.domain.model.ReservationUI
 import com.example.hermes_travelapp.domain.model.Trip
 import com.example.hermes_travelapp.domain.repository.HotelRepository
 import com.example.hermes_travelapp.domain.repository.ReservationRepository
+import com.example.hermes_travelapp.domain.repository.TripDayRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +31,7 @@ class HotelViewModel @Inject constructor(
     private val repository: HotelRepository,
     private val reservationRepository: ReservationRepository,
     private val tripRepository: TripRepository,
+    private val tripDayRepository: TripDayRepository,
     private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
@@ -79,7 +82,31 @@ class HotelViewModel @Inject constructor(
     private val _reservationSuccess = MutableStateFlow(false)
     val reservationSuccess: StateFlow<Boolean> = _reservationSuccess.asStateFlow()
 
+    // T2.3: Trips for selection
+    val trips: StateFlow<List<Trip>> = tripRepository.getTrips()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
+    private val _selectedTrip = MutableStateFlow<Trip?>(null)
+    val selectedTrip: StateFlow<Trip?> = _selectedTrip.asStateFlow()
+
     // Form Setters
+    fun onTripSelected(trip: Trip?) {
+        _selectedTrip.value = trip
+        if (trip != null) {
+            _startDate.value = trip.startDate
+            _endDate.value = trip.endDate
+            _startDateError.value = null
+            _endDateError.value = null
+            // Reset search results when changing trip to ensure new search respects trip dates
+            _availableHotels.value = emptyList()
+            Log.d(TAG, "onTripSelected: Selected trip ${trip.title}, dates set to ${trip.startDate} - ${trip.endDate}")
+        }
+    }
+
     fun onCitySelected(city: String) {
         _city.value = city
         _cityError.value = null
@@ -167,6 +194,20 @@ class HotelViewModel @Inject constructor(
                     _endDateError.value = "La entrada debe ser anterior a la salida"
                     isValid = false
                 }
+
+                // T2.3: Check if dates are within selected trip range
+                _selectedTrip.value?.let { trip ->
+                    val tripStart = sdf.parse(trip.startDate)
+                    val tripEnd = sdf.parse(trip.endDate)
+                    if (tripStart != null && startObj != null && startObj.before(tripStart)) {
+                        _startDateError.value = "La fecha de entrada está fuera del rango del viaje (${trip.startDate})"
+                        isValid = false
+                    }
+                    if (tripEnd != null && endObj != null && endObj.after(tripEnd)) {
+                        _endDateError.value = "La fecha de salida está fuera del rango del viaje (${trip.endDate})"
+                        isValid = false
+                    }
+                }
             } catch (e: Exception) {
                 _endDateError.value = "Formato de fecha inválido"
                 isValid = false
@@ -214,6 +255,11 @@ class HotelViewModel @Inject constructor(
             return
         }
 
+        // T2.3: Validate dates again (especially against trip range if selected)
+        if (!validate(_city.value, startDate, endDate)) {
+            return
+        }
+
         _isReserving.value = true
         _errorMessage.value = null
         _reservationSuccess.value = false
@@ -250,11 +296,56 @@ class HotelViewModel @Inject constructor(
             ).onSuccess { apiReservation ->
                 Log.d(TAG, "confirmReservation: API Success. Saving locally...")
                 
-                // Also save locally so it appears in "My Reservations"
                 try {
+                    val tripToLink = _selectedTrip.value
+                    val currentTrips = tripRepository.getTrips().first()
+                    
+                    var finalTripId: String
+                    var isNewTrip = false
+
+                    // 1. First, ensure the Trip exists and is PERSISTED
+                    val existingTrip = currentTrips.find { it.title == "Viaje a ${hotel.name}" }
+                    
+                    if (tripToLink != null) {
+                        finalTripId = tripToLink.id
+                    } else if (existingTrip != null) {
+                        finalTripId = existingTrip.id
+                    } else {
+                        val newId = UUID.randomUUID().toString()
+                        val newTrip = Trip(
+                            id = newId,
+                            title = "Viaje a ${hotel.name}",
+                            startDate = startDate,
+                            endDate = endDate,
+                            description = "Estancia en ${hotel.name} (${hotel.address})",
+                            coverPhotoUrl = hotel.imageUrl
+                        )
+                        tripRepository.addTrip(newTrip)
+                        finalTripId = newId
+                        isNewTrip = true
+                        
+                        // IMPORTANT: We need to give Room a tiny bit of time or ensure the insert is finished
+                        // before the reservation tries to link to it via ForeignKey.
+                        // tripRepository.addTrip is suspend, so it should be fine now.
+                    }
+
+                    // 2. Generate days if it's a new trip
+                    if (isNewTrip) {
+                        val createdTrip = Trip(
+                            id = finalTripId,
+                            title = "Viaje a ${hotel.name}",
+                            startDate = startDate,
+                            endDate = endDate,
+                            description = "Estancia en ${hotel.name}"
+                        )
+                        generateDaysForTrip(createdTrip, tripDayRepository)
+                    }
+
+                    // 3. Finally, save the reservation. 
+                    // Now we are sure the trip with finalTripId exists in the DB.
                     val reservationUI = ReservationUI(
                         id = apiReservation.id,
-                        tripId = null,
+                        tripId = finalTripId,
                         roomId = roomId,
                         hotelName = hotel.name,
                         hotelAddress = hotel.address,
@@ -269,8 +360,8 @@ class HotelViewModel @Inject constructor(
                     _reservationSuccess.value = true
                     onSuccess()
                 } catch (e: Exception) {
-                    Log.e(TAG, "confirmReservation: Error saving local reservation", e)
-                    _errorMessage.value = "Reserva realizada en el servidor, pero hubo un error al guardarla localmente"
+                    Log.e(TAG, "confirmReservation: Error saving local reservation/trip", e)
+                    _errorMessage.value = "Reserva realizada, pero hubo un error al vincularla al viaje: ${e.message}"
                     _isReserving.value = false
                 }
             }.onFailure { exception ->
@@ -301,16 +392,16 @@ class HotelViewModel @Inject constructor(
         val start = _startDate.value
         val end = _endDate.value
 
-        if (start.isBlank() || end.isBlank()) {
-            _errorMessage.value = "Selecciona fechas antes de reservar"
-            return
-        }
+        if (!validate(_city.value, start, end)) return
 
         _isReserving.value = true
         _errorMessage.value = null
 
         viewModelScope.launch {
             try {
+                // Ensure the trip exists and match dates if it's the selected one
+                val trip = trips.value.find { it.id == tripId }
+
                 // Local validation for linked trips too
                 val existingReservations = reservationRepository.getAllReservations().first()
                 val duplicate = existingReservations.find { 

@@ -3,12 +3,14 @@ package com.example.hermes_travelapp.ui.viewmodels
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.hermes_travelapp.domain.model.Trip
+import com.example.hermes_travelapp.domain.repository.ReservationRepository
 import com.example.hermes_travelapp.domain.repository.TripRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -24,6 +26,7 @@ class TripCrudLoggingTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
     private lateinit var repository: TripRepository
+    private lateinit var reservationRepository: ReservationRepository
     private lateinit var viewModel: TripViewModel
 
     @Before
@@ -39,7 +42,8 @@ class TripCrudLoggingTest {
         every { Log.v(any<String>(), any<String>()) } returns 0
 
         repository = mockk(relaxed = true)
-        viewModel = TripViewModel(repository)
+        reservationRepository = mockk(relaxed = true)
+        viewModel = TripViewModel(repository, reservationRepository)
     }
 
     @After
@@ -49,7 +53,7 @@ class TripCrudLoggingTest {
     }
 
     @Test
-    fun `test addTrip logging and execution flow`() {
+    fun `test addTrip logging and execution flow`() = runTest {
         val trip = Trip(
             title = "Tokio",
             startDate = "10/11/2025",
@@ -67,7 +71,7 @@ class TripCrudLoggingTest {
     }
 
     @Test
-    fun `test validation failure logging`() {
+    fun `test validation failure logging`() = runTest {
         val invalidTrip = Trip(
             title = "", // Título vacío para forzar error
             startDate = "10/11/2025",

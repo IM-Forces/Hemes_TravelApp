@@ -33,6 +33,7 @@ fun ReservationsScreen(
     viewModel: ReservationViewModel = hiltViewModel()
 ) {
     val reservations by viewModel.reservations.collectAsState()
+    val trips by viewModel.trips.collectAsState()
     var reservationToDelete by remember { mutableStateOf<ReservationUI?>(null) }
 
     Scaffold(
@@ -94,8 +95,14 @@ fun ReservationsScreen(
                     contentPadding = PaddingValues(bottom = 16.dp)
                 ) {
                     items(reservations) { reservation ->
+                        val tripName = trips.find { it.id == reservation.tripId }?.title
                         ReservationCard(
                             reservation = reservation,
+                            tripName = tripName,
+                            trips = trips,
+                            onLinkToTrip = { tripId ->
+                                viewModel.linkReservationToTrip(reservation.id, tripId)
+                            },
                             onDelete = { reservationToDelete = reservation }
                         )
                     }
@@ -132,8 +139,13 @@ fun ReservationsScreen(
 @Composable
 fun ReservationCard(
     reservation: ReservationUI,
+    tripName: String? = null,
+    trips: List<com.example.hermes_travelapp.domain.model.Trip> = emptyList(),
+    onLinkToTrip: (String) -> Unit = {},
     onDelete: () -> Unit
 ) {
+    var tripExpanded by remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -167,6 +179,43 @@ fun ReservationCard(
             }
 
             Column(modifier = Modifier.padding(16.dp)) {
+                if (tripName != null) {
+                    Text(
+                        text = tripName.uppercase(),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                } else if (trips.isNotEmpty()) {
+                    Box(modifier = Modifier.padding(bottom = 8.dp)) {
+                        TextButton(
+                            onClick = { tripExpanded = true },
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "+ VINCULAR A UN VIAJE",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = tripExpanded,
+                            onDismissRequest = { tripExpanded = false }
+                        ) {
+                            trips.forEach { trip ->
+                                DropdownMenuItem(
+                                    text = { Text(trip.title) },
+                                    onClick = {
+                                        onLinkToTrip(trip.id)
+                                        tripExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
