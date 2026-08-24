@@ -1,3 +1,10 @@
+# --- IDE (raíz del repo) ---
+.idea/
+.settings/
+*.iml
+*.ipr
+*.iws
+
 # --- Proyecto Android (hermes_travelapp) ---
 hermes_travelapp/.gradle/
 hermes_travelapp/.idea/
@@ -6,14 +13,22 @@ hermes_travelapp/build/
 hermes_travelapp/app/build/
 hermes_travelapp/local.properties
 hermes_travelapp/*.iml
+hermes_travelapp/.cxx/
+hermes_travelapp/captures/
+hermes_travelapp/*.apk
+hermes_travelapp/*.aab
 
-# --- Archivos del Sistema / IDE ---
+# --- Sistema / IDE genérico ---
 .DS_Store
 Thumbs.db
 .vscode/
 
-# --- Logs y Temporales ---
+# --- Logs y temporales ---
 *.log
-*.tem
+*.tmp
 
+# --- Credenciales / secretos ---
 google-services.json
+local.properties
+*.jks
+*.keystore
