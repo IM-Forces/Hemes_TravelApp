@@ -1,120 +1,131 @@
-# ✈️ Hermes: Travel App
+<div align="center">
 
-Bienvenido a **Hermes**, tu compañero digital para planificar y disfrutar de cada viaje. 🌍🗺️ Desde escapadas de fin de semana hasta aventuras épicas, Hermes centraliza toda la información de tus viajes en una experiencia simple, intuitiva y personalizada.
+<img src=".github/assets/logofinal.png" alt="Hermes Travel App logo" width="140"/>
 
-## 📖 Acerca del Proyecto
+# Hermes Travel App
 
-Hermes nace de la necesidad de **simplificar la planificación de viajes**. Sabemos lo caótico que puede ser organizar itinerarios, gestionar presupuestos y recordar reservas. Por eso creamos una aplicación que **nosotros mismos querríamos usar**: una herramienta todo-en-uno que elimina el estrés de viajar.
+**A native Android trip-planning app with real hotel booking, built on a fully offline-first, reactive architecture.**
 
-El nombre **Hermes** está inspirado en el dios griego de los viajeros y mensajeros, simbolizando velocidad, eficiencia y conexión, valores que definen nuestra app.
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org)
+[![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
+[![Architecture](https://img.shields.io/badge/Architecture-MVVM-orange)](docs/ARCHITECTURE.md)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Min SDK](https://img.shields.io/badge/Min%20SDK-26-brightgreen)](hermes_travelapp/app/build.gradle.kts)
 
-Desarrollada con **Kotlin + Jetpack Compose**, Hermes ofrece una experiencia moderna, fluida y completamente nativa para Android.
+[Features](#features) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Getting Started](#getting-started) · [Screenshots](#screenshots)
 
----
-
-## 🚀 Características Principales
-
-✅ **Itinerarios Personalizados** - Crea planes diarios y por horas adaptados a tus necesidades. 📅  
-✅ **Gestión de Presupuesto** - Controla tus gastos y mantén tus finanzas en orden. 💰  
-✅ **Organización de Reservas** - Almacena confirmaciones de vuelos, hoteles y transporte. 🎫  
-✅ **Mapas Interactivos** - Visualiza puntos de interés y planifica tus rutas. 🗺️  
-✅ **Planificación Colaborativa** - Viaja en grupo y coordinad juntos. 👥  
-✅ **Recordatorios Inteligentes** - Nunca olvides una reserva o actividad. ⏰  
-✅ **Sincronización de Datos** - Accede a tus viajes de forma segura. ☁️  
-✅ **Soporte Multiidioma** - Disponible en varios idiomas. 🌐  
+</div>
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Overview
 
-### Actuales (Sprint 01)
-- **Kotlin** - Lenguaje principal de desarrollo para Android.
-- **Jetpack Compose** - Framework moderno para interfaces de usuario declarativas.
-- **Navigation Component** - Sistema de navegación fluido entre pantallas.
-- **Material Design 3** - Diseño visual limpio, moderno y accesible.
+Hermes is a full-featured Android travel companion: users plan multi-day trips, build day-by-day itineraries, search and book real hotel rooms through a REST API, manage a photo gallery per trip, and keep everything in sync locally for offline use.
 
-### Planeadas (Futuros Sprints)
-- **Base de datos local** - Persistencia de datos para modo offline.
-- **Sistema de autenticación** - Gestión de usuarios y sesiones.
-- **APIs externas** - Integración con servicios de terceros.
-- **Sistema de mapas** - Visualización interactiva de ubicaciones.
-- **Gestión de imágenes** - Captura y almacenamiento de fotos.
+It was built to demonstrate a **production-style Android codebase**: clean MVVM layering, a Repository pattern in front of both a local Room database and a remote REST API, dependency injection with Hilt, reactive state with Coroutines/Flow, and an instrumented test suite that runs against an in-memory database.
 
-*Las tecnologías específicas se seleccionarán según las necesidades de cada sprint.*
+## Features
 
-### 📱 Compatibilidad
-- **Android Oreo (API 26+)**  
-  📌 **Justificación**: Android Oreo representa un punto de equilibrio perfecto entre compatibilidad amplia (cubre más del 90% de dispositivos activos) y acceso a funcionalidades modernas de Android, sin sacrificar rendimiento ni seguridad.
+- 🔐 **Authentication** — email/password sign-up, sign-in, password recovery and email verification via Firebase Auth
+- 🗺️ **Trip planning** — create, edit and delete trips with automatic day-by-day itinerary generation
+- 📅 **Itinerary management** — add, edit and delete timed activities per day, with budget tracking
+- 🏨 **Hotel search & booking** — live search against a REST hotel API (city, dates, price, rating filters), room selection and booking, automatically linked back to a trip
+- 📖 **Reservation management** — list, cancel, and re-link existing hotel reservations
+- 🖼️ **Photo gallery** — attach camera or gallery photos to each trip day, set a cover photo, full-screen lightbox viewer
+- 🌐 **Multi-language** — English, Spanish and Catalan, switchable at runtime
+- 🌓 **Light / dark theme**, persisted user preferences
+- 🧪 **Offline-first persistence** — every remote booking is mirrored into a local Room database so the UI never blocks on network state
 
----
+## Architecture
 
-## 👥 Equipo de Desarrollo
-
-### Founding Team
-
-**Ivan Gil Cañizares**  
-- Email: igc15@alumnes.udl.cat  
-- Rol: Desarrollo Android, Arquitectura del Sistema
-
-**Marco Beruet Morelli**  
-- Email: mbm68@alumnes.udl.cat  
-- Rol: Desarrollo Android, Diseño de UI/UX
-
----
-
-## 🎯 Propuesta de Valor
-
-Hermes ofrece:
-- ✨ **Centralización de información** - Todo tu viaje en un solo lugar.
-- ⏱️ **Ahorro de tiempo** - Planifica más rápido y de forma más eficiente.
-- 😌 **Reducción del estrés** - Viaja con confianza sabiendo que todo está organizado.
-- 🤝 **Experiencia colaborativa** - Perfecta para grupos y familias.
-
----
-
-## 🎨 Filosofía de Diseño
-
-Hermes sigue los principios de **Material Design 3**, priorizando:
-- Interfaz clara y minimalista
-- Navegación intuitiva
-- Accesibilidad para todos los usuarios
-- Coherencia visual en toda la aplicación
-
----
-
-## 📂 Estructura del Proyecto
+Hermes follows **MVVM with a Repository layer**, splitting local (Room) and remote (Retrofit) data sources behind a single domain-facing interface per feature.
 
 ```
-hermes_travelapp/
-├── ui/
-│   ├── screens/       # Pantallas de la aplicación
-│   └── theme/         # Tema y estilos
-├── domain/            # Lógica de negocio y modelos
-└── data/              # Repositorios y fuentes de datos
+UI (Jetpack Compose)
+   ↓ observes StateFlow
+ViewModel (Hilt-injected)
+   ↓ calls
+Repository interface  ──►  RepositoryImpl
+                              ├── Room DAO (local persistence)
+                              └── Retrofit API service (remote hotel data)
 ```
 
----
+Full write-up — database schema, DI graph, navigation structure, and design rationale — lives in **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)**.
 
-## 📄 Licencia
+## Tech Stack
 
-Este proyecto está licenciado bajo **Apache License 2.0**.  
-Consulta el archivo [LICENSE](LICENSE) para más detalles.
+| Layer | Technology |
+|---|---|
+| Language | Kotlin |
+| UI | Jetpack Compose, Material Design 3 |
+| Architecture | MVVM + Repository pattern |
+| Dependency Injection | Hilt |
+| Local persistence | Room (SQLite), SharedPreferences |
+| Networking | Retrofit + OkHttp (Gson) |
+| Async | Kotlin Coroutines + Flow |
+| Auth | Firebase Authentication |
+| Image loading | Coil |
+| Testing | JUnit4, MockK, Room in-memory DB, `kotlinx-coroutines-test` |
 
----
+## Getting Started
 
-## 🤝 Contribuciones
+### Prerequisites
 
-¿Quieres contribuir al proyecto? Revisa nuestras [guías de contribución](CONTRIBUTING.md) para conocer nuestro flujo de trabajo y estándares de código.
+- Android Studio (latest stable)
+- JDK 17
+- An Android device or emulator running **API 26+**
 
----
+### Setup
 
-## 📞 Contacto
+```bash
+git clone https://github.com/<your-username>/hermes-travel-app.git
+cd hermes-travel-app
+```
 
-Para más información sobre el proyecto:
-- **Repositorio GitHub**: [Hermes Travel App](https://github.com/IvanGilC/Hemes_TravelApp)
-- **Universidad**: Universitat de Lleida (Campus Igualada)
-- **Curso**: Aplicaciones para Dispositivos Móviles (105025-2526)
+1. Add your own `google-services.json` to `hermes_travelapp/app/` (required for Firebase Auth — see [Firebase Console](https://console.firebase.google.com)).
+2. Open the project in Android Studio and let Gradle sync.
+3. Run the `app` configuration on an emulator or physical device.
 
----
+> The hotel booking API base URL is configured in [`NetworkModule.kt`](hermes_travelapp/app/src/main/java/com/example/hermes_travelapp/di/NetworkModule.kt).
 
-© 2025 Hermes Travel App. Todos los derechos reservados.
+### Running tests
+
+```bash
+# Unit tests (JVM)
+./gradlew test
+
+# Instrumented DAO tests (requires emulator/device)
+./gradlew connectedAndroidTest
+```
+
+## Screenshots
+
+<div align="center">
+<!-- Replace with real screenshots/GIFs in .github/assets -->
+<img src=".github/assets/screenshot_home.png" width="200"/>
+<img src=".github/assets/screenshot_hotel_search.png" width="200"/>
+<img src=".github/assets/screenshot_trip.png" width="200"/>
+</div>
+
+## Roadmap
+
+- [ ] Interactive maps for trip destinations
+- [ ] PDF document upload and storage per trip
+- [ ] Push notifications for upcoming reservations
+- [ ] CI pipeline (GitHub Actions) running lint + unit tests on PRs
+
+See [`CHANGELOG.md`](CHANGELOG.md) for released version history.
+
+## Contributing
+
+Contributions are welcome. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branching strategy and commit conventions before opening a PR.
+
+## License
+
+Distributed under the Apache License 2.0. See [`LICENSE`](LICENSE) for details.
+
+## Author
+
+**Ivan Gil Cañizares**
+[GitHub](https://github.com/<your-username>) · [LinkedIn](https://linkedin.com/in/<your-profile>)
+
